@@ -4,7 +4,7 @@
 <img src="https://github.com/carlos-santiago-2017/HC12-MicrocontrollerNotes/blob/master/1.png">
 </p>
 
-**APUNTES DE MICROPROCESADORES Y MICROCONTROLADORES**
+**NOTAS DE MICROPROCESADORES Y MICROCONTROLADORES**
 
 Temario
 
@@ -51,7 +51,7 @@ recibir instrucciones y datos. Los datos y las instrucciones son
 almacenados en una memoria principal, CPU va a la memoria principal,
 extrae las instrucciones y después los datos.
 
-arquitectura harvard
+# Arquitectura Harvard
 
 Esta arquitectura se caracteriza por tener por separado el bus de datos
 y el bus de direcciones. Esto significa que las instrucciones y los
@@ -60,7 +60,7 @@ separada por la CPU.
 
 elementos de una computadora
 
-MicroprocesadoRES
+# Microprocesadores
 
 1.  La unión de una Unidad Central de Control y la ALU, junto con
     algunos registros de transferencia forman la Unidad Central de
