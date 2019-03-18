@@ -73,20 +73,21 @@ elementos de una computadora
     electrónicas de la tercera generación fabricadas a base de circuitos
     integrados.
 
-un microprocesador es un cpu integrado
+## Un microprocesador es un cpu integrado
 
 ALU: procesa uno o dos números binarios efectuando operaciones
 aritméticas y operaciones lógicas.
 
-unidad de control: responsable del control de todo el sistema, se
+## Unidad de Control: 
+Responsable del control de todo el sistema, se
 encarga de proporcionar la secuencia y tiempo para el procesamiento de
 las instrucciones axial como la trayectoria y destino de los datos, se
 apoya en una señal de reloj el cual sincroniza el desarrollo temporal de
 todas las señales de control dentro y fuera del microprocesador. El
 sistema en cada instante en un estado perfectamente definido.
 
-analogia: un policía de transito, dice quien pasa y quien no, su
-dirección y el momento en que deben hacerlo.
+## Analogia: 
+un policía de transito, dice quien pasa y quien no, su dirección y el momento en que deben hacerlo.
 
 registro de control de condicion de estados (CCR): este registro
 proporciona información acerca de la última operación efectuada en la
@@ -130,7 +131,7 @@ DIRECCIONES
   μP+RAm+rom+puertos-E/S
   -------------------------------------------------------------------------------
 
-apunte anexo para la compreNsion de la mar y la mdr
+## Apunte anexo para la compreNsion de la MAR y la MDR
 
 PROBLEMA:
 
@@ -234,7 +235,7 @@ Lenguaje ensamblador: el lenguaje que permite escribir instrucciones en
 forma simbólica utilizando nombres fácilmente recordables
 (nemotécnicos).
 
-ESTRUCTURA DE LOS ELEMENTOS DE MEMORIA
+# ESTRUCTURA DE LOS ELEMENTOS DE MEMORIA
 
 ESTADO ACTUAL DE LA TECNOLOGÍA
 
@@ -252,7 +253,7 @@ MEMORIA RAM MEMORIA ROM MEMORIA SERIE
 ![](media/image4.png){width="6.680555555555555in"
 height="2.9583333333333335in"}
 
-MODOS EN QUE TRABAJA EL MICROCONTROLADOR HC11
+## MODOS EN QUE TRABAJA EL MICROCONTROLADOR HC11
 
   --------------- -------- -------- ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
   MODO            MODO B   MODO A   ¿QUE HACE?
@@ -262,7 +263,7 @@ MODOS EN QUE TRABAJA EL MICROCONTROLADOR HC11
   TEST            0        1        Modo especial de prueba para los recursos del mC, ejecutado por el fabricante.
   --------------- -------- -------- ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 
-MODOS EN QUE TRABAJA EL MICROCONTROLADOR HC12
+## MODOS EN QUE TRABAJA EL MICROCONTROLADOR HC12
 
 programacion del microcontrolador y el microprocesador
 
