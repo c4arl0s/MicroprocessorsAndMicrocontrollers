@@ -1,10 +1,18 @@
-# HC12 Microcontroller Not1s
-
-<p align="center">
-<img src="https://github.com/carlos-santiago-2017/HC12-MicrocontrollerNotes/blob/master/Images/p1-0.jpg">
-</p>
-
-<p align="center">
-<img src="https://github.com/carlos-santiago-2017/HC12-MicrocontrollerNotes/blob/master/Images/p1-1.jpg">
-</p>
-
+![p1-0](https://user-images.githubusercontent.com/24994818/75465678-96c47500-594e-11ea-8ac7-1f84c731e4da.jpg)
+![p1-1](https://user-images.githubusercontent.com/24994818/75465687-9b892900-594e-11ea-903a-187aee890fd9.jpg)
+![p1-2](https://user-images.githubusercontent.com/24994818/75465689-9c21bf80-594e-11ea-8628-01b67439a601.jpg)
+![p1-3](https://user-images.githubusercontent.com/24994818/75465691-9cba5600-594e-11ea-9e14-4596be87b517.jpg)
+![p1-4](https://user-images.githubusercontent.com/24994818/75465693-9f1cb000-594e-11ea-942e-438731a52b40.jpg)
+![p1-5](https://user-images.githubusercontent.com/24994818/75465700-a217a080-594e-11ea-8038-0a903b0804e3.jpg)
+![p1-6](https://user-images.githubusercontent.com/24994818/75465701-a2b03700-594e-11ea-8d96-119b1c194cc7.jpg)
+![p1-7](https://user-images.githubusercontent.com/24994818/75465705-a3e16400-594e-11ea-8b39-a9c2fd8f3ffe.jpg)
+![p1-8](https://user-images.githubusercontent.com/24994818/75465708-a479fa80-594e-11ea-9a0b-d8bd17728443.jpg)
+![p1-9](https://user-images.githubusercontent.com/24994818/75465714-a643be00-594e-11ea-9b1e-ece2cbd9ea65.jpg)
+![p1-10](https://user-images.githubusercontent.com/24994818/75465721-a80d8180-594e-11ea-9dfe-f93fcf6eb320.jpg)
+![p1-11](https://user-images.githubusercontent.com/24994818/75465725-a8a61800-594e-11ea-9db4-46cc9a303179.jpg)
+![p1-12](https://user-images.githubusercontent.com/24994818/75465727-a9d74500-594e-11ea-8e27-bc05550fc929.jpg)
+![p1-13](https://user-images.githubusercontent.com/24994818/75465736-acd23580-594e-11ea-8987-ed50382afbf7.jpg)
+![p1-14](https://user-images.githubusercontent.com/24994818/75465745-af348f80-594e-11ea-8c98-68683ca52173.jpg)
+![p1-15](https://user-images.githubusercontent.com/24994818/75465747-afcd2600-594e-11ea-9c9d-445edbccb27d.jpg)
+![p1-16](https://user-images.githubusercontent.com/24994818/75465750-b0fe5300-594e-11ea-99e2-556b4aef177b.jpg)
+![p1-17](https://user-images.githubusercontent.com/24994818/75465770-b6f43400-594e-11ea-86c9-246f5edf2dbb.jpg)
