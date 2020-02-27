@@ -1,0 +1,128 @@
+   INTERRUPCIONES EN TIEMPO REAL
+   La interrupción en tiempo real (Real Time Interrupt) es una
+   interrupción que se produce cada ciertos instantes fijos de tiempo. El
+   intervalo de tiempo comprendido entre 2 interrupciones de tiempo real
+   consecutivas se puede configurar modificando los bits 0 y 1 del registro
+   PACTL ($1026).
+
+   RECORDANDO EL PCTL
+
+
+          Bit 7    Bit 6    Bit 5    Bit 4    Bit 3   Bit 2   Bit 1   Bit 0
+
+$1026   DDRA7      PAEN    PAMOD    PEDGE    DDRA3    I4/O5   RTR1    RTR0    PACTL
+
+Reset      0         0       0        0        0       0       0       0
+
+
+
+   Para un cristal de 8 MHZ se tiene que:
+
+   Bit1           Bit 0      Intervalo de tiempo
+   0              0          4.096ms (4.1ms aprox)
+   0              1          8.192ms (8.2ms aprox)
+   1              0          16.384ms (16.4ms aprox)
+   1              1          32.768ms (32.77ms aprox)
+
+
+   ¿Para qué se utiliza esta interrupción? Tiene múltiples aplicaciones.
+   Por ejemplo para programar relojes en tiempo real, cronómetros,
+   calendarios, muestrear datos, etc.
+
+   El bit 6 del registro TFLG2 se activa cada vez que se produce una
+   interrupción en tiempo real. Este bit es el que está indicando a la CPU
+   que hay una interrupción de tiempo real pendiente, por lo que la rutina
+   de servicio de esta interrupción lo primero que debe hacer es poner este
+   bit a cero. Si no se hace, al terminar la rutina la CPU detecta que este
+   bit sigue activo y lo toma como si se hubiese producido otra
+   interrupción. Esto produce que se vuelve a ejecutar la rutina de servicio
+   y la CPU entra en un bucle infinito. El bit 6 del registro TMSK2
+   ($1024) es el que habilita o deshabilita la interrupción de tiempo
+   real. El bit se pone a cero escribiendo un "1" en ese bit y ceros en los
+   demás; es decir, escribiendo el valor $40 en el registro TFLG2. Esto se
+   puede hacer utilizando STAA o BCLR.
+
+
+                                                                               1
+Ejemplo:
+LDAA $40
+STAA TFLG2,X
+
+
+Los registros de las interrupciones en tiempo real
+
+En la siguiente tabla se resumen los registros relacionados con las
+interrupciones de tiempo real:
+
+PACTL      $1026       Bits 0 y 1 establecen período tiempo
+TMSK2      $1024       Bit 6 Activar o desactivar interrupción.
+TFLG2      $1025       Bit 6 interrupción pendiente.
+
+
+
+
+                                                                      2
+EJEMPLOS DE MANEJO DE INTERRUPCIONES EN TIEMPO REAL
+
+-EJEMPLO 1: Interrupciones en tiempo real mediante espera activa.
+Este programa hace cambiar de estado el led de la tarjeta CT6811
+cada 32.7ms. Se realiza utilizando las interrupciones en tiempo real y
+espera activa. En realidad no se utilizan interrupciones, sino que se
+trabaja con el flan de interrupción. cuando se pone a 1 quiere decir
+que han pasado 32.7ms. Las interrupciones quedan deshabilitadas.
+; ¦ Programa ejemplo para ser ejecutado en la tarjeta CT6811. ¦
+; ¦ Este programa se debe cargar en la RAM interna del 6811. ¦
+;¦¦
+; ¦ Ejemplo de las interrupciones en tiempo real. Cambiar el estado ¦
+; ¦ del led cada 32.7ms. Se hace mediante espera activa. ¦
+TMSK2                   EQU             $24
+TFLG2                   EQU             $25
+PACTL                   EQU             $26
+PORTA                   EQU             $00
+                        ORG                  $0000
+                        LDX             #$1000    ; carga el indice x con 1000
+                        BSET            PACTL,X $03
+                                                         ; Int. en tiempo real cada 32.7ms
+                                                         ; 0000 0011
+Bucle
+main         BRCLR       TFLG2,X $40     main ; Esperar a que se active el flag
+                   BSET       TFLG2,X $40 ; Poner a cero flag de interrupción
+                   LDAA       PORTA,X
+                   EORA       #$40
+                   STAA       PORTA,X
+                   BRA bucle
+                   END
+-EJEMPLO 2: Interrupción en tiempo real con interrupciones.
+Mismo programa anterior pero realizado mediante interrupciones.
+; ¦ Programa ejemplo para ser ejecutado en la tarjeta CT6811. ¦
+; ¦ Este programa se debe cargar en la RAM interna del 6811. ¦
+;¦¦
+; ¦ Ejemplo de las interrupciones en tiempo real. Cambiar el estado ¦
+; ¦ del led cada 32.7ms. Se hace mediante interrupciones. ¦
+
+                                                                                             3
+TMSK2         EQU $24
+TFLG2         EQU $25
+PACTL         EQU $26
+PORTA         EQU $00
+              ORG              $0000
+              LDX        #$1000
+              BSET       PACTL,X $03 ; Int. en tiempo real cada 32.7ms
+              BSET       TMSK2,X $40 ; Habilitar int en tiempo real
+              CLI                          ; Permitir las interrupciones
+INF           BRA        INF
+;------- Rutina de atención a la interrupción en tiempo real
+rti
+              BSET       TFLG2,X $40       ; Poner a cero flag de interrupción
+              LDAA       PORTA,X ; Cambiar led de estado
+              EORA       #$40
+              STAA       PORTA,X
+              RTI
+              ORG              $00EB
+              JMP        rti
+
+
+
+
+                                                                                 4
+

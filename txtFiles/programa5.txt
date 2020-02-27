@@ -1,0 +1,98 @@
+UNAM, FACULTAD DE INGENIERÍA                                  SANTIAGO CRUZ CARLOS
+APUNTES DE MICROPROCESADORES Y MICROCONTROLADORES              02/04/2006 10:33
+O4/P4
+PROBLEMA
+Hay una lista de valores entre las direcciones $00 y $200, contar el numero
+de 2 A's que aparecen en la lista, como podemos observar, para desplegar
+la cuenta necesitaremos dos localidades de memoria, si llegara a ser el caso
+de que todos los valores resultaran iguales a 2F. Almacene la cuenta en las
+localidades $201 y $202.
+
+
+Dirección   Datos
+   $00       D1
+             D2
+              *     ARQUITECTURA: Acumulador A, B y un registro X
+              *
+              *
+              *
+  0200       Dm
+  $201       MSB
+  $202       LSB
+
+
+
+
+                           1 de 3 Problemas (parte 3)
+UNAM, FACULTAD DE INGENIERÍA                                  SANTIAGO CRUZ CARLOS
+APUNTES DE MICROPROCESADORES Y MICROCONTROLADORES              02/04/2006 10:33
+O4/P4
+               INICIO
+
+
+     Declara apuntador
+     P1
+
+    Limpia localidad para el
+              MSB
+
+   Limpia localidad para el
+             LSB
+
+        Carga dato vìa P1
+
+
+        Compara dato con
+              2A
+
+                            SI
+
+             Dato=2A ?                 Incrementa registro
+                                              LSB
+   NO
+                                      NO
+
+         Incrementa p1                          LSB=0 ?
+
+
+                                           SI
+   NO
+             P1=201                    Incrementa registro
+                ?                             MSB
+        SI
+
+
+              FIN
+
+
+
+
+                                 2 de 3 Problemas (parte 3)
+  UNAM, FACULTAD DE INGENIERÍA                                   SANTIAGO CRUZ CARLOS
+  APUNTES DE MICROPROCESADORES Y MICROCONTROLADORES               02/04/2006 10:33
+  O4/P4
+
+MSB     EQU     $201     ; definición de pseudoperador
+LSB     EQU     $202     ; definición de pseudoperador
+
+        LDX     #$00
+        CLR     MSB
+        CLR     LSB     ; se pone la bandera en Z=0
+SIGUE   LDAA    $00,X
+        CMPA    #$2ª
+        BEQ     INC_LSB
+        INX
+        CPX     #$201
+        BNE     SIGUE    ; tomar en cuenta las banderas que se afectan en BNE z=1
+FIN     BRA     FIN
+
+INC_LSB INC     LSB
+        BNE     PROX
+        INC     MSB
+        BRA     PROX
+
+
+
+
+                             3 de 3 Problemas (parte 3)
+

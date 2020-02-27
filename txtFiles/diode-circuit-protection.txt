@@ -1,0 +1,18 @@
+                               DIODE CIRCUIT PROTECTION
+
+Diodes are widely used to protect circuits from being damaged by the high voltages produced by
+electrostatic discharges or the rapid turn-off of current through inductors.
+                                   +V
+
+
+
+                                                    remainder
+                     input                           of circuit
+
+
+
+
+The diode arrangement above is used on the inputs of many integrated circuits as the tiny
+transistors in integrated circuits are very susceptible to being damaged by electrostatic voltage
+spikes that can occur when the circuit is being handled.
+

@@ -1,0 +1,618 @@
+UNAM, FACULTAD DE INGENIERÍA                                                      SANTIAGO CRUZ
+CARLOS
+APUNTES DE MICROPROCESADORES Y MICROCONTROLADORES                                 02/05/2006 07:45
+O5/P5
+COMUNICACIÓN PARALELA
+
+Puertos A, B, E y K.
+
+Características comunes:
+
+         Bidireccionales
+         Programables pin a pin como entrada o salida.
+         Tienen un registro para habilitar o deshabilitar "pull-resistor"1
+         Registro para habilitar o deshabilitar salida en baja potencia.
+         Registro para programar modos de operación.
+
+A continuación se presenta un diagrama a bloques de lo que es un pin de un puerto en el
+HC12:
+
+
+
+
+1
+ Pull-up resistor: resistencia conectada a Vcc
+pull-down resistor: resistencia conectada a tierra.
+
+                                        1 de 15 Comunicación paralela (parte 3)
+UNAM, FACULTAD DE INGENIERÍA                                                           SANTIAGO CRUZ
+CARLOS
+APUNTES DE MICROPROCESADORES Y MICROCONTROLADORES                                       02/05/2006 07:45
+O5/P5
+Las direcciones de algunos puertos se presentan a continuación:
+
+PORTA                                         $0000
+PORTB                                         $0001
+DDRA                                          $0002
+DDRB                                          $0003
+
+EJEMPLO: encendido de un led vía interruptor de contacto momentáneo.
+
+Función and.
+                                                   * *         * * * * *         0
+                                                   0 0         0 0 0 0 0         1
+                                                   0 0         0 0 0 0 0         0
+                                            Resultado =       0 => interruptor   abierto (Z=1)
+
+
+                                                    * * * * * * * 1
+                                                    0 0 0 0 0 0 0 1
+                                                    0 0 0 0 0 0 0 1
+
+                                            Resultado = 1 => interruptor cerrado (Z=0)
+
+
+
+
+            INICIO
+
+
+       Leer estado del
+         interruptor
+                                      SI
+
+             ¿S cerrado?
+                (Z=0)
+
+     NO
+
+            Apaga led              Prende led
+
+
+
+
+                                  2 de 15 Comunicación paralela (parte 3)
+UNAM, FACULTAD DE INGENIERÍA                                                   SANTIAGO CRUZ
+CARLOS
+APUNTES DE MICROPROCESADORES Y MICROCONTROLADORES                               02/05/2006 07:45
+O5/P5
+
+
+PORTA        EQU        $00              ;define pseudo operadores
+DDRA         EQU        $02              ; define pseudo operador
+             LDX        #$0000           ; carga el índice X de manera inmediata con 0000
+             LDAA       #$80             ; carga el acumulador A con 1000 0000h, bit7 a `1'
+             STAA       DDRA, X          ; almacénalo en el registro DDRA
+
+REV          LDAA       PORTA, X         ; carga el acumulador A con lo que lee en el puerto
+                                         A
+             ANDA       #$01             ; operación and, A con 01
+             BNE        PRENDE           ; salta si Z=0 (a la etiqueta PRENDE
+             CLRA
+             STAA       PORTA, X
+             BRA        REV
+
+PRENDE       LDAA       #$80
+             STAA       PORTA, X
+             BRA        REV
+
+
+Otra forma seria programándolo con la instrucción BSET
+
+PORTA        EQU        $00                   ;define pseudo operadores
+DDRA         EQU        $02                   ; define pseudo operador
+             LDX        #$0000                ; carga el índice X de manera inmediata con 0000
+
+             BSET       DDRA,X,$80            ; bit set pone un `1' en el bit7 del registro DDRA
+                                              de manera indexada. OJO, ya que esta
+                                              instrucción solo pone un `1' en el bit que le
+                                              indiquemos, los demás bits quedan sin cambios
+
+REV          LDAA       PORTA, X              ; carga el acumulador A con lo que lee en el
+                                              puerto A
+             ANDA       #$01                  ; operación and, A con 01
+             BNE        PRENDE                ; salta si Z=0 a la etiqueta PRENDE
+             CLRA
+             STAA       PORTA, X
+             BRA        REV
+
+PRENDE       LDAA       #$80
+             STAA       PORTA, X
+             BRA        REV
+
+                                  3 de 15 Comunicación paralela (parte 3)
+UNAM, FACULTAD DE INGENIERÍA                                                           SANTIAGO CRUZ
+CARLOS
+APUNTES DE MICROPROCESADORES Y MICROCONTROLADORES                                       02/05/2006 07:45
+O5/P5
+
+
+Otra manera seria como sigue, las instrucciones se reducen:
+
+PORTA           EQU          $00                                      ;define pseudo operadores
+DDRA            EQU          $02                                      ; define pseudo operador
+                LDX          #$0000                                   ; carga el índice X de           manera
+                                                                      inmediata con 0000
+
+                BSET         DDRA,X,$80                               ; bit set pone un `1' en el bit7 del
+                                                                      registro DDRA de manera indexada.
+                                                                      OJO, ya que esta instrucción solo
+                                                                      pone un `1' en el bit que le
+                                                                      indiquemos, los demás bits quedan
+                                                                      sin cambios
+
+                BRSET        PORTA,X,$01,PRENDE                       ; Salta a la etiqueta PRENDE si hay un
+                                                                      `1' en el bit0 del puerto A, de manera
+                                                                      indexada.
+                BCLR         PORTA,X,$80                              ; pone un `0' en el bit7 del puerto A
+                                                                      de manera indexada.
+                BRA          REV                                      ; salta a la etiqueta REV
+
+PRENDE          BSET         PORTA,X,$80                              ; pone un `1' en el bit7 del puerto A
+                                                                      de manera indexada.
+                BRA          REV
+
+
+
+
+                                   4 de 15 Comunicación paralela (parte 3)
+UNAM, FACULTAD DE INGENIERÍA                                                                 SANTIAGO CRUZ
+CARLOS
+APUNTES DE MICROPROCESADORES Y MICROCONTROLADORES                                            02/05/2006 07:45
+O5/P5
+PROGRAMA (TOGGLE)
+Encender el led y apagar el led cada vez que se presione una vez el interruptor. El
+puerto A es el que se muestra:
+                                                                       INICIO
+
+
+                                                                 Programar puerto
+                                                                        A
+
+                                                               Leer el estado del
+                                                                  interruptor
+
+                                                                                              NO
+
+                                                                    ¿`s' cerrado?
+                                                                                        SI
+
+                                                                    Encender led
+
+
+
+                                                                                              SI
+                                                                       ¿`s' aún
+                                                                       cerrado?
+
+                                                                  NO
+
+
+
+
+                                                                       ¿`s' cerrado?
+                                                                                                    NO
+                                                                        SI
+
+                                                                         apagar led
+
+
+
+
+                                                                             ¿`s' aún
+                                                                             cerrado?                 SI
+                                                                    NO
+
+
+                                                       i
+
+                                  5 de 15 Comunicación paralela (parte 3)
+UNAM, FACULTAD DE INGENIERÍA                                                                       SANTIAGO CRUZ
+CARLOS
+APUNTES DE MICROPROCESADORES Y MICROCONTROLADORES                                                   02/05/2006 07:45
+O5/P5
+CODIGO     2
+
+
+
+
+PORTA                  EQU               $00                                      ;define pseudo operadores
+DDRA                   EQU               $02                                      ; define pseudo operador
+                       LDX               #$0000                                   ; carga el índice X de               manera
+                                                                                  inmediata con 0000
+
+                       BSET              DDRA,X,$80                               ; bit set pone un `1' (entrada) en el
+                                                                                  bit7 del registro DDRA de manera
+                                                                                  indexada.    OJO, ya que esta
+                                                                                  instrucción solo pone un `1' en el bit
+                                                                                  que le indiquemos, los demás bits
+                                                                                  quedan sin cambios
+                       BCLR              DDRA,X,$01                               ; bit clear pone un `0' (salida) en el
+                                                                                  bit0 del registro DDRA de manera
+                                                                                  indexada.
+
+LEER                   BRCLR             PORTA,X,$01,LEER                         ; Salta si hay un `0' a la etiqueta
+                                                                                  LEER en el bit0 del puerto A, de
+                                                                                  manera indexada.
+                       LDAA              #$80
+                       STAA              PORTA,X
+
+AUN                    BRSET             PORTA,X,$01,AUN                          ; Salta si hay un `1' a la etiqueta AUN
+                                                                                  en el bit0 del puerto A, de manera
+                                                                                  indexada.
+CERRADO                BRCLR             PORTA,X,$01,CERRADO                      ; Salta si hay un `0' a la etiqueta
+                                                                                  CERRADO en el bit0 del puerto A, de
+                                                                                  manera indexada.
+                       LDAA              #$00
+                       STAA              PORTA,X
+AUN2                   BRSET             PORTA,X,$01, AUN2                        ; Salta si hay un `0' a la etiqueta
+                                                                                  AUN2 en el bit0 del puerto A, de
+                                                                                  manera indexada.
+                       BRA               LEER                                     ; salta a la etiqueta leer.
+
+
+
+
+2
+    Cada ciclo (~) es típicamente de 125[ns] para un bus de 8[MHz] (oscilador de 16[MHz])
+
+                                             6 de 15 Comunicación paralela (parte 3)
+UNAM, FACULTAD DE INGENIERÍA                                                     SANTIAGO CRUZ
+CARLOS
+APUNTES DE MICROPROCESADORES Y MICROCONTROLADORES                                02/05/2006 07:45
+O5/P5
+PROBLEMA
+Desarrollar un programa que haga parpadear un led cuando el interruptor `S' de
+contacto sostenido se cierre.
+
+
+                                                            INICIO
+
+
+                                                          Programar
+                                                           puerto A
+
+                                                        Iniciar con led
+                                                              off
+
+                                                       Leer estado de
+                                                         interruptor
+
+                                                                            NO
+                                                                  `s'
+                                                               cerrado?
+                                                          SI
+
+                                                            Encender led
+
+
+                                                                Tiempo
+                                                                250ms
+
+                                                               Apagar led
+
+
+
+                                                                Tiempo
+                                                                250ms
+
+
+
+
+                                  7 de 15 Comunicación paralela (parte 3)
+UNAM, FACULTAD DE INGENIERÍA                                                                  SANTIAGO CRUZ
+CARLOS
+APUNTES DE MICROPROCESADORES Y MICROCONTROLADORES                                              02/05/2006 07:45
+O5/P5
+
+
+PORTA           EQU           $00                                           ;define pseudo operadores
+DDRA            EQU           $02                                           ;define pseudo operador
+                LDX           #$0000
+                LDAA          #$80
+                STAA          DDRA,X
+
+INICIA          BCLR          PORTA,X,$80
+LEER            BRCLR         PORTA,X$01,INICIA
+                BSET          PORTA,X,$80
+                JSR           RETARDO                              (4)      Para programar el retardo observe:
+                BCLR          PORTA,X,$80                                   FFFFh=65535d
+                JSR           RETARDO
+                                                                            Por 5 ciclos veces que se realiza el lazo, se
+                BRA           LEER                                          Realizan un LDY, un DECA y BNE, el cual suman
+                                                                            6 ciclos de instrucción.
+RETARDO         LDAA          #$                                   (1)
+                                                                            4JSR+1LDAA+[6+5(65535)]+5RTS
+LAZO            LDY           #$FFFF                               (2)      ESTO DEBEMOS IGUALARLO A:
+SUBLAZO         NOP                                                (1)
+                DEY                                          (5)   (1)
+                BNE           SUBLAZO                              (3)      250 000 [s]={4JSR+1LDAA+[6+5(65535)]+5RTS}0.125[s]
+
+                DECA                                               (1)
+                BNE           LAZO                                 (3)      ={(250000/0.125)-4-1-5}/(6+5(65535))
+                RTS                                                (5)
+                                                                            =6.10347 en decimal
+
+                                                                            POR LO TANTO:
+
+                                                                                                  =6h
+
+
+
+
+Si deseamos 50[ms]
+
+                                  8 de 15 Comunicación paralela (parte 3)
+UNAM, FACULTAD DE INGENIERÍA                                                SANTIAGO CRUZ
+CARLOS
+APUNTES DE MICROPROCESADORES Y MICROCONTROLADORES                           02/05/2006 07:45
+O5/P5
+
+
+={(50000/0.125)-4-1-5}/(6+5(65535))
+=1.220
+
+=1H
+
+
+¿Qué pasa si deseamos tener un retardo de 50 [ms]?, hay diferentes formas de hacerlo,
+como nos damos cuenta es la quinta parte del tiempo de retardo del ejemplo anterior,
+por lo que el cálculo quedaría de la siguiente manera:
+
+[s]={4JSR+1LDAA+[6+(65535)]+5RTS}0.125[s]
+
+
+
+
+                                  9 de 15 Comunicación paralela (parte 3)
+UNAM, FACULTAD DE INGENIERÍA                                                               SANTIAGO CRUZ
+CARLOS
+APUNTES DE MICROPROCESADORES Y MICROCONTROLADORES                                          02/05/2006 07:45
+O5/P5
+PROBLEMA
+Desarrollar un programa que encienda el led durante 5 segundos cada vez que se cierra
+el interruptor `s' de contacto sostenido.
+                                          º
+                                                                INICIO
+
+
+                                                              Programar
+                                                               puerto A
+
+                                                            Iniciar con led
+                                                                  off
+
+                                                           Leer estado de
+                                                             interruptor
+
+                                                                                 NO
+                                                                      `s'
+                                                                   cerrado?
+                                                              SI
+
+                                                                Encender led
+
+
+                                                                   Tiempo 5s
+
+
+
+                                                                   Apagar led
+
+
+
+
+                                                                                      SI
+                                                                     `s' aún
+                                                                    cerrado?
+
+                                                             NO
+
+
+
+
+PORTA            EQU          $00                                           ;define pseudo operadores
+
+                                 10 de 15 Comunicación paralela (parte 3)
+UNAM, FACULTAD DE INGENIERÍA                                                                  SANTIAGO CRUZ
+CARLOS
+APUNTES DE MICROPROCESADORES Y MICROCONTROLADORES                                                02/05/2006 07:45
+O5/P5
+DDRA             EQU          $02                                           ; define pseudo operador
+                 LDX          #$0000
+                 LDAA         #$80
+                 STAA         DDRA,X
+
+                 BCLR         PORTA,X,$80
+LEER             BRCLR        PORTA,X,$01,LEER
+                 BSET         PORTA,X,$80
+                 JSR          RETARDO5S                            (4)      Para programar el retardo observe:
+                 BCLR         PORTA,X,$80                                   FFFFh=65535d
+AUN              BRSET        PORTA,X,$01,AUN
+                                                                            Por 5 ciclos veces que se realiza el lazo, se
+                 BRA          LEER                                          Realizan un LDY, un DECA y BNE, el cual suman
+                                                                            6 ciclos de instrucción.
+RETARDO          LDAA         #$                                   (1)
+5S                                                                          4JSR+1LDAA+[6+5(65535)]+5RTS
+                                                                            ESTO DEBEMOS IGUALARLO A:
+LAZO             LDY          #$FFFF                               (2)
+SUBLAZO          NOP                                               (1)
+                 DEY                                         5     (1)      5 000 000 [s]={4JSR+1LDAA+[6+5(65535)]+5RTS}0.125[s]
+                 BNE          SUBLAZO                              (3)
+                 DECA                                              (1)
+                                                                            ={(5000000/0.125)-4-1-5}/(6+5(65535))
+                 BNE          LAZO                                 (3)
+                                                                            =122.07 en decimal
+                 RTS                                               (5)
+                                                                            POR LO TANTO:
+
+                                                                                                  =7Ah
+
+
+
+
+En caso de que no nos alcanzara el conteo del acumulador A, utilizaríamos
+alternativamente el acumulador B, pero esto a su vez, implicaría ocupar todos los
+registros disponibles para programar un solo retardo, estos ejercicios se realizan para
+practicar con las instrucciones del hc12, más sin embargo, el microcontrolador cuenta
+con contadores específicos, que se verán más adelante.
+
+
+
+
+                                 11 de 15 Comunicación paralela (parte 3)
+UNAM, FACULTAD DE INGENIERÍA                                                SANTIAGO CRUZ
+CARLOS
+APUNTES DE MICROPROCESADORES Y MICROCONTROLADORES                           02/05/2006 07:45
+O5/P5
+PROBLEMA
+Realizar un programa que genere señales de alarma independientes por nivel alto o nivel
+bajo en el tanque, mediante el parpadeo de los leds correspondientes, si el nivel es
+normal, el led N debe prender, en condiciones de alarma se debe apagar,(prueba de
+leds), se cierra en cualquier tiempo y condición, los tres leds deben prender y
+permanecer así, hasta que el interruptor PL se abra para regresar al estado anterior.
+
+
+
+
+                                 12 de 15 Comunicación paralela (parte 3)
+UNAM, FACULTAD DE INGENIERÍA                                                                SANTIAGO CRUZ
+CARLOS
+APUNTES DE MICROPROCESADORES Y MICROCONTROLADORES                                           02/05/2006 07:45
+O5/P5
+                                      INICI
+                                      O
+
+                                Programar puerto
+                                       A
+
+
+                              Leer estado de
+                               interruptores
+
+
+                                                SI
+                                        PL
+                                      cerra                 Prender los tres
+                                       do ?                      leds
+
+
+                               NO
+
+                                                     SI
+                                      Nivel                     Prender N, y
+                                      norm                      apagar H y L
+                                       al ?
+
+
+                               NO
+
+                                                     SI
+                                      Nivel                                  Prender H, y
+                                      alto                                   apagar N y L
+                                        ?
+                             NO
+
+                                                                               Tiempo
+                               Apagamos N y H
+
+
+
+                                    Prende L                                   Apaga H
+
+
+
+                                    Tiempo
+                                                                               Tiempo
+
+
+                                    Apaga L
+
+
+
+                                    Tiempo
+
+
+
+
+                                  13 de 15 Comunicación paralela (parte 3)
+UNAM, FACULTAD DE INGENIERÍA                                                                  SANTIAGO CRUZ
+CARLOS
+APUNTES DE MICROPROCESADORES Y MICROCONTROLADORES                                             02/05/2006 07:45
+O5/P5
+
+
+
+
+PORTA           EQU           $00                                           ;define pseudo operadores
+DDRA            EQU           $02                                           ; define pseudo operador
+                LDX           #$0000
+                LDAA          #$E0                                          ;programa puerto A
+                STAA          DDRA,X                                        ;programa puerto A
+
+LEER            LDAA          PORTA,X                                       ;carga el acum, con el contenido de A
+
+REG             BRSET         PORTA,X,$08,PRUEBA                            ;
+                ANDA          #$03                                          ; AND con 03h y modifica A
+                LDAA          PORTA,X                                       ; volvemos a cargar A, debido a que
+                                                                            ANDA lo modifica
+                CMPA          #$03                                          ;
+                BEQ           NORMAL                                        ; salta a NORMAL, si (A)-03=0; Z=1
+                BRCLR         PORTA,X,$01,ALTO
+                BCLR          PORTA,X,$60                                   ; apaga N y H
+                BSET          PORTA,X,$80
+                JSR           RETRASO
+                BCLR          PORTA,X,$80
+                JSR           RETRASO                             ;(4)
+
+                BRA           LEER
+
+PRUEBA          BSET          PORTA,X,$E0
+                BRA           REG
+
+NORMAL          BCLR          PORTA,X,$C0
+                BSET          PORTA,X,$20
+                BRA           LEER
+
+ALTO            BCLR          PORTA,X,$CO
+                BSET          PORTA,X,$A0
+                JSR           RETRASO
+                BCLR          PORTA,X,$40
+                JSR           RETRASO
+                BRA           LEER
+                                                                            Para programar el retardo observe:
+
+                                                                            FFFFh=65535d
+
+                                                                            Por 5 ciclos veces que se realiza el lazo, se
+
+
+                                 14 de 15 Comunicación paralela (parte 3)
+UNAM, FACULTAD DE INGENIERÍA                                                                  SANTIAGO CRUZ
+CARLOS
+APUNTES DE MICROPROCESADORES Y MICROCONTROLADORES                                              02/05/2006 07:45
+O5/P5
+                                                                            Realizan un LDY, un DECA y BNE, el cual suman
+                                                                            6 ciclos de instrucción.
+RETRASO         LDAA          #$                                  (1)
+LAZO            LDY           #$FFFF                              (2)       4JSR+1LDAA+[6+5(65535)]+5RTS
+SUBLAZO         NOP                                               (1)       ESTO DEBEMOS IGUALARLO A:
+
+                DEY                                          5    (1)
+                BNE           SUBLAZO                             (3)
+                                                                            250 000 [s]={4JSR+1LDAA+[6+5(65535)]+5RTS}0.125[s]
+                DECA                                              (1)
+                BNE           LAZO                                (3)
+                RTS                                               (5)       ={(250000/0.125)-4-1-5}/(6+5(65535))
+
+                                                                            =6.10347 en decimal
+
+                                                                            POR LO TANTO:
+
+                                                                                                  =6h
+
+
+
+
+                                 15 de 15 Comunicación paralela (parte 3)
+

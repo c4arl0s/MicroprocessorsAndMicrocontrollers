@@ -1,0 +1,35 @@
+           UNIVERSIDAD NACIONAL
+            AUTÓNOMA DE MÉXICO
+
+
+               FACULTAD DE INGENIERIA
+
+
+Trabajo:
+
+EQUIPO:
+                       SANTIAGO CRUZ CARLOS
+
+
+ASIGNATURA:
+
+GRUPO:
+
+
+
+
+    miércoles, 16 de agosto de 2017, Ciudad Universitaria, México, DF
+UNAM, Facultad de Ingeniería                                                                               16/08/2017 13:28
+Autor: Santiago Cruz Carlos                                                        Titulo: Comunicación sincrona y asincrona
+______________________________________________________________________________________________________________________
+
+
+Programa teclado:
+
+Diagrama de flujo:
+
+
+
+
+                                                       2 de 2
+

@@ -1,0 +1,1868 @@
+UNAM, FACULTAD DE INGENIERÍA                                    SANTIAGO CRUZ CARLOS
+APUNTES DE MICROPROCESADORES Y MICROCONTROLADORES                09/03/2006 13:58
+O3/P3
+       APUNTES DE MICROPROCESADORES Y MICROCONTROLADORES
+
+Temario
+  1. Introducción a los microcontroladores (MCU) y Microprocesadores (MPU)
+  2. Estructura de un MPU
+  3. Estructura de un MCU
+  4. Elementos estructurales de la memoria
+  5. Programación del MPU
+  6. Interfase del MCU con dispositivos externos
+  7. Puertos de comunicación E/S paralelo
+  8. Puertos de comunicación serial asíncrona y síncrona
+  9. Temporizadores
+  10.Aplicaciones de los MPU y MCU
+
+BIBLIOGRAFIA
+
+                                                              TEXAS
+                     INTEL            MOTOROLA
+                                                           INSTRUMENT
+                 Computadoras      Control de procesos     Procesamiento
+    NICHO
+                  personales          industriales          digital (DSP)
+
+
+
+ARQUITECTURA VON NEWMAN
+
+Propuso dos conceptos básicos:
+   1. Utilización del sistema de numeración binaria
+   2. Almacenamiento de la secuencia de instrucciones de que consta el programa de
+      una memoria interna, fácilmente accesible, junto con los datos de referencia,
+      con esto se aumento la velocidad de proceso.
+
+           Un solo bus de datos y direcciones, el mismo bus se emplea para enviar y
+recibir instrucciones y datos. Los datos y las instrucciones son almacenados en una
+memoria principal, CPU va a la memoria principal, extrae las instrucciones y después
+los datos.
+
+ARQUITECTURA HARVARD
+
+Esta arquitectura se caracteriza por tener por separado el bus de datos y el bus de
+direcciones. Esto significa que las instrucciones y los datos son almacenados en
+memorias diferentes que son accedidas de forma separada por la CPU.
+
+
+
+
+                                                                                   1
+UNAM, FACULTAD DE INGENIERÍA                                    SANTIAGO CRUZ CARLOS
+APUNTES DE MICROPROCESADORES Y MICROCONTROLADORES                09/03/2006 13:58
+O3/P3
+
+
+
+                          ARQUITECTURA VON
+                              NEWMAN
+
+
+  MEMORIA
+     MEMORIA
+  PRINCIPAL
+     PRINCIPAL                                          CPU   CPU
+
+
+  DATOS +                        BUS de CONTROL         DATOS +
+      DATOS
+  INSTRUCCIONES                                         INSTRUCCIONES
+                                                           UNIDAD DE
+        +                                                  CONTROL
+  INSTRUCCIONES               BUS DE DIRECCIONES
+
+
+                                                           UNIDAD
+                         BUS DE DATOS E INSTRUCCIONES     OPERATIVA
+
+
+                                                        DATOS +
+                                                        INSTRUCCIONES
+
+                            ARQUITECTURA
+                              HARVARD
+
+
+ MEMORIA
+   MEMORIA DE                  CPU     CPU                CPU
+                                                            MEMORIA DE
+ PRINCIPAL
+ INSTRUCCIONES                                                DATOS
+
+                               DATOS +
+ DATOS +                          UNIDAD DE
+                               INSTRUCCIONES              DATOS +
+ INSTRUCCIONES                    CONTROL                 INSTRUCCIONES
+                                                              DATOS
+  INSTRUCCIONES
+
+
+                                   UNIDAD
+                                  OPERATIVA
+
+
+                               DATOS +
+                               INSTRUCCIONES
+
+
+
+
+                                                                                   2
+UNAM, FACULTAD DE INGENIERÍA                                    SANTIAGO CRUZ CARLOS
+APUNTES DE MICROPROCESADORES Y MICROCONTROLADORES                09/03/2006 13:58
+O3/P3
+                       ELEMENTOS DE UNA COMPUTADORA
+
+
+
+                           UNIDAD ARITMÉTICA
+                                LOGICA
+
+
+
+      UNIDAD                                                UNIDAD
+        DE                UNIDAD DE MEMORIA                   DE
+     ENTRADA                                                SALIDA
+
+
+
+                          UNIDAD DE CONTROL
+
+
+
+
+MICROPROCESADORES
+
+   1. La unión de una Unidad Central de Control y la ALU, junto con algunos registros
+      de transferencia forman la Unidad Central de Procesos o CPU de una
+      computadora.
+   2. El concepto de CPU nace con las computadoras electrónicas de la primera
+      generación fabricadas con tubo de vacío.
+   3. El concepto de Microprocesador nace con las computadoras electrónicas de la
+      tercera generación fabricadas a base de circuitos integrados.
+
+
+                UN MICROPROCESADOR ES UN CPU INTEGRADO
+
+ALU: procesa uno o dos números binarios efectuando operaciones aritméticas y
+operaciones lógicas.
+UNIDAD DE CONTROL: responsable del control de todo el sistema, se encarga de
+proporcionar la secuencia y tiempo para el procesamiento de las instrucciones axial
+como la trayectoria y destino de los datos, se apoya en una señal de reloj el cual
+sincroniza el desarrollo temporal de todas las señales de control dentro y fuera del
+microprocesador. El sistema en cada instante en un estado perfectamente definido.
+ANALOGIA: un policía de transito, dice quien pasa y quien no, su dirección y el
+momento en que deben hacerlo.
+
+
+
+
+                                                                                   3
+UNAM, FACULTAD DE INGENIERÍA                                       SANTIAGO CRUZ CARLOS
+APUNTES DE MICROPROCESADORES Y MICROCONTROLADORES                   09/03/2006 13:58
+O3/P3
+REGISTRO DE CONTROL DE CONDICION DE ESTADOS (CCR): este registro
+proporciona información acerca de la última operación efectuada en la ALU, también
+conocido como REGISTRO DE BANDERAS.
+
+ACUMULADORES A Y B: registros para almacenar operandos para ser procesados por
+la ALU.
+
+REGISTRO DE DIRECCIONAMIENTO DE MEMORIA (MAR): registro para
+direccionar unívocamente localidades de memoria principal. Si 16 bits, 2 16= localidades
+direccionadas.
+
+REGISTRO DE DIRECCIONAMIENTO DE DATOS (MDR): registro para transferir
+datos desde o hacia la memoria principal.
+
+REGISTRO DE INSTRUCCIONES (IR): registro para almacenar el código de la
+instrucción de cada operación efectuada por el microprocesador.
+
+CONTADOR DE PROGRAMA (PC): registro para almacenar el número de la
+siguiente instrucción a ser procesada por el microprocesador.
+
+REGISTRO X: registro para el manejo de índices, es como un directorio, con índice
+para acceder rápidamente y hacer tareas.
+
+APUNTADOR DE PILA (SP): registro para el manejo de subrutinas o interrupciones y
+otras operaciones.
+
+
+
+
+                        COMUNICACIÒN ENTRE MODULOS
+
+La comunicación entre los módulos se efectúa en atención al tipo de información que se
+procesa. Puede ser de 3 tipos:
+
+CONTROL
+DATOS
+DIRECCIONES
+
+
+
+
+                                                                                      4
+UNAM, FACULTAD DE INGENIERÍA                          SANTIAGO CRUZ CARLOS
+APUNTES DE MICROPROCESADORES Y MICROCONTROLADORES      09/03/2006 13:58
+O3/P3
+
+
+ ¿ QUE ES ESTO ?: SE INTEGRARON EN UN SOLO CHIP Y SE LE LLAMA
+                      MICROCONTROLADOR
+
+                           BUS DE DIRECCIONES
+
+
+
+     Microproc                                      UNIDAD
+      esador              RAM                ROM    DE E/S
+
+
+
+
+                      P+RAM+ROM+PUERTOS-E/S
+
+
+
+
+                                                                         5
+UNAM, FACULTAD DE INGENIERÍA                                        SANTIAGO CRUZ CARLOS
+APUNTES DE MICROPROCESADORES Y MICROCONTROLADORES                    09/03/2006 13:58
+O3/P3
+APUNTE ANEXO PARA LA COMPRENSION DE LA MAR Y LA MDR
+
+  REGISTRO     DE           DECODIFICADOR
+  DIRECCION    DE           DE DIRECCIONES
+  MEMORIA (MAR)              (2n-1) líneas de
+      n lineas                 direcciones
+
+
+
+           Contiene la                Activa una
+          dirección que             sola línea de
+          debe "abrirse            direcciones en
+            "para los                la memoria
+              datos
+                                                         REGISTRO DE
+                                                          DATOS DE
+                                                        MEMORIA (MDR)
+                                                       (Salen los 8 bits)
+
+
+
+                    Esta diseñado de modo que se
+                       conecte adecuadamente
+                     todas las celdas en la unidad
+                              de memoria
+
+
+
+PROBLEMA:
+Para una memoria RAM de 2Kb y una ROM de 4Kb se usan como memoria principal de un
+microprocesador que tiene una longitud de palabra de 1 byte.
+   a) Determinar el número de palabras de la memoria RAM
+
+1Kb=1024 bits
+#bits totales RAM = 2(1024)=2048 bits --> 2048 [bits]/ 8 [bits/palabra]= 256 [palabras]
+   b) Determinar el número de palabras de la memoria ROM
+1Kb=1024 bits
+#bits totales ROM= 4(1024)=4096 bits --> 4096 [bits]/ 8 [bits/palabra]= 512 [palabras]
+
+   c) Numero total de palabras de la memoria total.
+#palabras totales = =256+512 = 768 palabras
+
+     d) Número de líneas necesarias para el direccionamiento.
+2#lineas=768
+#lineas pertenece a los enteros.
+#lineas = 10
+
+
+                                                                                          6
+UNAM, FACULTAD DE INGENIERÍA                                    SANTIAGO CRUZ CARLOS
+APUNTES DE MICROPROCESADORES Y MICROCONTROLADORES                09/03/2006 13:58
+O3/P3
+
+
+
+
+                       MICROCONTROLADOR MCU
+
+
+               Oscilador
+                y reloj            MPU
+
+
+                                Memoria de
+                                 programa
+
+                                Memoria de
+                                  datos
+
+
+
+                                Puertos de
+                               comunicación
+
+
+
+                Entradas
+                Digitales                           Salidas
+                                                    Digitales
+
+
+
+
+                                                                                   7
+UNAM, FACULTAD DE INGENIERÍA                                          SANTIAGO CRUZ CARLOS
+APUNTES DE MICROPROCESADORES Y MICROCONTROLADORES                      09/03/2006 13:58
+O3/P3
+                             UNIDAD DE CONTROL
+ES UN SISTEMA COMPLETO QUE INCLUYE EN UN SOLO CHIP:
+ PARA QUE SEA MCU DEBE  MPU
+ TENER AL MENOS ESTOS   MEMORIA (ROM,RAM,EPROM, E2PROM
+       ELEMENTOS        PUERTOS DE ENTRADA-SALIDA PARALELO
+                        PUERTOS DE COMUNICACIÓN SERIE ASINCRONA
+                        PUERTOS DE COMUNICACIÓN SERIE SINCRONA
+                        CONVERTIDOR A/D
+                        UNIDAD DE TIEMPO (TIMERS)
+                        OSCILADOR Y RELOJ INTERNOS
+     LA MEMORIA NO ES MASIVA YA QUE SOLO SE REQUIERE PARA CONTROL DE PROCESOS.
+              ESTRUCTURA DE UN MICROPROPROCESADOR
+      ES EL CENTRO NERVIOSO DEL MPU, PROPORCIONA LA SECUENCIA Y TIEMPO PARA EL
+ PROCESAMIENTO DE LAS INSTRUCCIONES, ASI COMO PARA EL CONTROL DE LA TRAYECTORIA Y EL
+                                DESTINO DE LOS DATOS.
+
+                                        SECUENCIA
+
+       UNIDAD DE                          TIEMPO
+       CONTROL
+                                         DATOS
+                                         DATOS
+                                           +
+                                     TRAYECTORIA  Y
+                                           + DE LOS
+                                     INSTRUCCIONES
+                                     DESTINO
+        DATOS                        INSTRUCCIONES
+                                     DATOS
+          +
+    INSTRUCCIONES
+                         En una instrucción en un P se efectúa uno o mas ciclos
+¿CÓMO ES LA
+                         de procesamiento (o ciclo máquina, o ciclo de
+SECUENCIA?               procesamiento)
+                                                         Direccionamiento de una
+                                                          localidad de memoria
+                           FETCH
+   CICLO DE                               Etapa de          principal vía MAR y
+PROCESAMIENTO                         direccionamiento    transferencia de datos
+                                                             entre el MDR y la
+ (consta de dos                                             memoria principal
+    etapas)
+                                         Etapa de          Se efectúa la operación
+                         EJECUTE
+                                         ejecución                indicada.
+
+   El formato para        Campo para especificar la                     Al menos un
+                                                         OPERADOR
+    especificar una            instrucción                                  ciclo
+   instrucción esta
+ compuesto por dios
+                          Campo para especificar los                     Uno o más
+        campos                                           OPERANDO
+                                   datos                                   ciclos
+ fundamentalmente
+
+Cada operador y operando ocupan un lugar especifico en la memoria principal de
+forma tal que c/u de ellos, tiene que ser direccionado en forma secuencial y uno
+a la vez
+
+
+                                                                                         8
+UNAM, FACULTAD DE INGENIERÍA                              SANTIAGO CRUZ CARLOS
+APUNTES DE MICROPROCESADORES Y MICROCONTROLADORES          09/03/2006 13:58
+O3/P3
+
+           CICLO DE PROCESAMIENTO Y CICLO DE RELOJ DEL MPU
+
+Sea F=2[MHz]=(1/4)*8[MHz]
+
+T=0.5[s]
+
+
+
+
+            0.5 [s]                           0.5 [s]
+            FETCH                           EXECUTE
+
+                              1 [s]
+
+                  CICLO DE PROCESAMIENTO
+
+EL CICLO DE PROCESAMIENTO SE EJECUTA EN 1[s]
+NO CONFUNDIR EL CICLO DE PROCESAMIENTO CON EL CICLO DE RELOJ DEL MPU
+
+
+
+
+                                                                             9
+UNAM, FACULTAD DE INGENIERÍA                                                            SANTIAGO CRUZ CARLOS
+APUNTES DE MICROPROCESADORES Y MICROCONTROLADORES                                        09/03/2006 13:58
+O3/P3
+
+
+EJEMPLO:
+De acuerdo a la siguiente instrucción del P especificado determinar el número de ciclos
+necesarios para que se efectúe la instrucción y lo que sucede en cada ciclo.
+MPU  8 BITS
+MEMORIA PRINCIPAL  65KBYTE
+INSTRUCCIÓN: suma contenido de la localidad de memoria $04b5 al contenido del
+acumulador y coloca el resultado en el acumulador
+                 FALTA DIAGRAMA ILUSTRATIVO DE LAS OPERACIONES
+
+
+
+
+                             4 CICLOS DE TRABAJO
+FETCH           EJECUTE FETCH EJECUTE FETCH EJECUTE FETCH                                              EJECUTE
+                                                                                              Se
+                                   Se
+       Pc                                                                                direcciona
+                               direcciona
+  direcciona                                                    Pc                      pc con 04B5
+                              0066 por pc
+ localidad 65                                             direcciona el                  por pc, via
+                             via MAR , PC
+  via MAR pc                                              siguiente via                 MAR y como
+                                   se
+  0065 y su                                                  MAR, su                     el registro
+                              incrementa                                                               Hace la suma la
+contenido se     Se ignora                    Se ignora   contenido se     Se igniora         de
+                                  y su                                                                      ALU.
+      va al                                                    va al                    intrucciones
+                             contenido se
+  registro de                                              registro de                       esta
+                                  va al
+instrucciones                                             instrucciones                 completo se
+                              resgistro de
+    via MDR                                                  via MDR                     transfierea
+                             instrucciones
+                                                                                        a la ALU via
+                                via MDR
+                                                                                             MDR
+
+CICLO DE PROCESAMIENTO       CICLO DE PROCESAMIENTO       CICLO DE PROCESAMIENTO        CICLO DE PROCESAMIENTO
+           1                            2                            3                  4
+T1              T2           T3              T4           T5              T6            T7             T8
+
+                                                                                                                  10
+UNAM, FACULTAD DE INGENIERÍA                                       SANTIAGO CRUZ CARLOS
+APUNTES DE MICROPROCESADORES Y MICROCONTROLADORES                   09/03/2006 13:58
+O3/P3
+
+
+Señal: cualquier magnitud física de naturaleza eléctrica codificada en código binario.
+Este código puede ejecutarse directamente en el microprocesador.
+
+Lenguaje maquina:
+
+Una reducción significativa en la dificultad de programación se consiguió con la
+ejecución de los lenguajes ensambladores.
+
+Lenguaje ensamblador: el lenguaje que permite escribir instrucciones en forma
+simbólica utilizando nombres fácilmente recordables (nemotécnicos).
+
+
+
+                  PROGRAMA EN                   PROGRAMA EN
+                    LENGUAJE                    LENGUAJE DE
+                  ENSAMBLADOR                    ALTO NIVEL
+
+
+
+
+                  ENSAMBLADOR                    COMPILADOR
+                   (traductor)
+
+
+
+
+                     LENGUAJE                    LENGUAJE DE
+                      MÀQUINA                      MAQUINA
+                     (programa
+                       objeto)
+
+
+
+
+                                                                                     11
+UNAM, FACULTAD DE INGENIERÍA                                      SANTIAGO CRUZ CARLOS
+APUNTES DE MICROPROCESADORES Y MICROCONTROLADORES                  09/03/2006 13:58
+O3/P3
+         MODOS EN QUE TRABAJA EL MICROCONTROLADOR HC11
+
+
+    MODO               MODO B MODO A                      ¿QUE HACE?
+    SINGLE CHIP                              El mC funciona como tal, es decir, con toda
+                                             la disponibilidad de sus puertos y con un
+                           1          0      alcance para el usuario definido por su
+                                             memoria interna
+    EXPANDED                                 El mC funciona como microprocesador,
+                                             direccionando una memoria externa, la cual
+    MODE                                     s direcciona vía el bus de expansión de
+                           1          1      direcciones, perdiéndose por lo tanto los
+                                             puertos D y C del mP. Así, quedan
+                                             disponibles 16 pines para direccionar una
+                                             memoria exterior hasta 64kB
+    BOOTSTRAP                                Variación del modo single chip, modo que
+                                             ejecuta un programa bootloader en una
+                                             memoria ROM interna llamada bootstrap. La
+                           0          0      memoria contiene el programa bootloader y
+                                             conjunto especial de vectores de
+                                             interrupción y reset.
+    TEST                                     Modo especial de prueba para los recursos
+                           0          1      del mC, ejecutado por el fabricante.
+
+
+         MODOS EN QUE TRABAJA EL MICROCONTROLADOR HC12
+
+
+
+
+                                                                                           12
+   UNAM, FACULTAD DE INGENIERÍA                                                     SANTIAGO CRUZ CARLOS
+   APUNTES DE MICROPROCESADORES Y MICROCONTROLADORES                                 09/03/2006 13:58
+   O3/P3
+   PROGRAMACION DEL MICROCONTROLADOR Y EL MICROPROCESADOR
+
+                           FORMATO BASE  NUMERICA
+                                      DE INSTRUCCIONES
+               DECIMAL TIPO DE ---
+             OPERADOR                         BASE     OPERANDO OPERANDO
+               HEXADECIMAL        $
+                         DIRECCIONAMIENTO NUMERICA
+Mnemónic       OCTAL
+              Alfabético          @
+                                ASCCI           ASCCI  *según base *según base
+    o          BINARIO            %                     numérica    numérica
+Código de    Hexadecimal     -----------------------         --------             Hexadecimal      Hexadecimal
+Operación
+Numero de
+                LDAB
+                  8                 ---------
+                                                       #  ------
+                                                                                    $        20
+                                                                                              16
+   Bits                                 Tipo de direccionamiento                Base
+                                               (inmediato)                    numérica
+                LDAB                                                                $        20
+
+                LDAB                                                                $        2B3
+
+
+
+
+                          TAMAÑO DE LAS INSTRUCCIONES
+            TAMAÑO DE LAS     TIPO DE                                              NOTACION
+            INSTRUCCIONES     DIRECCIONAMIENTO
+            1 BYTE (SIN
+                              INHERENTE                                            ------
+            OPERANDOS)
+                              DIRECTO     dato reside en memoria                   ------
+                              INMEDIATO Dato   esta junto a
+                                          operador                                 #
+                                    INDEXADO
+                                                         Numero que se ha de
+                                                       sumar al registro índice
+                                                                                   **,X (** de
+                                                            junto al operador      referencia)
+                                                        Estas indican a la CPU
+            2 BYTE (CON                                 que realice un salto de
+                                                        bytes hacia adelante o
+            OPERANDOS) (1+1)                                  hacia atrás. El
+                                                         desplazamiento tiene
+                                                         signo y es de un byte     *,±H (*
+                                    RELATIVO                      por lo
+                                                         que las bifurcaciones
+                                                                                   desplazamiento)
+                                                         sólo se pueden hacer
+                                                          de 128 bytes hacia
+                                                       atrás ó 127 bytes hacia
+                                                                 delante.
+                                                       El dato se encuentra en
+                                                             la dirección de            Condicionado
+                                                       memoria especificada.
+                                                        El dato puede estar en
+            3 BYTE (CON DOS                              cualquier posición de     -
+                                    EXTENDIDO
+            OPERANDOS) (1+2)                            la memoria dentro del
+                                                       límite de las 64Kb, por     - Incondicionado
+                                                           lo que la dirección
+                                                              ocupa 2 bytes.
+
+
+                                                                                                        13
+UNAM, FACULTAD DE INGENIERÍA                        SANTIAGO CRUZ CARLOS
+APUNTES DE MICROPROCESADORES Y MICROCONTROLADORES    09/03/2006 13:58
+O3/P3
+
+
+
+
+                                                                     14
+UNAM, FACULTAD DE INGENIERÍA                                       SANTIAGO CRUZ CARLOS
+APUNTES DE MICROPROCESADORES Y MICROCONTROLADORES                   09/03/2006 13:58
+O3/P3
+ESPECIFICACION DE LOS MODOS DE DIRECCIONAMIENTO
+
+DIRECCIONAMIENTO INHERENTE:
+Se usa cuando toda la información requerida para la instrucción esta en el operador.
+
+INCA
+INCB
+DECA
+ROT                  Instrucción de rotación o corrimiento.
+ABA                               [A]+[B] --> A
+
+DIRECCIONAMIENTO DIRECTO:
+Se usa cuando el dato a procesar reside en una localidad de memoria, la cual se
+especifica primero para acceder a dicho dato.
+Requiere dos bytes para su ejecución (1 BYTE [operador] + 1 BYTE [operando])
+
+DIRECCION        CODIGO DE        ETIQUETA NEMOTÈCNICO OPERANDO
+                OPERACIÓN
+    20              9630                          LDAA                   $30
+             96 es el código de
+                  operación
+                                                              Observe el símbolo $ para
+                      +
+                                                              darle sentido de dirección
+                30 que es la
+                                                                  a 30, además una
+             dirección del dato
+                                                              dirección en hexadecimal
+                que se desea
+                   acceder
+
+DIRECCIONAMIENTO INMEDIATO:
+Se usa cuando el operando de la instrucción contiene el dato que se desea procesar
+(ocupa 2 Bytes). 1 Byte para el operador (instrucción) y 1 Byte para el operador el cual
+contiene el dato que se desea acceder.
+
+DIRECCION       CODIGO DE         ETIQUETA NEMOTÈCNICO OPERANDO
+                OPERACIÓN
+    55              C6FF                          LDAB                   #$FF
+             C6 es el código de
+                 operación                                     Observe como se usa el
+                      +                                           símbolo # para dar
+             FF que es el dato,                                sentido de dato a $FF, y
+              en este caso el                                    no darle sentido de
+              operando es un                                          dirección.
+                    dato
+
+
+
+
+                                                                                       15
+UNAM, FACULTAD DE INGENIERÍA                                       SANTIAGO CRUZ CARLOS
+APUNTES DE MICROPROCESADORES Y MICROCONTROLADORES                   09/03/2006 13:58
+O3/P3
+
+
+SUPONGA:
+
+Dirección dato
+
+$50         15
+$51         55
+$52         6A
+Sumar 15 y 55 y que el resultado se coloque en la localidad $52.
+
+LDAA   $50       cargamos el acumulador A de manera directa.
+ADDA   $51       sumamos de manera directa el acumulador A.
+STAA   $52        almacenamos el contenido del acumulador A en la localidad 52.
+
+Si el contenido de la localidad de memoria $55 es 2F y el contenido del acumulador B es
+15.
+
+$0054
+$0055 2F
+$0056
+$0057
+$0058
+
+ACUM B 15
+
+¿Cuál es el contenido del acumulador B después de que se efectúan las dos siguientes
+instrucciones.
+
+ADDB #$55
+ADDB  $55
+
+  1 5
++ 5 5
+  6 A
+
+  6 A        0 1 1 0 1 0 1 0
++ 2 F        0 0 1 0 1 1 1 1
+  9 9        1 0 0 1 1 0 0 1
+
+
+Por lo tanto el contenido del acumulador B es 99.
+
+
+
+
+                                                                                    16
+UNAM, FACULTAD DE INGENIERÍA                        SANTIAGO CRUZ CARLOS
+APUNTES DE MICROPROCESADORES Y MICROCONTROLADORES    09/03/2006 13:58
+O3/P3
+
+
+
+
+                                                                     17
+UNAM, FACULTAD DE INGENIERÍA                                       SANTIAGO CRUZ CARLOS
+APUNTES DE MICROPROCESADORES Y MICROCONTROLADORES                   09/03/2006 13:58
+O3/P3
+DIRECCIONAMIENTO INDEXADO:
+Como su nombre lo indica, el direccionamiento indexado hace uso de los registros (8 o
+16 bits) según sea el microcontrolador que se hace.
+
+Las instrucciones requieren 2 bytes para su operación, 1 byte para el operador
+(instrucción) y 1 byte para el operando el cual en este caso contiene el número que se
+ha de sumar al registro índice para obtener la dirección de referencia. Cabe hacer notar
+que el registro índice X maneja solo índices de memoria.
+
+LDX     #$0123
+ADDA    $A0,X
+
+LDX     #0123
+LDAA    $00,X        ;carga al acumulador A con el contenido de la 0123+A0
+
+X 0123
+
+  0 1 2 3
++     A 0
+  0 1 C 3
+
+
+
+       $0122
+Pc --> $0123
+       $0124
+       $0125
+       ----
+       ----
+       ----
+Pc --> $01C3 Dato1
+
+
+
+
+                                                                                     18
+UNAM, FACULTAD DE INGENIERÍA                                        SANTIAGO CRUZ CARLOS
+APUNTES DE MICROPROCESADORES Y MICROCONTROLADORES                    09/03/2006 13:58
+O3/P3
+
+
+
+
+El hc12 usa modos indexados de versiones redefinidas del m68hc11 que reducen la
+ejecución de tiempo y elimina medida del código por usar el registro índice y. En la
+mayoría de los casos. Las mejoras del tiempo de ejecución son debidas a un número
+reducido de ciclos para todas las instrucciones indexadas y la velocidad de más rápida
+del sistema de reloj.
+
+El esquema de direccionamiento indexado usa un postbyte plus cero, uno, o dos bytes
+de extensión después del codigo de operación de la instrucción. El postbyte y las
+extensiones hacen las siguientes tareas:
+
+   1.   Especificar cual registro índice es usado
+   2.   Determinar si un valor es usado en un acumulador como un offset.
+   3.   Habilitacion automatica de un pre- o pos-increment o un pre- o pos-decrement.
+   4.   Especificar medida de un incremento o decremento.
+   5.   Especificación del uso de offset's signados de 5-, 9- o 16- bits.
+
+Esta aproximación elimina las diferencias entre el uso de los registros X y Y
+dramáticamente mejorando las capacidades del direccionamiento indexado.
+
+
+
+
+                                                                                         19
+UNAM, FACULTAD DE INGENIERÍA                                      SANTIAGO CRUZ CARLOS
+APUNTES DE MICROPROCESADORES Y MICROCONTROLADORES                  09/03/2006 13:58
+O3/P3
+Las mayores ventajas del esquema del direccionamiento indexado son:
+
+   1. El apuntador de pila puede ser usado como un registro índice en todas las
+      operaciones indexadas.
+   2. El contador de programa puede ser usado como un registro indice en todo, pero
+      en modos de autoincrementa o autodecrementa.
+   3. Acumuladores A,B, o D pueden ser usados como acumulador de offset's.
+   4. Pre- or post increment o pre- o post decrement por -8 a +8.
+   5. Una elección de offset's de 5-, 9- o 16-bits signados constantes.
+   6. Uso de dos nuevos modos indexado-indirecto. ­ modo indexado-indirecto con 16
+      bit de offset. ­ modo indexado indirecto con offset de acumulador D.
+
+La siguiente tabla es un resumen de las capacidades del direccionamiento indexado y
+una descripción de la codificacion del postbyte. El postbyte es localizado como xb en la
+descripción de las instrucciones. Descripciones detalladas de las variaciones del modo
+del direccionamiento indexado son mostradas seguidas a la tabla.
+
+
+
+
+                                                                                     20
+UNAM, FACULTAD DE INGENIERÍA                        SANTIAGO CRUZ CARLOS
+APUNTES DE MICROPROCESADORES Y MICROCONTROLADORES    09/03/2006 13:58
+O3/P3
+
+
+
+
+                                                                     21
+UNAM, FACULTAD DE INGENIERÍA                                          SANTIAGO CRUZ CARLOS
+APUNTES DE MICROPROCESADORES Y MICROCONTROLADORES                      09/03/2006 13:58
+O3/P3
+DIRECCIONAMIENTO INDEXADO ­ OFFSET 5 BIT CONSTANT
+
+Este modo de direccionamiento indexado usa un offset signado de 5 bits el cual es
+incluido en la instrucción postbyte. Este corto offset es sumado a la base del registro
+indice (X, Y, SP, or PC) para formar la direcciòn efectiva de la localizaciòn de memoria
+que serà afectada por la instrucción. Esto da un rango de -16 through +15 de el valor en
+la base del registro indice. Aunque otro modo de direccionamiento indexado permite
+offset's de 9 o 16 bits, aquellos modos requieren también de bytes de extensión
+adicional en la instrucción para esta información extra.
+
+Ejemplo:
+
+LDAA        0, X
+STAB        -8, Y
+
+Para este ejemplo asuma que X tiene un valor de $1000, y Y tiene un valor de $2000,
+antes de la ejecución.
+El modo de offset de 5 bits no cambia el valor en el registro indice, asi X aùn sera $1000
+y Y aun seguirà siendo $2000 después de la ejecución de estas instrucciones.
+
+En el primer ejemplo A será cargado con el valor de la direcciòn $1000. En el segundo
+ejemplo, el valor del acumulador B será almacenado $1FF8 (que es $2000-$8).
+
+DIRECCIONAMIENTO INDEXADO ­ OFFSET 9 BIT CONSTANT
+Este modo de direccionamiento indexado usa un offset signado de 9 bits el cual es
+sumado a la base del registro indice (X,Y,SP o PC) para formar la direcciòn efectiva de
+la localizaciòn de memoria afectada por a instrucción. Esto da un rango de -256 a +255
+del valor en la base del registro indice. El bit mas significativo (bit de signo) del offset
+es incluido en la instrucción postbyte y los 8 bits son entregados como un byte extensión
+después de la instrucción postbyte en el flujo de la instrucción.
+
+Ejemplo:
+
+LDAA       $FF, X ;cargarà A con el valor de la dirección $10FF.
+LDAB       -20, Y ;cargarà B con el valor de la dirección $1FEC.
+
+Asuma x=$1000 y=$2000 antes de la ejecución de estas instrucciones. Estas instrucciones
+no alteran los registros después de la ejecución.
+
+DIRECCIONAMIENTO INDEXADO ­ OFFSET 16 BIT CONSTANT
+Este modo de direccionamiento indexado usa un offset signado de 16 bits el cual es
+sumado a la base del registro indice (X,Y,SP o PC) para formar la dirección efectiva de
+la localizaciòn de memoria afectada por a instrucción. Esto permite acceder a alguna
+direcciòn en el espacio de dirección de 64 Kbyte. Puesto que el bus de direcciones y el
+offset son ambos de 16 bits no importa si el valor del offset es considerado a ser signado
+o un valor no signado. ($FFFF podria ser pensado como +65,535 o como -1).
+
+                                                                                         22
+UNAM, FACULTAD DE INGENIERÍA                                     SANTIAGO CRUZ CARLOS
+APUNTES DE MICROPROCESADORES Y MICROCONTROLADORES                 09/03/2006 13:58
+O3/P3
+
+DIRECCIONAMIENTO INDIRECTO-INDEXADO ­ OFFSET 16 BIT CONSTANT
+Este modo de direccionamiento indexado suma un offset 16-bit instruction-supplied.
+
+
+
+
+                                                                                     23
+UNAM, FACULTAD DE INGENIERÍA                                          SANTIAGO CRUZ CARLOS
+APUNTES DE MICROPROCESADORES Y MICROCONTROLADORES                      09/03/2006 13:58
+O3/P3
+DIRECCIONAMIENTO RELATIVO:
+Se utiliza para las instrucciones de ramificación o de salto.
+
+                                     Ocupan 2 bytes
+                                     1 byte código de operación
+                 INCONDICIONAL       1 byte un desplazamiento
+ RELATIVO
+                                     El desplazamiento se trata como un número de 8
+                                     bits signado en complemento a 2 que se suma al
+                  CONDICIONAL        program counter para obtener la dirección de salto.
+
+
+        BRA SIGUE ($276)
+
+
+
+SIGUE
+
+Tenemos 1 byte para operando, 28=256
+¿Cuantos números podemos representar con 256 combinaciones, incluyendo el cero?
+256/2=128
+127 positivos + 1 cero
+128 negativos
+
+Los números negativos se obtienen sacando el complemento a 2 de los positivos.
+
+                     decimal                   hexadecimal
+                        0      0 0 0 0 0 0 0 0     $00
+                        1      0 0 0 0 0 0 0 1     $01
+                        *
+                        *
+                        *
+                      +127     0 1 1 1 1 1 1 1                  $7F
+                      -128     1 0 0 0 0 0 0 0                  $80
+                        *
+                        *
+                       -2                                       $FE
+                       -1      1 1 1 1 1 1 1 1                  $FF
+
+Los bit en negritas son los bits de signo respectivos.
+
+
+
+
+                                                                                       24
+UNAM, FACULTAD DE INGENIERÍA                                         SANTIAGO CRUZ CARLOS
+APUNTES DE MICROPROCESADORES Y MICROCONTROLADORES                     09/03/2006 13:58
+O3/P3
+PARA MAYOR COMPRENSIÓN REALICE EL SIGUIENTE EJERCICIO:
+       DIR COD OP   NEMOTECNICO OPERANDO
+PC -->   212B      202C         BRA                 $2169
+PC+1 --> 213C
+PC +2--> 213D
+
+
+                  OFFSET
+
+          2169
+
+¿Puede saltar a la $2169?
+
+  2 1 6 9 OJO: para hacer la resta, 9 le pide una unidad a 6, se convierte en A
+- 2 1 3 D D para llegar a A, deben haber C unidades hexadecimales. :D
+  0 0 2 C El 6 se convierte en 5
+
+Ahora analice, vea que el salto de +127, es decir, $7F es mayor que $2C, o $2C<$7F,
+recuerde que el salto es signado, por lo que no viola la restricción y si puede saltar a la
+$2169
+
+          DIR     COD OP               NEMOTECNICO OPERANDO
+          $212E
+
+         213ª                 OFFSET
+PC -->   213B     20F1                        BRA           $212E
+PC+1 --> 213C
+PC +2--> 213D
+
+  2 1 3 D OJO: para hacer la resta, D le pide una unidad a 3, se convierte en F
+- 2 1 2 E E para llegar a D, debe haber F unidades hexadecimales. :D
+  0 0 0 F El 3 se convierte en 2
+
+Luego a 0F debemos sacarle el   complemento a 2
+                         0             F
+                    0 0 0        0 1 1 1 1
+Complemento a uno 1 1 1          1 0 0 0 0
+                 +                          1
+                    1 1 1        1 0 0 0 1
+                         F             1
+
+
+Ahora analice, vea que el salto de +128, es decir, $80 es mayor que $F1, o $F1<$80,
+recuerde que el salto es signado, por lo que no viola la restricción y si puede saltar a la
+$212E
+
+                                                                                        25
+UNAM, FACULTAD DE INGENIERÍA                                       SANTIAGO CRUZ CARLOS
+APUNTES DE MICROPROCESADORES Y MICROCONTROLADORES                   09/03/2006 13:58
+O3/P3
+
+DIRECCIONAMIENTO RELATIVO CONDICIONADO
+
+Se efectúa solo cuando un código de condición particular o combinación de códigos
+particulares son establecidos (SET) o eliminados (CLEAR) por lo tanto el resultado de las
+instrucciones que preceden a una instrucción condicionada determina si la derivación o
+salto se efectúa o no se efectúa. Dichos resultados se ven en el Registro de Condición
+de Estados (BANDERAS).
+
+
+Este registro proporciona información acerca de la última operación efectuada en la ALU
+                 7         6        5        4          3       2         1         0
+    CCR          S         X        H        I         N        Z         V        C
+
+BANDERA "Z"
+El bit Z es `1' siempre que el resultado de una instrucción sea `0' y se manifiesta en un
+registro o en una localidad de memoria.
+
+CPMA #$20 ; (A) ­ ($20), compara el contenido del acumulador A con el contenido
+          de la dirección $20,
+
+             tome en cuenta: que al hacer la comparación en ningún momento se
+             modifica el contenido del acumulador A.
+
+BANDERA "C". El bit C es `1' en cualquiera de los siguientes casos:
+   1) Por suma cuando el resultado de la misma produce un acarreo de salida.
+     1 0 1 1
++    1 0 0 0
+C=1 0 0 1 1
+   2) Por instrucciones de substracción p comparación cuando el valor absoluto del
+      substraendo es mayor que el valor absoluto del minuendo.
+   3) POR INSTRUCCIÓN DE CORRIMIENTO O ROTACIÓN. SHIFT O ROTATE.
+1 0 1 1 0 1 0 1
+       Corrimiento
+
+
+0 1 0 1 1 0 1 0             C=1
+
+4) Cuando se efectúa SEC (SET CARRY)
+
+
+
+
+                                                                                      26
+UNAM, FACULTAD DE INGENIERÍA                                          SANTIAGO CRUZ CARLOS
+APUNTES DE MICROPROCESADORES Y MICROCONTROLADORES                      09/03/2006 13:58
+O3/P3
+BANDERA "V"
+El bit "V" es `1' cuando el resultado de una operación aritmética produce un sobreflujo
+o bajo flujo en complemento a 2.
+
+                Sobreflujo ocurre cuando el resultado de una operación aritmética
+produce un número más positivo que la capacidad de almacenamiento del registro.
+
+               Bajoflujo ocurre cuando el resultado de una operación aritmética
+produce un número más negativo que la capacidad de almacenamiento del registro, esto
+así mismo afecta el bit de signo.
+
+N   V
+0   0   Resultado positivo
+0   1   Bajoflujo          Resultado aparentemente positivo
+1   0   Resultado negativo
+1   1   Sobreflujo         Resultado aparentemente negativo
+
+BANDERA "N"
+El bit "N" es `1' que el resultado de una operación sea negativo (que el bit màs
+significativo sea `1')
+
+BANDERA "H"
+El bit "H" es `1' cuando en una suma se produce un acarreo de salida del bit 3 hacia el
+bit 4 en un registro.
+          C=1
+0 0 0 0        1 1 0 1
+0 0 0 0        1 0 1 0
+               0 1 1 1
+
+Note que es para saber cuando llevamos un `1' a la mitad.
+
+BANDERA "I"
+El bit "I" se hace `1' cuando ocurre una interrupción en el microprocesador o
+microcontrolador. Al ocurrir una interrupción el microprocesador termina la instrucción
+que esta en proceso y el control se deriva al efectuar una rutina de interrupción, que no
+es más que un programa alterno que se ejecuta para tener dicha interrupción y sus
+modos de operación se verán más adelante.
+
+BANDERA "X"
+Deshabilita la fuente de interrupción No enmascarable neg(XIRQ)
+
+    CCR          S       X=1        H         I        N          Z         V        C
+
+Cuando se hace un reset en el mP, la bandera x se pone en `1'
+
+
+                                                                                         27
+UNAM, FACULTAD DE INGENIERÍA                                         SANTIAGO CRUZ CARLOS
+APUNTES DE MICROPROCESADORES Y MICROCONTROLADORES                     09/03/2006 13:58
+O3/P3
+Se puede poner por software a `0', esta, ya no se puede volver a poner a `1' por
+software dentro del mismo programa hasta otro reset del mP.
+
+BANDERA "S"
+El bit "S" deshabilita la instrucción stop. (para el reloj, mantiene el estado del mC)
+
+
+
+SALTO SIMPLE
+
+         Instrucción                    Ec. Booleana                    Prueba
+BCS                            C=1                           C=1
+BCC                            C=0                           C=0
+BEQ                            Z=1                           Registro = 0 / reg1=reg2
+BNE                            Z=0                           Registro  0 / reg1reg2
+BMI                            N=1                           MSB=1
+BPL                            N=0                           MSB=0
+BUS                            V=1                           Resultado > reg [reg>+127]
+BUC                            V=0                           -Res > -reg    [-res > -128]
+
+SALTO P/NUMEROS NO SIGNADOS
+
+         Instrucción                    Ec. Booleana                    Prueba
+             BLO                             C=1                      regm < regn
+             BHS                             C=0                      regm  regn
+             BHI                            C+Z=0                     regm > regn
+             BLS                            C+Z=1                     Regm  regn
+
+Deducción:
+
+C   Z   C+Z
+0   0   0 -->   r>m
+0   1   1 -->   r=m
+                                   rm
+1   0   1 -->   r<m
+1   1   1 -->   por operación suma
+
+
+SALTO P/NUMEROS SIGNADOS
+
+         Instrucción                  Ec. Booleana                      Prueba
+             BGE               N+V=0                                  regm  regn
+             BLT               N+V=1                                  regm < regn
+             BGT               Z +(N + V) = 0                         regm > regn
+             BLE               Z +(N + V) = 1                         Regm  regn
+
+
+                                                                                         28
+UNAM, FACULTAD DE INGENIERÍA                                        SANTIAGO CRUZ CARLOS
+APUNTES DE MICROPROCESADORES Y MICROCONTROLADORES                    09/03/2006 13:58
+O3/P3
+DIRECCIONAMIENTO EXTENDIDO
+Ocupa 3 bytes para su código de operación.
+
+1 Byte operador (instrucción)
+2 Byte operandos, los cuales tienen en esta ocasión la dirección de referencia.
+
+Ejemplos:
+
+LDAB $2F6
+STAB $2F46
+LDAA #3F4      ;ERROR, el acumulador A es de 8 bits, no puedes cargarle 16 bits
+JMP $2F6A
+
+
+
+
+                                                                                     29
+UNAM, FACULTAD DE INGENIERÍA                                    SANTIAGO CRUZ CARLOS
+APUNTES DE MICROPROCESADORES Y MICROCONTROLADORES                09/03/2006 13:58
+O3/P3
+PROBLEMA SUMADOR: suponiendo que las localidades de la $0100 a la $01FF
+contienen números no signados (positivos), desarrollar un programa para sumar dichos
+números y cuyo resultado aparezca en las localidades $0200 (MSB) y $0201 (LSB).
+
+$0100 D1
+      D2
+      *
+      *
+$01FF Dn
+
+$0200
+$0201
+
+Contamos con registro A, B y X
+
+
+
+
+                                                                                 30
+UNAM, FACULTAD DE INGENIERÍA                        SANTIAGO CRUZ CARLOS
+APUNTES DE MICROPROCESADORES Y MICROCONTROLADORES    09/03/2006 13:58
+O3/P3
+
+DIAGRAMA DE FLUJO - PROGRAMA SUMADOR
+
+
+
+
+                                                                     31
+UNAM, FACULTAD DE INGENIERÍA                                        SANTIAGO CRUZ CARLOS
+APUNTES DE MICROPROCESADORES Y MICROCONTROLADORES                    09/03/2006 13:58
+O3/P3
+                                  INICIO
+
+
+                           Limpia registros
+                           para LSB y MSB
+
+
+
+                     Declarar un apuntador P1
+
+
+                           Suma indexada
+
+
+
+
+                                       SI
+                            C=1
+                             ?                     Incrementa reg
+                                                        p/MSB
+                      NO
+
+
+                            Incrementa p1
+
+
+                           NO
+                                      p1=20
+                                        0?
+
+                                              SI
+
+                        Almacena el MSB en
+                             memoria
+
+
+
+                        Almacena el LSB en
+                            memoria
+
+
+
+                                FIN
+
+
+CODIGO PROGRAMA SUMADOR
+
+                                                                                     32
+  UNAM, FACULTAD DE INGENIERÍA                          SANTIAGO CRUZ CARLOS
+  APUNTES DE MICROPROCESADORES Y MICROCONTROLADORES      09/03/2006 13:58
+  O3/P3
+
+  RECUERDE SEGUIR EL CODIGO CONFORME AL DIAGRAMA DE FLUJO
+
+         CLRA
+         CLRB
+         LDX     #$100
+
+SIGUE    ADDA    $00,X
+         BCS     INC_MSB ; Branch carry set
+
+PROX     INX
+         CPX     #$200
+         BNE     SIGUE
+         STAB    $00,X
+         STAA    $01,X
+FIN      BRA     FIN
+
+INC_MSB INCB
+        BRA      PROX
+
+
+
+
+                                                                         33
+UNAM, FACULTAD DE INGENIERÍA                                   SANTIAGO CRUZ CARLOS
+APUNTES DE MICROPROCESADORES Y MICROCONTROLADORES               09/03/2006 13:58
+O3/P3
+PROGRAMA BUSCADOR Se tiene una lista entre las localidades $0000 y $00FF en el
+cual algunos de estos datos son 3F desarrolle un programa que indique en la $120 la
+cantidad de números 3F encontrados.
+
+
+$00   D1
+      D2
+      *
+      *
+$FF   Dn
+
+
+
+$120 Cantidad de 3F's
+
+Acumuladores A y B, y un registro X
+
+
+
+
+                                                                                34
+UNAM, FACULTAD DE INGENIERÍA                         SANTIAGO CRUZ CARLOS
+APUNTES DE MICROPROCESADORES Y MICROCONTROLADORES     09/03/2006 13:58
+O3/P3
+DIAGRAMA DE FLUJO PROGRAMA BUSCADOR
+
+                                   INICIO
+
+
+                                Carga
+                             acumulador A
+                                con 3F
+
+
+                         Limpia acumulador B
+
+
+                          Declara apuntador p1
+
+
+                         Comparación indexada
+
+
+                                           NO
+                             Z=0
+                             ?
+                        SI
+
+                                   Incrementa B
+
+
+                                Incrementa p1
+
+
+                        NO
+                                      P1=10
+                                        0?
+
+                                                SI
+
+                              Almacena B en
+                                 memoria
+
+
+                                     FIN
+
+
+
+
+                                                                      35
+  UNAM, FACULTAD DE INGENIERÍA                          SANTIAGO CRUZ CARLOS
+  APUNTES DE MICROPROCESADORES Y MICROCONTROLADORES      09/03/2006 13:58
+  O3/P3
+  CODIGO PROGRAMA BUSCADOR
+  RECUERDE SEGUIR EL CODIGO CONFORME AL DIAGRAMA DE FLUJO
+
+        LDAA     #$3F
+        CLRB
+        LDX      #$00
+REGRESA CMPA     $00,X
+        BEQ      INCRE_B
+INC_P1  INX
+        CPX      #$1000
+        BNE      REGRESA
+        STAB     $120
+FIN     BRA      FIN
+
+INCRE_B   INCB
+          BRA    INC_P1
+
+
+
+
+                                                                         36
+UNAM, FACULTAD DE INGENIERÍA                                       SANTIAGO CRUZ CARLOS
+APUNTES DE MICROPROCESADORES Y MICROCONTROLADORES                   09/03/2006 13:58
+O3/P3
+PROGRAMA1
+Una lista de datos que inicia en la localidad de memoria $1000 y termina en la localidad
+$14FF debe ser relocalizada para que inicie en la localidad de memoria $2000, describa
+un programa para efectuar dicha transferencia.
+
+
+          7       0
+DIRECCION CONTENIDO
+
+
+
+$1000            DAT01
+*                  *
+*                  *
+*                  *
+$14FF            DATOn
+
+
+
+$2000            DATO1
+*                  *
+*                  *
+$2500            DATOn
+
+
+        Lectura de direcciones de memoria (DATO1)
+        Escritura de las direcciones de memoria
+        Suponemos que $80 a $83 no son ocupados y las utilizaremos para almacenar a los
+        apuntadores.
+
+Suponga un apuntador A y un índice X.
+
+
+
+
+                                                                                     37
+UNAM, FACULTAD DE INGENIERÍA                         SANTIAGO CRUZ CARLOS
+APUNTES DE MICROPROCESADORES Y MICROCONTROLADORES     09/03/2006 13:58
+O3/P3
+
+                               INICIO
+
+
+                             Declara
+                          apuntadores P1
+                               y P2
+
+
+                    Cargo dato vía apuntador P1
+
+
+                            Incrementa p1
+
+
+                            Guarda p1
+
+
+                  Transfiere dato vía apuntador p2
+
+
+                          Incrementa p2
+
+
+                            Guarda p2
+
+
+
+
+                                 Apuntado
+                                     r
+                                 P2=$2500
+                                    ??
+
+
+
+
+                                 FIN
+
+
+
+
+                                                                      38
+  UNAM, FACULTAD DE INGENIERÍA                                    SANTIAGO CRUZ CARLOS
+  APUNTES DE MICROPROCESADORES Y MICROCONTROLADORES                09/03/2006 13:58
+  O3/P3
+
+  CODIGO
+
+        LDX    #$1000   ; carga índice X con 1000, declara apuntador p1
+        STX    $80      ; Como el índice X es de 16 bits, automáticamente el 10 se pone
+                        en la dirección $80 y el 00 se pone en la dirección $81, P1
+                        $1000
+        LDX    #$2000   ; carga índice X con 2000, declara apuntador p2
+        STX    $82      ; Como el índice X es de 16 bits, automáticamente el 20 se pone
+                        en la dirección $82 y el 00 se pone en la dirección $83, P2 
+                        $2000
+SIGUE   LDX    $80      ; carga en el índice X con la que hay en la dirección $80
+        LDAA   $00,X    ; carga el acumulador A de manera indexada, con lo que hay en la
+                        dirección X+$00=$1000, cargo dato1 ¡TENGO dato1 en la cabeza!,
+                        ja ¡¡¡
+        INX             ; incremento el índice X, $1000+$0001=$1001, ¡TENGO dirección
+                        en la cabeza!, ja ¡¡¡
+        STX    $80      ;almaceno la dirección que tengo en la cabeza y la pongo otra vez
+                        en la dirección $80, automáticamente se ocupa la $81
+        LDX    $82      ; carga el índice X con lo que hay en la dirección $82, lo que hay
+                        es la dirección $2000, tengo dirección en la cabeza ¡¡¡¡ ja ¡¡
+        STAA   $00,X    Almacena lo que hay en el acumulador A de manera indexada en la
+                        X + $000 = $2000
+        INX             Incrementa el índice x, $2000+$0001=$2001
+        STX    $82      Almacena lo que tiene el índice X en la dirección $82
+        CDX    #$2500   Compara el índice X con el valor #$2500
+        BNE    SIGUE    Si los dos valores No son iguales, pasa a la etiqueta SIGUE
+FIN     BRA    FIN
+
+
+
+
+                                                                                    39
+  UNAM, FACULTAD DE INGENIERÍA                                       SANTIAGO CRUZ CARLOS
+  APUNTES DE MICROPROCESADORES Y MICROCONTROLADORES                   09/03/2006 13:58
+  O3/P3
+  Considerando dos registros indices X y Y, el programa queda de la siguiente manera.
+
+                                    INICIO
+
+
+                                  Declara
+                               apuntadores P1
+                                    y P2
+
+
+                         Cargo dato vía apuntador P1
+
+
+                            Transfiere dato via apuntador p2
+
+
+
+
+                          Incrementa apunt's p1 y p2
+
+
+
+
+                                             Apuntado
+                                                 r
+                                             P2=$2500
+                                                ??
+
+
+
+
+                                               FIN
+
+
+  CODIGO
+        LDX     #$1000     ; carga índice X con 1000, declara apuntador p1
+        LDY     #$2000
+SIGUE   LDDA    $00,X
+        STAA    $00,Y
+        INX
+        INY
+        CPY     #$2500
+        BNE     SIGUE
+FIN     BRA     FIN
+
+                                                                                        40
+UNAM, FACULTAD DE INGENIERÍA                        SANTIAGO CRUZ CARLOS
+APUNTES DE MICROPROCESADORES Y MICROCONTROLADORES    09/03/2006 13:58
+O3/P3
+
+
+PROBLEMA
+
+$00  D1
+     D2
+     *
+     *
+     *
+     *
+0200 Dm
+$201 MSB
+$202 LSB
+
+Acumulador A, B y un registro X
+
+
+
+
+                                                                     41
+UNAM, FACULTAD DE INGENIERÍA                                         SANTIAGO CRUZ CARLOS
+APUNTES DE MICROPROCESADORES Y MICROCONTROLADORES                     09/03/2006 13:58
+O3/P3
+
+                                 INICIO
+
+
+                             Declara P1
+
+
+
+                      Limpia localidad para el MSB
+
+
+
+
+                       LIMPIA localidad para el LSB
+
+
+
+
+                  Carga dato via apuntador P1
+
+
+                            Compara dato con 2A
+
+
+
+
+                                                           SI
+                                    Dato =
+                                     2A?
+
+                           NO
+                                                          Incrementar registro
+                                                                 LSB
+           Incrementar apuntador P1
+
+
+                                                     NO
+
+                                                          Reg LSB
+                                                            =0?
+                                                                      SI
+                 NO
+                         P1=2001?
+
+                                    SI               Incrementar registro
+                           FIN                              MSB
+
+
+
+
+                                                                                      42
+  UNAM, FACULTAD DE INGENIERÍA                                    SANTIAGO CRUZ CARLOS
+  APUNTES DE MICROPROCESADORES Y MICROCONTROLADORES                09/03/2006 13:58
+  O3/P3
+MSB     EQU     $201      ; definición de pseudoperador
+LSB     EQU     $202      ; definición de pseudoperador
+
+        LDX     #$00
+        CLR     MSB
+        CLR     LSB     ; se pone la bandera en Z=0
+SIGUE   LDAA    $00,X
+        CMPA    #$2ª
+        BEQ     INC_LSB
+        INX
+        CPX     #$201
+        BNE     SIGUE     ; tomar en cuenta las banderas que se afectan en BNE z=1
+FIN     BRA     FIN
+
+INC_LSB INC     LSB
+        BNE     PROX
+        INC     MSB
+        BRA     PROX
+
+
+
+
+                                                                                     43
+UNAM, FACULTAD DE INGENIERÍA                                        SANTIAGO CRUZ CARLOS
+APUNTES DE MICROPROCESADORES Y MICROCONTROLADORES                    09/03/2006 13:58
+O3/P3
+PROBLEMA NUMEROS PARES
+
+Se tiene una lista de números de la localidad $00 a la $7F no signados, desarrollar un
+programa que enliste los números pares de dicha lista a partir de la localidad $80 e
+indique el numero de los mismos en la localidad $100.
+
+
+$00  D1
+     D2
+     *
+     *
+     *
+     *
+$7F Dn
+$80 Dato_par1
+$81 Dato_par2
+$82 *
+     *
+     *
+$100 # de pares
+
+Con función AND
+
+01010101
+00000001
+
+00000001 ­-> resultado diferente de cero , impar Z=0
+
+01010100
+00000001
+
+00000000 ­-> resultado cero, par Z=1
+
+
+
+
+                                                                                         44
+UNAM, FACULTAD DE INGENIERÍA                                      SANTIAGO CRUZ CARLOS
+APUNTES DE MICROPROCESADORES Y MICROCONTROLADORES                  09/03/2006 13:58
+O3/P3
+
+                                     INICIO
+
+
+
+                                 Limpiar localidad
+                                       $100
+
+                               Declara apuntador Px
+
+
+                               Declara apuntador Py
+
+
+                                 Carga dato vía Px
+
+
+
+                                Operación and acumA y
+                                          01
+
+
+                                                         NO
+                                               Z=
+                                               0?
+                                      SI
+                                                                 Carga dato via
+                                                                 apuntador Px
+                               Incremento Px
+
+                                NO                            Almaceno dato via Py
+                                           P1=8
+                                            0?
+                                                              Incremento contador
+                                                    SI
+
+                                              FIN                Incrementa Py
+
+
+
+
+                                                                                     45
+  UNAM, FACULTAD DE INGENIERÍA                                   SANTIAGO CRUZ CARLOS
+  APUNTES DE MICROPROCESADORES Y MICROCONTROLADORES               09/03/2006 13:58
+  O3/P3
+  CODIGO
+
+CONTADOR    EQU     $201         ; definición de pseudoperador
+
+            CLR     CONTADOR
+            LDX     #$00
+            LDY     #$80
+
+SIGUE       LDAA    $00,X
+            ANDA    #01
+            BEQ     TRANSFIERE
+INC_PX      INX
+            CPX     #$80
+            BNE     SIGUE
+FIN         BRA     FIN
+
+TRANSFIERE LDAA     $00,X        ; volvemos a cargar A, debido a que ANDA modifica A
+           STAA     $00,Y
+           INC      CONTADOR
+           INY
+           BRA      INC_PX
+
+
+
+
+                                                                                   46
+UNAM, FACULTAD DE INGENIERÍA                                      SANTIAGO CRUZ CARLOS
+APUNTES DE MICROPROCESADORES Y MICROCONTROLADORES                  09/03/2006 13:58
+O3/P3
+APUNTADOR DE PILA
+Es un registro dentro del mP que contiene la dirección de la próxima localidad
+disponible para el stACK.
+          $00 CONTENIDO
+SP-2 -->
+SP-1 -->                  STACK
+SP -->              D1
+          $FF
+
+1º se coloca el dato
+2º
+
+LIFO: LAST INPUT FIRTS OUTPUT
+
+Instrucciones que se realizan con el stack pointer:
+
+DES        decrementa sp
+INS        incrementa el sp
+LDS        carga el sp
+TXS        transfiere el contenido de X al sp
+TSX        transfiere el contenido del sp al X
+
+INSTRUCCIONES PUSH PULL
+
+Involucran al stack y a los acumuladores A y B, una instrucción push toma el contenido
+del acumulador y lo transfiere al stack en la localidad que apunta el stack pointer, el
+stack pointer se decrementa automáticamente.
+
+PUSHA
+
+           DIR CONTENIDO
+
+
+
+SP-1 -->
+SP -->              D1       <-- ACUMA D1
+
+1º. Mete dato D1
+2º. Decrementa apuntador
+
+
+
+
+                                                                                    47
+UNAM, FACULTAD DE INGENIERÍA                                     SANTIAGO CRUZ CARLOS
+APUNTES DE MICROPROCESADORES Y MICROCONTROLADORES                 09/03/2006 13:58
+O3/P3
+PULLB
+
+Una instrucción PULL incrementa el stack pointer y después transfiere el contenido del
+stack al acumulador.
+
+           DIR CONTENIDO
+
+
+
+SP-1 -->
+SP -->              D1         --> ACUMB   D2
+
+1º. Incrementa el sp
+2º. Transfiere el dato.
+
+SUBRUTINAS
+Es un programa pequeño que se usa más de una vez
+
+  DIR      CONTENIDO
+  $0011       BD
+  $0012       02
+  $0013                   --------              $200
+               00
+                          >
+  $0014
+
+
+
+
+  $00CC        BD
+  $00CD        02
+  $00CE        00                       39     RTS
+  $00CF                              SUBRUTINA
+
+PROGRAMA PRINCIPAL
+----
+-----
+
+
+
+
+                                                                                   48
+UNAM, FACULTAD DE INGENIERÍA                                       SANTIAGO CRUZ CARLOS
+APUNTES DE MICROPROCESADORES Y MICROCONTROLADORES                   09/03/2006 13:58
+O3/P3
+Si el Sp y el Ix contiene ambos 200 y la instrucción JSR $20,X localizada en la dirección
+30 se ejecuta.
+
+  DIR     CONTENIDO                    200     SP
+                                       200     IX
+
+  $0030       AD        ----------             $220
+  $0031       20
+  $0032
+
+
+
+
+                                        39     RTS
+                                     SUBRUTINA
+
+Determinar la dirección de inicio de la subrutina.
+Determinar el contenido final del sp y el contenido del stack.
+
+
+
+
+                                                                                      49
+

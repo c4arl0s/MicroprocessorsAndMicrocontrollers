@@ -1,0 +1,77 @@
+PORTA		EQU		$0000		
+PORTB		EQU		$0001		
+DDRA		EQU		$0002		
+DDRB		EQU		$0003		
+CONT		EQU		$6000		
+						
+		LDX		#$4000		
+		LDY		#$5000		
+						
+		LDAA		#$07		
+		STAA		$0,X		
+		LDAA		#$0B		
+		STAA		$1,X		
+		LDAA		#$0D		
+		STAA		$2,X		
+		LDAA		#$0E		
+		STAA		$3,X		
+						
+		LDAA		#$00		
+		STAA		$0,Y		
+		LDAA		#$04		
+		STAA		$1,Y		
+		LDAA		#$08		
+		STAA		$2,Y		
+		LDAA		#$0C		
+		STAA		$3,Y		
+		LDAA		#$01		
+		STAA		$4,Y		
+		LDAA		#$05		
+		STAA		$5,Y		
+		LDAA		#$09		
+		STAA		$6,Y		
+		LDAA		#$0D		
+		STAA		$7,Y		
+		LDAA		#$02		
+		STAA		$8,Y		
+		LDAA		#$06		
+		STAA		$9,Y		
+		LDAA		#$0A		
+		STAA		$A,Y		
+		LDAA		#$0E		
+		STAA		$B,Y		
+		LDAA		#$03		
+		STAA		$C,Y		
+		LDAA		#$07		
+		STAA		$D,Y		
+		LDAA		#$0B		
+		STAA		$E,Y		
+		LDAA		#$0F		
+		STAA		$F,Y		
+						
+EMPIEZA		CLR		CONT		
+						
+LAZO		LDAB		CONT,X		
+		ROLB				;
+		ROLB				;
+		ROLB				;
+		ROLB				;
+		STAB		PORTA		
+SIGUE		LDAA		$0,X		
+		CMPA		$0,Y		
+		BEQ		DESPLIEGA		
+		INX				
+		INY				
+		CPX		#$04		
+		BNE		SIGUE		
+						
+		INC		CONT		
+		LDX		#$0000		
+						
+		CPY		#$10		
+		BNE		LAZO		
+		BRA		EMPIEZA		
+						
+DESPLIEGA		LDAA		$0,Y		
+		STAA		PORTB		
+		BRA		EMPIEZA		

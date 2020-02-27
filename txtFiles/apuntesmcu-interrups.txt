@@ -1,0 +1,291 @@
+UNAM, FACULTAD DE INGENIERÍA                                   SANTIAGO CRUZ CARLOS
+APUNTES DE MICROPROCESADORES Y MICROCONTROLADORES                 18/04/05 20:59 O4/P4
+
+
+
+                               INTERRUPCIONES
+ENMASCARABLES                          NO ENMASCARABLES
+IRQ Interrupción externa               SWI interrupción por software
+      Interrupción en modo sincrono
+SPI de comunicación.
+      Interrupción en modo asíncrono
+SCI de comunicación.
+               Interrupción por tiempo XIRQ
+TIMER          Interrupción en tiempo
+               real1
+
+
+
+
+1
+ Tiempo real, es el tiempo en el que se están procesando las variables al mismo tiempo que
+están sucediendo, razónese en un momento ideal.
+
+                                                                                             1
+UNAM, FACULTAD DE INGENIERÍA                            SANTIAGO CRUZ CARLOS
+APUNTES DE MICROPROCESADORES Y MICROCONTROLADORES          18/04/05 20:59 O4/P4
+
+IRQ:
+
+                                                PILA              MEMORIA
+                                                                  PRINCIPAL
+
+
+                                                           00EE
+                                              CCR          00EF   IRQH
+                                              AC-B                IRQL
+                                              AC-A
+                                              IX-HIGH
+       PROGRAMA                               IX-LOW
+       PRINCIPAL
+   ---------                                  IY-HIGH
+PC ---------                                  IY-LOW       BFF2 00
+   ---------                                  PC-HIGH      BFF3 EE
+   ---------         sucede una *IRQ  SP  PC-LOW
+   ---------
+                                                           FFFE
+                     *SECUENCIA                            FFFF
+
+
+INT    -----------
+       ---------
+       ---------
+       ---------
+
+
+
+
+                                                                                  2
+UNAM, FACULTAD DE INGENIERÍA                        SANTIAGO CRUZ CARLOS
+APUNTES DE MICROPROCESADORES Y MICROCONTROLADORES      18/04/05 20:59 O4/P4
+
+DesaRROLLAR UN PROGRAMA QUE INDIQUE MEDIANTE LOS LEDS L0 Y L1
+EL NÚMERO DE INTERRUPTORES CERRADOS. EL NÚMERO SE DEBERÁ
+OBTENER POR INTERRUPCIÓN EXTERNA ES DECIR CUANDO EL
+INTERRUPTOR S SE CIERRE.
+0
+1
+2
+3
+4
+5
+6
+7
+
+
+
+
+                                                                              3
+UNAM, FACULTAD DE INGENIERÍA                             SANTIAGO CRUZ CARLOS
+APUNTES DE MICROPROCESADORES Y MICROCONTROLADORES           18/04/05 20:59 O4/P4
+
+
+            INICIO                   Limpiar registro de cuentas
+
+
+          Programar
+                                         Leer el puerto C
+           puerto C
+
+
+   Iniciar con leds apagados               ¿A
+                                        cerrado?              Incrementa
+                                                              registro de
+     Habilitar interrupción                                    cuentas A
+
+
+
+
+                                           ¿B                 Incrementa
+                                        cerrado?              registro de
+                                                               cuentas B
+
+
+
+
+                                           ¿C                 Incrementa
+                                        cerrado?              registro de
+                                                               cuentas C
+
+
+
+                                      Rota registro de
+                                     cuentas (2 veces)
+
+
+                                      Rota registro de
+                                     cuentas (2 veces)
+
+
+                                            RTI
+
+
+
+
+                                                                                   4
+UNAM, FACULTAD DE INGENIERÍA                          SANTIAGO CRUZ CARLOS
+APUNTES DE MICROPROCESADORES Y MICROCONTROLADORES        18/04/05 20:59 O4/P4
+
+
+
+PORTC           EQU     $03
+DDRC            EQU     $07
+
+                LDX     #$1000                      ;Programa
+                LDAA    #$C0                        ;1100 0000b
+                STAA    DDRC,X                      ;
+
+MONITOREA       CLI
+                BRA     MONITOREA
+
+INTERRUPCION    CLRB
+                BRSET PORTC,X,$04,INC_REG_CTA_A
+REGRESA1        BRSET PORTC,X,$02,INC_REG_CTA_B
+REGRESA2        BRSET PORTC,X,$01,INC_REG_CTA_C
+REGRESA3        RORB
+                RORB
+
+                STAB    PORTC,X
+                RTI
+
+INC_REG_CTA_A INCB
+              BRA       REGRESA1
+INC_REG_CTA_B INCB
+              BRA       REGRESA2
+INC_REG_CTA_C INCB
+              BRA       REGRESA3
+
+VECTORES DE
+INTERRUPCION
+                ORG     $00EE                       ;puede estar
+                DB      $75                         ; en otro
+                DW      INTERRUPCION                ; orden
+
+
+
+
+                                                                                5
+UNAM, FACULTAD DE INGENIERÍA                                SANTIAGO CRUZ CARLOS
+APUNTES DE MICROPROCESADORES Y MICROCONTROLADORES              18/04/05 20:59 O4/P4
+
+Desarrollar un programa que genere una frecuencia de 0.5 [kHz] cuando, cada vez que
+se cierra el interruptor S. Una vez generada la frecuencia solo se podrá interrumpir por
+interrupción externa, debiendose encender el led durante 1 [s] para indicar dicho
+evento.
+
+0
+1
+2
+3
+4
+5
+6
+7
+
+
+
+
+                                                                                      6
+UNAM, FACULTAD DE INGENIERÍA                                 SANTIAGO CRUZ CARLOS
+APUNTES DE MICROPROCESADORES Y MICROCONTROLADORES               18/04/05 20:59 O4/P4
+
+
+             INICIO                                  Pc1=0
+
+
+          Programar
+                                                    Encender leds
+           puerto C
+
+
+                                                     Pc1=0
+      Habilitar interrupción
+
+
+   Leer estado de interruptor S                       ¿S aún
+                                                     cerrado?
+
+
+                                              Tiempo de 1s
+            ¿S
+        cerrado ?
+                                                    Apaga led
+
+
+          Pc1=1
+
+
+            tiempo
+
+
+          Pc1=0
+
+
+            tiempo
+
+
+
+
+                                                                                       7
+UNAM, FACULTAD DE INGENIERÍA                              SANTIAGO CRUZ CARLOS
+APUNTES DE MICROPROCESADORES Y MICROCONTROLADORES            18/04/05 20:59 O4/P4
+
+
+
+PORTC        EQU     $03
+DDRC         EQU     $07
+             LDX     #$1000
+             LDAA    #$C0
+             STAA    DDRC,X
+VUELVE       CLI
+REVISA       BRSET   PORTC,X,$01, FREC1
+             BRA     REVISA
+
+FREC1        BSET    PORTC,X,$02
+             JSR     TIEMPO1ms
+             BCLR    PORTC,X,$02
+             JSR     TIEMPO1ms
+             BRA     FREC1
+TIEMPO1ms    LDY     #$6E
+LAZO1        NOP
+             DEY
+             BNE     LAZO1
+             RTS
+INTERRUP     BCLR    PORTC,X,$02
+             BSET    PORTC,X,$10
+LOOP         BRCLR   PORTC,X,$01, CONTINUA
+             BRA     LOOP
+
+CONTINUA     JSR     TIEMPO1s                  (5)
+             BCLR    PORTC,X,$10
+             BRA     VUELVE
+TIEMPO1s     LDAA    #$14                      (2)inmed       T=1[s]
+LOOP2        LDY     #$15B2                    (4)inmed       T=1,000,000[s]
+LO0P1        NOP                               (2)inh         50,000[s]=
+             DEY                               (4)inh       9 5JSR+2LDAA
+             BNE     LOOP1                     (3)rel         4LDY+9(**)
+                                                              (**)=(50,000-11)/9
+             DECA                              (2)inh
+                                                              (**)=(5554)10
+             BNE     LOOP2                     (3)rel
+                                                              (**)=15B2h
+             RTS                               (5)inh
+                                                              1,000,000/50,000=
+                                                              =20 veces debe
+                                                              Realizarse ese lazo
+                                                              2010=14h
+             ORG     $00EE
+             DB      $7E
+             DW      INTERRUP
+
+
+
+                                                                                    8
+UNAM, FACULTAD DE INGENIERÍA                        SANTIAGO CRUZ CARLOS
+APUNTES DE MICROPROCESADORES Y MICROCONTROLADORES      18/04/05 20:59 O4/P4
+
+
+
+
+                                                                              9
+

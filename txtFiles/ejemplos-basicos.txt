@@ -1,0 +1,131 @@
+Progs ejemplos
+
+-EJEMPLO 1: Activar el bit PA6 del puerto A
+Este es el ejemplo más simple posible. Simplemente se activa el bit 6
+del puerto A. Si se prueba en la
+tarjeta CT6811 se podrá ver cómo se enciende el led conectado a este
+bit.
+; +------------------------------------------------------------------------+
+; ¦ LEDON.ASM (C)GRUPO J&J. Febrero 1997 ¦
+; ¦------------------------------------------------------------------------¦
+; ¦ Programa ejemplo para ser ejecutado en la tarjeta CT6811. ¦
+; ¦ Este programa se debe cargar en la RAM interna del 6811. ¦
+;¦¦
+; ¦ Simplemente se enciende el led de la tarjeta CT6811. ¦
+; +------------------------------------------------------------------------+
+        ORG                    $0000
+        LDAA           #$40 ; Almacenar en el acumulador A el valor $40
+        STAA           $1000           ; Enviar el valor $40 a la posición de memoria $1000
+inf BRA                inf             ; Bucle infinito
+        END
+
+
+
+
+;
+XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
+XX
+
+-EJEMPLO 2: Activar intermitentemente el bit 6 del puerto A
+El siguiente ejemplo hace activarse y desactivarse el bit 6 del puerto A.
+Si se ejecuta en la tarjeta CT6811 se
+puede ver como parpadea el led.
+; +------------------------------------------------------------------------+
+; ¦ LEDP.ASM (C) GRUPO J&J. Febrero 1997 ¦
+; ¦------------------------------------------------------------------------¦
+; ¦ Programa ejemplo para ser ejecutado en la tarjeta CT6811. ¦
+; ¦ Este programa se debe cargar en la RAM interna del 6811. ¦
+;¦¦
+; ¦ Simplemente se enciende y se apaga el led de la tarjeta CT6811. ¦
+; +----------------------------------------------------
+                ORG                    $0000
+comienzo LDAA $1000
+                EORA           #$40 ; Cambiar de estado el bit PA6
+                                              ; es un or exclusivo con memoria
+                STAA           $1000
+                LDY            #$FFFF         ; Realizar una pausa
+dec             DEY                           ; decrementa indice Y
+                CPY            #0             ;compara y a memoria de 16 bits
+                BNE            dec            ; si no son iguales, salta a "dec"
+                BRA            comienzo ; si, si son iguales Repetir el ;proceso
+                END
+
+-EJEMPLO 3: Utilización del bit 7 del puerto A como salida
+El bit 7 del puerto A es un bit que puede ser configurado para entrada
+o para salida. Por defecto está configurado como entrada. En este
+ejemplo se configura para salida y se pone a '1', de tal forma que si se
+conecta un
+led se puede ver cómo se enciende.
+; +------------------------------------------------------------------------+
+; ¦ PA7.ASM (C) GRUPO J&J. Febrero 1997 |
+; ¦------------------------------------------------------------------------¦
+; ¦ Programa ejemplo para ser ejecutado en la tarjeta CT6811. ¦
+; ¦ Este programa se debe cargar en la RAM interna del 6811. ¦
+   ;¦¦
+   ; ¦ Se configura el bit 7 del puerto A para salida y se activa con ¦
+   ; ¦ un '1'. ¦
+   ; +------------------------------------------------------------------------+
+   PACTL          EQU            $26            ; se hace de esta forma en modo indexado
+                                                                  ; también podría ser PACTL EQU $1026
+                                                                  ; pulse accumulator control register (PACTL)
+                        ORG                         $0000
+                        LDX                  #$1000
+                        LDAA                 #$80 ; Poner bit 7 del registro PACTL a '1' para
+                        STAA                 PACTL,X ; configurar el bit 7 del puerto A como salida.
+                        LDAA                 #$80 ; 1000 0000
+                        STAA                 $1000        ; Activar el bit 7 del puerto A
+   inf                  BRA                  inf ; Bucle infinito
+                        END
+
+            Bit 7          Bit 6          Bit 5            Bit 4            Bit 3     Bit 2   Bit 1    Bit 0
+
+$1026    DDRA7            PAEN          PAMOD            PEDGE            DDRA3       I4/O5   RTR1     RTR0      PACTL
+
+Reset          0              0              0                0                   0    0        0         0
+
+   XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
+   XX
+
+   -EJEMPLO 4:
+   En este ejemplo se refleja el estado del bit PA0 (bit de entrada) sobre
+   el bit PA6 de salida. Si la entrada PA0 se pone a '1', el bit de salida
+   PA6 se pondrá a '1'. Lo mismo con el estado '0'.
+   ; +------------------------------------------------------------------------+
+   ; ¦ PA0.ASM (C) GRUPO J&J. Febrero 1997 ¦
+   ; ¦------------------------------------------------------------------------¦
+   ; ¦ Programa ejemplo para ser ejecutado en la tarjeta CT6811. ¦
+   ; ¦ Este programa se debe cargar en la RAM interna del 6811. ¦
+   ;¦¦
+   ; ¦ Programa ejemplo de la lectura del bit PA0. Este estado se reflejará ¦
+   ; ¦ sobre el bit de salida PA6. ¦
+   ; +------------------------------------------------------------------------+
+
+             ORG                                        $0000
+   Start LDAA    $1000                                  ; Leer puerto A
+          ANDA   #$01   ; Dejar en acumulador A el estado del bit PA0
+                                 ;hace un AND el acum. A y memoria.
+          CMPA   #$00 ; ¿PA0 está a 0?
+          BEQ    act_pa6      ; Si--> Desactiva PA6
+          LDAA   #$40 ; NO--> Activa PA6. 0100 0000
+          STAA   $1000        ;
+          BRA    start
+act_pa6   LDAA   #$00 ; carga acum A con ceros
+          STAA   $1000        ; pone el bit 7 apagado
+          BRA    start
+          END
+; +------------------------------------------------------------------------+
+; ¦ PB0.ASM (C) GRUPO J&J. Marzo 1997 ¦
+; ¦------------------------------------------------------------------------¦
+; ¦ Programa ejemplo para ser ejecutado en la tarjeta CT6811. ¦
+; ¦ Este programa se debe cargar en la RAM interna del 6811. ¦
+;¦¦
+
+; ¦ Se activa el bit PB0 del puerto B. ¦
+; +------------------------------------------------------------------------+
+PORTB                 EQU             $1004          ; Dirección del puerto B
+                      ORG                    $0000
+                      LDAA            #$01
+                      STAA            PORTB          ; Activar el bit PB0 del puerto B
+inf                   BRA             inf            ; Bucle infinito
+                      END
+

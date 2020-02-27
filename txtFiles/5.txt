@@ -1,0 +1,90 @@
+           UNIVERSIDAD NACIONAL
+            AUTÓNOMA DE MÉXICO
+
+
+               FACULTAD DE INGENIERIA
+
+
+Trabajo:
+
+EQUIPO:
+                      SANTIAGO CRUZ CARLOS
+
+
+ASIGNATURA:
+
+GRUPO:
+
+
+
+
+  miércoles, 16 de agosto de 2017, Ciudad Universitaria, México, DF
+UNAM, Facultad de Ingeniería                                16/08/2017 13:25
+Autor: Santiago Cruz Carlos                             Titulo: interrupciones
+__________________________________________________________________________
+_________
+
+PROGRAMA
+Desarrollar un programa que indique el numero de interruptores cerrados, el numero
+desplegará en binario, se deberá obtener mediante interrupción externa, es decir cada vez
+que se cierre el interruptor `s' alambrado a la terminal IRQ_
+
+
+
+
+                                       2 de 5
+UNAM, Facultad de Ingeniería                                16/08/2017 13:25
+Autor: Santiago Cruz Carlos                             Titulo: interrupciones
+__________________________________________________________________________
+_________
+PROBLEMA
+Desarrolle un programa que intercambie los contenidos de las localidades de memoria $00 a
+$7F con los de las localidades $80 a $FF uno a uno, y coloque los valores repetidos a partir
+de la localidad $100. Considerar un MPU con dos registros índice y dos acumuladores.
+
+
+
+
+                                        3 de 5
+UNAM, Facultad de Ingeniería                                16/08/2017 13:25
+Autor: Santiago Cruz Carlos                             Titulo: interrupciones
+__________________________________________________________________________
+_________
+PROBLEMA
+Desarrolle un programa que compare los contenidos de las localidades de memoria $00 con
+$40, $01 con $41, $02 con $42, etc., hasta $3F con 7F y coloque los valores repetidos a
+partir de la localidad $80 y el número de valores no repetidos en la localidad $C0.
+Considerar un MPU con dos registros índice y un acumulador.
+
+
+
+
+                                      4 de 5
+UNAM, Facultad de Ingeniería                                16/08/2017 13:25
+Autor: Santiago Cruz Carlos                             Titulo: interrupciones
+__________________________________________________________________________
+_________
+
+CONTADOR     EQU      $C0                     ;nos alcanza 8 bits para contar todo¡¡¡
+             CLR      $C0
+             LDX      $00
+             LDY      $40
+REGRESA      LDAA     $00,X
+             CMPA     $40,Y
+             BNEQ     CONTAR
+             STAA     $CO,X
+INCINDICES   INX
+             INY
+             CPX      #$40
+             BNEQ     REGRESA
+FIN          BRA      FIN
+
+CONTAR       INC      CONTADOR                ;como las dos datos no son iguales
+             INC      CONTADOR                ;existen dos datos diferentes a contar
+             BRA      INCINDICES              ; por lo tanto incrementamos 2 veces.
+
+
+
+
+                                   5 de 5
+

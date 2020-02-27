@@ -1,0 +1,136 @@
+            UNIVERSIDAD NACIONAL
+             AUTÓNOMA DE MÉXICO
+
+
+               FACULTAD DE INGENIERIA
+
+
+Trabajo: Tarea 1 Programa Toggle
+
+EQUIPO:
+                  SANTIAGO CRUZ CARLOS
+
+
+ASIGNATURA: Microprocesadores y Microcontroladores
+
+GRUPO:
+UNAM, Facultad de Ingeniería                                    16/08/2017 13:27
+Autor: Santiago Cruz Carlos                                           Titulo: tarea 1
+________________________________________________________________________________
+__________
+            miércoles, 16 de agosto de 2017, Ciudad Universitaria, México, DF
+
+
+
+
+                                         2 de 5
+UNAM, Facultad de Ingeniería                                    16/08/2017 13:27
+Autor: Santiago Cruz Carlos                                           Titulo: tarea 1
+________________________________________________________________________________
+__________
+
+PROGRAMA (TOGGLE)
+Encender el led y apagar el led cada vez que se presione una vez el interruptor. El
+puerto A es el que se muestra:
+                                                      INICIO
+
+
+
+                                                Programar puerto A
+
+
+
+                                                Leer el estado del
+                                                   interruptor
+
+
+                                                                            NO
+                                                  ¿`s' cerrado?
+
+                                                                       SI
+
+                                                     Encender led
+
+
+
+
+                                                                            SI
+                                                 ¿`s' aún cerrado?
+
+
+
+                                                NO
+
+
+
+
+                                                       ¿`s' cerrado?
+                                                                                 NO
+                                                      SI
+
+                                                        apagar led
+
+
+
+
+                                                       ¿`s' aún cerrado?
+
+                                                                                  SI
+                                                  NO
+
+
+                                       3 de 5
+UNAM, Facultad de Ingeniería                                    16/08/2017 13:27
+Autor: Santiago Cruz Carlos                                           Titulo: tarea 1
+________________________________________________________________________________
+__________
+
+
+
+
+                                       4 de 5
+UNAM, Facultad de Ingeniería                                    16/08/2017 13:27
+Autor: Santiago Cruz Carlos                                           Titulo: tarea 1
+________________________________________________________________________________
+__________
+CODIGO
+
+  PORTA        EQU       $00                     ;define pseudo operadores
+  DDRA         EQU       $02                     ; define pseudo operador
+               LDX       #$0000                  ; carga el índice X de         manera
+                                                 inmediata con 0000
+
+               BSET      DDRA,X,$80              ; bit set pone un `1' (entrada) en el
+                                                 bit7 del registro DDRA de manera
+                                                 indexada.    OJO, ya que esta
+                                                 instrucción solo pone un `1' en el bit
+                                                 que le indiquemos, los demás bits
+                                                 quedan sin cambios
+               BCLR      DDRA,X,$01              ; bit clear pone un `0' (salida) en el
+                                                 bit0 del registro DDRA de manera
+                                                 indexada.
+
+  LEER         BRCLR     PORTA,X,$01,LEER        ; Salta si hay un `0' a la etiqueta
+                                                 LEER en el bit0 del puerto A, de
+                                                 manera indexada.
+               LDAA      #$80
+               STAA      PORTA,X
+
+  AUN          BRSET     PORTA,X,$01,AUN         ; Salta si hay un `1' a la etiqueta AUN
+                                                 en el bit0 del puerto A, de manera
+                                                 indexada.
+  CERRADO      BRCLR     PORTA,X,$01,CERRADO     ; Salta si hay un `0' a la etiqueta
+                                                 CERRADO en el bit0 del puerto A, de
+                                                 manera indexada.
+               LDAA      #$00
+               STAA      PORTA,X
+  AUN2         BRSET     PORTA,X,$01, AUN2       ; Salta si hay un `0' a la etiqueta
+                                                 CERRADO en el bit0 del puerto A, de
+                                                 manera indexada.
+               BRA       LEER
+
+
+
+
+                                       5 de 5
+

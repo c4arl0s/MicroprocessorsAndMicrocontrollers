@@ -1,0 +1,972 @@
+UNAM, FACULTAD DE INGENIERÍA                                SANTIAGO CRUZ CARLOS
+APUNTES DE MICROPROCESADORES Y MICROCONTROLADORES              27/04/05 0:11 O4/P4
+
+PROBLEMA SOLUCIÓN:
+
+
+PORTC          EQU     $03
+DDRC           EQU     $07
+
+               LDX     #$1000
+               LDAA    #$80
+               STAA    DDRC,X
+               STAA    PORTC,X
+
+REGRESA        BRSET   PORTC,X,$80
+               BRSET   PORTC,X,$01
+               BRSET   PORTC,X,$02
+               BSET    PORTC,X,$80
+               BRA     REGRESA
+
+ENCIENDE       BCLR    PORC,X,$80
+               BRA     SIGUE
+
+FRECUENCIA1 BCLR       PORTC,X,$80
+            JSR        RETRASO1
+            BSET       PORTC,X,$80
+            JSR        RETRASO1
+            BRA        REGRESA
+
+FRECUENCIA2 BCLR       PORTC,X,$80
+            JSR        RETRASO2
+            BSET       PORTC,X,$80
+            JSR        RETRASO2
+            BRA        REGRESA
+
+RETRASO1       LDY     #$**          (4)   F=0.5 [kHz]; T=2[mS]
+LAZO1          NOP                   (2)   T/2=1[ms]=1000[µs]
+               DEY                   (4)   1000[µs]=5JSR+4LDY+9(**)+5RTS
+               BNE     LAZO1         (3)   (**)= 6Eh
+               RTS                   (5)
+
+RETRASO2       LDY     #$**          (4)   T=1[ms]; f=0.
+LAZO2          NOP                   (2)   T/2=0.5[ms]=500[µs]
+               DEY                   (4)   500[µs]=5JSR+4LDY+9(**)+5RTS
+               BNE     LAZO2         (3)   **= 36h
+               RTS                   (5)
+
+
+
+
+                                                                                     1
+UNAM, FACULTAD DE INGENIERÍA                                SANTIAGO CRUZ CARLOS
+APUNTES DE MICROPROCESADORES Y MICROCONTROLADORES              27/04/05 0:11 O4/P4
+
+SISTEMAS DE TIEMPO DEL HC11
+
+EXTAL     8[MHz] Frecuencia exterior
+E=EXTAL/4 2[MHz] Frecuencia de operación del mP
+
+A partir de la frecuencia base E se generan 5 servicios mediante preselección
+programable se generan las variaciones de frecuencia para cada servicio.
+
+SERVICIO                   PREESC. REGISTRO TERMINALES                FREC
+SPI                          E/    SPCR      SPR1       SPR0
+Comunicación
+Serial sincronía
+                              2              0          0             1[MHz]
+                              4              0          1             500[kHz]
+                             16              1          0             175[kHz]
+                             32              1          1             62.5[KHz]
+SCI                          E/    BAUD      SCP1       SCP0          FREC
+                                             0          0             125000
+                             1
+                                                                      baud
+                              3              0          1             41447
+                              4              1          0             31250
+                             13              1          1             96000*
+                                   BAUD                               BAUD
+            *                  1             0      0        0        9600
+                               2             0      0        1        4800
+                               4             0      1        0        2400
+                               8             0      1        1        1200
+                              16             1      0        0        600
+                              32             1      0        1        300
+                              64             1      1        0        150
+                             128             1      1        1        75
+    SERVICIO               PREESC FREC                                T[ms]
+     acum..                       31250                               32
+     PULSOS
+  Dispositivo que puede
+servir como contador de     E/26
+ eventos o para saber el
+ tiempo de duración de
+        un evento
+
+
+                                                                                     2
+UNAM, FACULTAD DE INGENIERÍA                                        SANTIAGO CRUZ CARLOS
+APUNTES DE MICROPROCESADORES Y MICROCONTROLADORES                      27/04/05 0:11 O4/P4
+
+           RTI                         PACTL
+                                          RT RT0
+                              E/
+    Real time interrupt
+                                          1
+Cada 4 [ms] se genera
+     un vector de
+                          1               0    0    4.096
+interrupción en forma     2               0    1    8.192
+  automática con la
+    cmbinacion 00         4               1    0    16.384
+                          8               1    1    32.768
+        COP                  OPTION       CR CR0 T[ms]
+                         E/2
+                                          1
+                          1               0    0    32.768
+                          4               0    1    131.072
+                         16               1    0    262.144
+                         64               1    1    524.288
+                  ¿DE DONDE PARTE EL TEMPORIZADOR?
+      TIMER            E TMSK2 PR1 PR0 CUENTA TOF
+        TCNT           1        0     0   0.5[s] 32.768[s]
+    $100E(MSB)
+     $100F(LSB)        4        0     1   2[s]     131.072[s]
+para leer el timer:    8        1     0   4[s]     262.144[s]
+     LDY $100E
+                      16        1     1   8[s]     524.288[s]
+
+        16 BITS DEL CONTADOR                        LIBRE
+15 14 13 12 11 10 9 8 7 6                           5 4 3       2    1   0
+0 0 0 0 0 0 0 0 0 0                                 0 0 0       0    0   0
+0 0 0 0 0 0 0 0 0 0                                 0 0 0       0    0   1
+0 0 0 0 0 0 0 0 0 0                                 0 0 0       0    1   0
+0 0 0 0 0 0 0 0 0 0                                 0 0 0       0    1   1
+0 0 0 0 0 0 0 0 0 0                                 0 0 0       1    0   0
+*      *      *     *     *    *   *    *   *   *   *   *   *   *    *   *
+*      *      *     *     *    *   *    *   *   *   *   *   *   *    *   *
+*      *      *     *     *    *   *    *   *   *   *   *   *   *    *   *
+
+1      1      1     1     1    1   1 1 1 1 1 1 1 1 1 1                       existe un
+                                                                             sobreflujo y un
+0      0      0     0     0    0   0 0 0 0 0 0 0 0 0 0                       acarreo, hay que
+                                                                             borrarlo para que
+                                                                             nuevamente
+                                                                             vuelva a detectar
+                                                                             la interrupción
+
+                                                                                                 3
+UNAM, FACULTAD DE INGENIERÍA                                 SANTIAGO CRUZ CARLOS
+APUNTES DE MICROPROCESADORES Y MICROCONTROLADORES               27/04/05 0:11 O4/P4
+
+Se produce una señal de sobreflujo TOF cada vez que la cuenta pasa de FFFF a 0000, y
+continúa su incremento, todas las funciones de tiempo incluyendo TOF y RTI tienen sus
+propios controles de interrupción y vectores de interrupciones independientes.
+
+
+COMO SE RELACIONA LA RTI Y EL TIMER
+
+
+
+
+                    TOF         TOF        TOF
+
+
+                      Podríamos variar el ciclo de trabajo
+                      con la RTI y tener un modulador de
+                      ancho de pulsos
+¿Para que nos sirve la interrupción de tiempo real?
+Para programar relojes en tiempo real, cronómetros, calendarios, muestrear datos, etc.
+
+
+
+
+                                                                                      4
+UNAM, FACULTAD DE INGENIERÍA                               SANTIAGO CRUZ CARLOS
+APUNTES DE MICROPROCESADORES Y MICROCONTROLADORES             27/04/05 0:11 O4/P4
+
+SISTEMA DE COMPARACIÓN Y CAPTURACION
+
+Se tiene:
+
+3 canales de entrada para captura
+4 canales de salida para comparación
+1 canal bidireccional (IC4 o IC5)
+
+ENTRADA DE CAPTURA (3)
+
+
+                              ICXI
+      Del
+      contador
+      libre                   TMSK1
+
+
+                                                                MODO
+           16 BITS                                              POLEO
+           LATCH CLK                                            PAX
+           TIC-H TIC-L
+                                 ICF
+                                 Input                       MODO
+                                 capture                     INTERRUPCION
+                                 flag
+
+                                 TFLG1
+Registra el tiempo de ocurrencia de un evento externo mediante la fijación del valor de
+su contador libre, cuando sucede un flanco predeterminado en la entrada
+correspondiente.
+El contador de tiempo libre continua su cuenta, por programación se pueden almacenar
+los valores fijados y usarlos para computar la periodicidad y duración de los eventos
+
+Por ejemplo, almacenando las veces de flancos sucesivos de una señal de entrada, por
+programación se pueden determinar el periodo y el ancho del pulso de una señal.
+
+Para medir el periodo, dos flancos sucesivos son capturados; para medir el ancho de
+pulso, dos flancos sucesivos de polaridad alterna son capturados.
+
+La ocurrencia de eventos (en la mayoría de los eventos) es asincrona con respecto al
+contador de tiempo libre, el cual esta sincronizado con el reloj de bus interno (PH2).
+Esta captura de eventos se tiene que sincronizar con (PH2), de modo que la fijación de
+
+
+                                                                                     5
+UNAM, FACULTAD DE INGENIERÍA                                SANTIAGO CRUZ CARLOS
+APUNTES DE MICROPROCESADORES Y MICROCONTROLADORES              27/04/05 0:11 O4/P4
+
+tiempo libre cuando un flanco predeterminado se detecta ocurre al medio ciclo opuesto
+de PH2 desde el momento que dicho contador llega a ser incrementado.
+
+ENTRADA PARA CAPTURA
+REGISTROS
+EDG EDG EDG EDG EDG EDG EDG EDG
+4B 4A 1B 1ª              2B 2A 3B 3A
+                                               Prog. Pol.
+                                               Flanco P/IC3
+                                               Prog. Pol.
+                                               Flanco P/IC2
+                                               Prog. Pol.
+                                               Flanco P/IC1
+                                               Prog. Pol.
+                                               Flanco P/IC41
+
+
+EDGxB     EDGxA   Captura
+0         0       Deshabilitada
+0         1       Por flanco de subida
+1         0       Por flanco de bajada
+1         1       Por cualquier flanco
+
+      7    6    5    4    3     2    1    0
+TFLG1 OC1F OC2F OC3F OC4F I4/0S IC1F IC2F IC3F
+
+      7    6    5    4    3      2    1    0
+TMSK1 OC1I OC2I OC3I OC4F I4/05I IC1I IC2I IC3I
+
+
+Indica cuando un flanco ha sido detectado o cuando un contador ha sido igualado,
+habilita con (1) y deshabilita con (0) la entrada para captura y/o salida para
+comparación.
+
+
+Del contador libre                                                      Flanco       
+                                      
+          TICX
+                                MSB                    LSB
+
+
+
+1
+    Si DDRA =0(b1+3) DEL REG PACTL E I4/O5=1(b1+2) DEL PACTL
+                                                                                     6
+UNAM, FACULTAD DE INGENIERÍA                                SANTIAGO CRUZ CARLOS
+APUNTES DE MICROPROCESADORES Y MICROCONTROLADORES              27/04/05 0:11 O4/P4
+
+Ejemplo:
+Cuenta: cada 2[s]
+Tiempos de ocurrencia, Flancos de subida:
+Tiempos: t1=2430h, t2=2500h, t3=3500h, t4=3750h, t5=4570h,
+
+
+
+
+  t0                t1                   t2                 t3
+  (a) ¿Cuánto es tiempo entre t1 y t3?
+  (b) La señal recibida tiene un periodo constante
+  (c) ¿cuánto dura el evento en t1 y t2?
+
+   (a) (t3-t1)= (3500h-2430h)( 2[s])=(10D0h) ( 2[s])=4304d( 2[s])=8,608[s]
+   (b) 416 [s]
+   (c) t35 =8416 [s]  t13        QUE ES ESTO ?
+
+
+PROGRAMA:
+Desarrollar un programa que cambie el estado del LED cada vez que se detecta un flanco
+de bajada por el pin PA0 (entrada para captura) mediante interrupción.
+
+
+
+         INICIO                                       A
+
+        Programar
+                                              Cargar estado de
+         captura
+                                                  puerto A
+       P/flanco de
+          bajada
+                                               Enciende/apaga
+                                                     LED
+     Habilitar modo
+      interrupción
+       P/entrada                                      RTI
+         captura
+
+
+    Habilitar interrupción
+
+
+        Reestablecer
+       bandera (FC3F)             A
+
+
+
+
+                                                                                     7
+UNAM, FACULTAD DE INGENIERÍA                             SANTIAGO CRUZ CARLOS
+APUNTES DE MICROPROCESADORES Y MICROCONTROLADORES           27/04/05 0:11 O4/P4
+
+TMSK1     EQU    $22
+TFLG1     EQU    $33
+TCTL      EQU    $21
+PORTA     EQU    $00
+
+          LDX    #$1000
+          LDAA   #$02
+          STAA   TCTL2,X
+          LDAA   #$01
+          STAA   TMSK1,X
+CICLO     CLI
+          BRA    CICLO
+
+INTERRUP BSET    TFLG1,X,$01
+         LDAA    PORTA, X
+         EORA    #$40
+         STAA    PORTA,X
+         RTI
+
+          ORG    $00E2
+          DB     $7E
+          DW     INTERRUP
+
+PROGRAMA:
+Desarrollar un programa que cambie el Edo. Del LED cada vez que se detecta 5 flancos
+de bajada por el pin PA1 (entrada para captura 2 Puerto A) mediante interrupciones.
+
+
+
+
+                                                                                   8
+UNAM, FACULTAD DE INGENIERÍA                                SANTIAGO CRUZ CARLOS
+APUNTES DE MICROPROCESADORES Y MICROCONTROLADORES              27/04/05 0:11 O4/P4
+
+
+              INICIO
+                                         Establecer bandera
+                                                IC2F
+        Configurar captura
+        P/flanco de bajada
+                                              Decrementar
+                                                contador
+        Habilitar para modo
+            interrupción
+         p/entrada captura
+
+                                        ¿ Contador
+                                        =1?
+        Habilitar para modo
+            interrupción                                       Cargar estado del
+         p/entrada captura                                         puerto A
+
+                                                               Encende/apagar
+        Cargar contador de                                          LED
+         flancos con "5"                RTI
+                                                             Cargar contador con
+                                                                     "5"
+             Habilitar
+           interrupción
+
+
+            LDX    #$1000
+            LDAA   #$08
+            STAA   TCTL2,X
+            LDAA   #$02
+            STAA   TMSK1,X
+            LDAB   #$05
+CICLO       CLI
+            BRA    CICLO
+
+INTERRUP BSET      TTLG1,X,$02
+         DECB
+         CMPB      #$01
+         BEQ       ACTUA
+         RTI
+ACTUA    LDAA      PORTA,X
+         EORA      #$40
+         STAA      PORTA,X
+         LDAB      #$05
+         RTI
+SALIDA POR COMPARACIÓN
+                                                                                     9
+UNAM, FACULTAD DE INGENIERÍA                                SANTIAGO CRUZ CARLOS
+APUNTES DE MICROPROCESADORES Y MICROCONTROLADORES              27/04/05 0:11 O4/P4
+
+Programa un evento que debe ocurrir a un tiempo específico cuando el contador libre
+(TCNT) alcanza un valor especificado.
+Cada salida de comparación tiene un registro de 16 bits de referencia para comparación
+(TOCX) y un comparador de 16 bits dedicado.
+El valor programado en el registro de referencia de 16 bits ( TOCX) se compara con el
+valor de contador libre cada ciclo de reloj. Cuando el registro de comparación se iguala
+con el valor programado en el registro de referencia una bandera de salida se pone en
+(1) (OCXI) esta bandera se puede usar para iniciar funciones automático producto de los
+valores de comparación.
+
+
+
+                                             OCXI (TMSK1)
+                                                                                 IRQ
+           Comparador de 16 bits
+
+                                              OCXF(TFLG1)
+            TOCX(H)      TOCX(L)
+                                                                                 OCX
+                                             FOCX(CFORX)
+  Del contador
+       libre
+
+
+
+UML OL2 OM3 OL3 OM4 OL4 OM5 OL5
+                                                    TCTL1
+                                                 Programa OC5
+                                                 Programa
+                                                 Programa
+                                                 Programa
+                                                 Programa
+                                                 Programa
+                                                 Programa
+                                                 Programa
+
+OMX OLX Acción después de una comparación
+        exitosa.
+0   0   Ninguna (temporizador desconectado
+0   1   Cambio de estado en la línea OCX (toggle)
+1   0   Línea OCX=0
+1   1   Línea OCX=1
+
+
+
+
+                                                                                       10
+UNAM, FACULTAD DE INGENIERÍA                                  SANTIAGO CRUZ CARLOS
+APUNTES DE MICROPROCESADORES Y MICROCONTROLADORES                27/04/05 0:11 O4/P4
+
+OC1 difiera de las otras salidas de comparación en que una comparación exitosa puede
+afectar a uno o a todos los 5 pines de la línea de comparación. Esta situación se controla
+por medio de los registros OCIM y OCID de 8 bits cada uno.
+
+OCIM especifica cuales salidas del puerto A seran usadas por una comparación exitosa
+en OC1.
+OCID especifica que dato se mandará por estos pines después de una comparación
+exitosa.
+
+PROGRAMA
+
+Desarrollar un programa para generar una onda cuadrada de 400 [Hz] por la salida de
+comparación dos, con una cuenta por cada 0.5 [s] en el TCNT.
+
+PUERTO A
+            T=2.5[ms]
+            T/2=1.25[ms]
+            #de cuentas: 1250/0.5=2500
+            f=400[Hz]
+
+                  INICIO
+
+
+                  Programar                               A
+                    salida
+                 comparación
+                   en modo
+                   TOGGLE                             Almacenar
+                                                     resultado en
+                                                    reg. REFTOC2
+                  Iniciar con
+                  salida alta
+
+
+
+                 Cargar valor                         ¿OCT2=1
+                  act. Cont.                          ?
+                    Libre
+
+                   Sumar el
+                   ancho de
+                     pulso
+
+
+
+                        A
+
+
+
+                                                                                       11
+UNAM, FACULTAD DE INGENIERÍA                             SANTIAGO CRUZ CARLOS
+APUNTES DE MICROPROCESADORES Y MICROCONTROLADORES           27/04/05 0:11 O4/P4
+
+Programa Terminar
+
+
+INTERRUPCIÓN POR TIEMPO PROGRAMABLE
+
+
+                                          TOI (TMSK2)
+          TCNT(H)     TCNT(L)                                                 IRQ
+
+                                           TOF (TFLG2)
+              Contador libre
+
+
+
+
+              7   6 5 4 3 2 1   0              PR1   PR0    CUENTA     TOF
+TMSK2         TOI           PR1 PR2            0     0      0.5[s]     32.768[s]
+$1024                                          0     1      2[s]       131.072[s]
+                                               1     0      4[s]       262.144[s]
+                                               1     1      8[s]       524.288[s]
+
+
+
+            7   6 5 4 3 2 1 0
+TFLG2 $1025 TOF
+
+
+
+
+                                                                                    12
+UNAM, FACULTAD DE INGENIERÍA                              SANTIAGO CRUZ CARLOS
+APUNTES DE MICROPROCESADORES Y MICROCONTROLADORES            27/04/05 0:11 O4/P4
+
+PROGRAMA
+Desarrollar un programa que ponga un nivel alto en el pin PC7 5 segundos después de
+que se cierre el interruptor S y permanecer así hasta que el interruptor S se abra. La
+acción del tiempo se deberá obtener por interrupción de tiempo programable.
+
+                             S                            TOF=262.14[ms]
+ 0                                                        262.14[ms]*X=5000[ms]
+ 1                                                        X=13h
+ 2
+ 3
+ 4                           PC7    5 [s]
+ 5
+ 6
+ 7
+SALIDA
+PUERTO C
+
+
+
+
+                                                                                   13
+UNAM, FACULTAD DE INGENIERÍA                        SANTIAGO CRUZ CARLOS
+APUNTES DE MICROPROCESADORES Y MICROCONTROLADORES      27/04/05 0:11 O4/P4
+
+
+
+
+      INICIO
+
+
+      Programar               A
+       puerto C
+
+
+      Programar
+     contador de             ¿Interrupto
+        TOF's                rS
+                             cerrado?
+
+  Programar
+  tiempo para
+  TOF's
+                      D
+     Leer estado
+                                  ¿TOF=1?                     Incrementar
+         de
+    interruptor S                                               contador
+                                                                 TOF's
+
+
+
+           A
+                                                       B
+
+
+
+
+                                                                             14
+UNAM, FACULTAD DE INGENIERÍA                                   SANTIAGO CRUZ CARLOS
+APUNTES DE MICROPROCESADORES Y MICROCONTROLADORES                 27/04/05 0:11 O4/P4
+
+
+                     B
+
+
+            Reset de TOF, TOF=1
+
+
+
+
+                   Interru
+                   ptor S
+                   cerrad
+                   o?
+
+
+
+
+                   Contado
+                   r
+                   TOF=12=
+                   ?
+
+
+
+
+COMUNICACIÓN SERIE
+
+         ASINCRONA (SCI) = UART FULL-DUPLEX
+         INTERFACE NORMA RS-232
+         RS232 (CONECTOR DB9)
+         SEÑALES DE LA COMPUTADORA (PC) NIVEL TTL
+         SEÑALES FUERA DE LA PC: ±15V VIA EL CIRCUITO INTEGRADO MAX232
+         PARA MOTOROLA MC145406
+
+                                  PINES DEL CONECTOR DB9
+PIN      Señal   Descripción
+2        TX      Transmisión de datos
+3        RX      Recepcion de datos
+4        RTS     Recuest to send        Señal mandada por la PC cuando quiere transmitir
+                                        a un dispositivo.
+5        CTS     Clear                  Señal recibida por la PC cuando el dispositivo esta
+                                        listo para recibir
+6        DSR     Data set ready         Señal recibida por la PC cuando el MODEM esta
+                                        listo.
+7        GND     Ground
+                                                                                         15
+UNAM, FACULTAD DE INGENIERÍA                           SANTIAGO CRUZ CARLOS
+APUNTES DE MICROPROCESADORES Y MICROCONTROLADORES         27/04/05 0:11 O4/P4
+
+8    CD     Carrier detected      Señal recibida por la PC cuando el MODEM detecta
+                                  portadora (se supone que uno siempre detecta
+                                  portadora)
+20   DTR    Data terminal ready   Señal mandada por la PC cuando hay
+                                  comunicación
+22   RI     Ring indicador        Señal recibida por la pc cuando el MODEM recibe
+                                  señal de tono.
+
+
+
+
+                                                    CONFIGURACIÓN PARA
+          MCU                                          MODEM NULO
+
+
+
+
+COMUNICACIÓN SERIE
+
+CODIFICACIÓN NRZ
+
+
+CARACTERÍSTICAS
+
+PROTOCOLO DE COMUNICACIÓN
+
+CÓDIGO DE TRANSMISIÓN
+
+
+
+
+                                                                                16
+UNAM, FACULTAD DE INGENIERÍA                               SANTIAGO CRUZ CARLOS
+APUNTES DE MICROPROCESADORES Y MICROCONTROLADORES             27/04/05 0:11 O4/P4
+
+           7 6 5 4 3        2  1 0
+PORTD                      TDO   RDI $08
+                                
+
+        7 6 5 4 3 2 1 0
+SCDR                              $2F
+
+
+MODO DE TRANSMISIÓN
+
+  7    6   5   4   3   2   1   0
+                               
+                               
+1                               0  TDO
+
+Bandera TDRE del SCSR (bit7)
+Esta bandera es importante en este tema:
+TDRE=1, cada vez que un nuevo dato se transfiere del TDR al registro de corrimiento
+TSR.
+
+MODO DE RECEPCIÓN
+
+
+RD  0                                               1
+                                                 
+                                                      SCDR
+                                                 
+      LOS          DATOS VAN A UN DESTINO   DESEADO
+
+Bandera RDRF de SCSR (bit 5)
+RDRF=1, cada vez que un nuevo datos se transfiere del registro de corrimiento ( RSR) al
+SCDR.
+
+De manera una comunicación full duplex la podemos detallar con el siguiente diagrama:
+
+
+RDI                                  
+                                     
+                                         SCDR
+                                     
+                                                TDO
+
+
+¿Cómo sería la configuración de estas partes de envió de datos y recepción?
+
+                                                                                    17
+UNAM, FACULTAD DE INGENIERÍA                           SANTIAGO CRUZ CARLOS
+APUNTES DE MICROPROCESADORES Y MICROCONTROLADORES         27/04/05 0:11 O4/P4
+
+
+
+  DIAGRAMA DE FLUJO                        CÓDIGO ENSAMBLADOR
+            JSR
+
+
+
+
+         ¿SCD             ENVIARDATO           BRCLR     SCSR,X,$80,ENVIARDATO
+         R                                     STAA      SCDR,X
+         vací                                  RTS
+         o?
+
+
+   Almacenar
+    dato en
+     SCDR
+                                                           Con BRCLR, salta si la
+                                                            bandera TDRE=0 a la
+                                                         etiqueta ENVIARDATO, es
+      RTS                                                  decir, se mantiene el
+                                                                   ciclo.
+
+
+
+
+  DIAGRAMA DE FLUJO                        CÓDIGO ENSAMBLADOR
+            JSR
+
+
+
+
+         ¿RSR
+         vací
+         o?
+
+                          OBTIENEDATO         BRCLR     SCSR,X,$80,OBTIENEDATO
+                                              LDAA      SCDR,X
+    Cargar o                                  RTS
+  leer dato de
+      SCDR
+
+
+
+      RTS
+
+
+
+Programa:
+
+                                                                                18
+UNAM, FACULTAD DE INGENIERÍA                              SANTIAGO CRUZ CARLOS
+APUNTES DE MICROPROCESADORES Y MICROCONTROLADORES            27/04/05 0:11 O4/P4
+
+Establecer una comunicación entre una terminal tonta y un mCU. La terminal tonta
+transmite un carácter ASCII y el mCU lo recibe por el puerto de comunicación serial
+asíncrona, cuando la terminal tonta termina su transmisión, el mCU deberá transmitir
+hacia la terminal tonta los siguientes caracteres <CR>, <LF>, y <$> en ASCII y los dos
+caracteres que representan el equivalente hexadecimal del carácter recibido.
+
+
+
+
+                                                                                   19
+UNAM, FACULTAD DE INGENIERÍA                                SANTIAGO CRUZ CARLOS
+APUNTES DE MICROPROCESADORES Y MICROCONTROLADORES              27/04/05 0:11 O4/P4
+
+COMUNICACIÓN SÍNCRONA
+Establece comunicación con dispositivos periféricos tales como registros de corrimiento,
+display de cristal líquido, convertidores analógicos digitales, de forma directa, lo
+anterior hace que el puerto pueda funcionar como maestro o como esclavo.
+
+
+
+
+        Msb        lsb
+                                                                   
+SPDR                                                                                         SPDR
+($2A)                                                                                ($2A)
+
+
+
+MAESTRO                                                   ESCLAVO
+
+MISO: Master In ­ Slave Out
+MOSI: Master Out ­ Slave In
+
+CONFIGURACION:
+MAESTRO:
+          MISO     linea maestro de datos de entrada
+          MOSI     linea maestra de datos de salida
+ESCLAVO:
+          MISO     linea esclava de datos de salida
+          MOSI     linea esclava de datos de entrada.
+
+Cuando el MAESTRO inicia una transferencia 8 ciclos de reloj se generan sobre el pin
+SCLK. Tanto como en el MAESTRO como en el ESCLAVO el dato se adquiere en un flanco
+del ciclo de reloj y se muestrea en el ciclo opuesto. El dato cargada en el registro de
+corrimiento de 8 bits, sale por el pin MOSI hacia el ESCLAVO, mientras otro dato sale
+por la terminal MISO del ESCLAVO.
+
+(ANEXAR DIAGRAMA DE TIEMPOS)
+
+      Polaridad fase Flanco               de Flanco de muestreo
+                     adquisición
+        CPOL    CPHA         FLAD                    FLMU
+(+)       0       0                                    
+(+)       0       1                                    
+(-)       1       0                                    
+(-)       1       1                                    
+
+
+
+
+                                                                                     20
+UNAM, FACULTAD DE INGENIERÍA                                 SANTIAGO CRUZ CARLOS
+APUNTES DE MICROPROCESADORES Y MICROCONTROLADORES               27/04/05 0:11 O4/P4
+
+REGISTROS
+ -
+                                       SPRC ($28)
+                 SPR0                                    SPR1 SPR0 FREC
+
+                                           Frecuencia
+                 SPR1                         SCLK
+
+
+
+                 CPHA
+                 CPOL
+                 MSTR(`1' como maestro; `0' esclavo)
+
+
+
+                 SPE (habilitación de la transmisión) (`1' hab; `0' inhab)
+                 SPIE habilitación de interrupción en modo serial sincrono.
+
+     -   - - - -
+
+
+
+
+                   MODF (modo falla)=`1'; si SS=0 y MSTR=1
+
+
+                    WCOL (colisión en la escritura='1'); si se hizo un intento de
+                    Escribir en el SPDR
+                    SPIF ; será `1' cada vez que la transferencia de datos en el mC,
+                    Y el dispositivo periferico externo ha sido completado.
+                    (registro de corrimiento vacío)
+La bandera SPIF se limpia automáticamente cuando se lee el SPSR con SPIF igual a `1',
+seguido de un acceso al registro de datos SPRD.
+EJEMPLO:
+
+                                                                                      21
+UNAM, FACULTAD DE INGENIERÍA                              SANTIAGO CRUZ CARLOS
+APUNTES DE MICROPROCESADORES Y MICROCONTROLADORES            27/04/05 0:11 O4/P4
+
+Desarrollar un programa para comunicar un mCU y el registro de corrimiento de entrada
+serie ­ salida paralela en forma tal que se envíe un dato por la terminal MOSI del mCU
+hacia el registro de corrimiento cada vez que se cierre el interruptor " S" y encender
+LED durante 1 [s], y esperar el próximo cierre de "S".
+(Anexar diagrama)
+Diagrama de flujo
+
+
+
+
+                                                                                   22
+UNAM, FACULTAD DE INGENIERÍA                                        SANTIAGO CRUZ CARLOS
+APUNTES DE MICROPROCESADORES Y MICROCONTROLADORES                      27/04/05 0:11 O4/P4
+
+
+             INICIO
+
+
+                                                            A
+       Programar puertos A y C
+
+
+
+     Programar comunicación SPI                Incrementar valor actual a
+                                                      transmitir
+
+
+      Obtener valor inicial a transmitir
+
+
+
+
+     Iniciar con LED off y
+    deshabilitar el esclavo
+                                           B
+                                                   ¿Transmisión
+ Leer el estado del interruptor `S'                 completa?
+
+
+
+
+              `s' cerrado?
+
+
+                                                         Deshabilitar esclavo
+
+
+                                                         Encender LED
+       Retardo p/estabilizar rebote
+
+             Habilitar esclavo                        Tiempo de encendido
+
+
+                Enviar dato                                 Apagar LED
+
+
+
+                        A
+                                                                ¿ Interrup
+                                                                tor `s'
+                                                                aún
+                                                                cerrado?
+
+
+
+
+                                               B          Tiempo de encendido
+
+
+
+
+                                                                                             23
+

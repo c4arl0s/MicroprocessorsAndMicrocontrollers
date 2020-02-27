@@ -1,0 +1,129 @@
+UNAM, FACULTAD DE INGENIERÍA                                       SANTIAGO CRUZ CARLOS
+APUNTES DE MICROPROCESADORES Y MICROCONTROLADORES                   02/04/2006 10:33
+O4/P4
+PROGRAMA1
+Una lista de datos que inicia en la localidad de memoria $1000 y termina en la localidad
+$14FF debe ser relocalizada para que inicie en la localidad de memoria $2000, describa
+un programa para efectuar dicha transferencia.
+
+
+          7       0
+DIRECCION CONTENIDO
+
+
+
+  $1000         DAT01
+    *             *
+    *             *
+    *             *
+  $14FF         DATOn
+
+
+
+  $2000         DATO1
+    *             *
+    *             *
+  $2500         DATOn
+
+
+   1 Lectura de direcciones de memoria (DATO1)
+   2 Escritura de las direcciones de memoria
+   3 Suponemos que $80 a $83 no son ocupados y las utilizaremos para almacenar a los
+     apuntadores.
+
+ARQUITECTURA: Suponga un apuntador A y un índice X.
+
+
+
+
+                             1 de 4 Problemas (parte 3)
+UNAM, FACULTAD DE INGENIERÍA                                SANTIAGO CRUZ CARLOS
+APUNTES DE MICROPROCESADORES Y MICROCONTROLADORES            02/04/2006 10:33
+O4/P4
+                 INICIO
+
+
+              Declara
+           apuntadores P1
+                y P2
+
+
+    Cargo dato vía apuntador P1
+
+
+
+           Incrementa p1
+
+
+               Guarda p1
+
+
+   Transfiere dato vía apuntador p2
+
+
+               Incrementa p2
+
+
+
+                Guarda p2
+
+
+
+
+     NO
+                 Apuntado
+                     r
+                 P2=$2500
+                    ??
+
+          SI
+
+                    FIN
+
+
+
+
+                               2 de 4 Problemas (parte 3)
+      UNAM, FACULTAD DE INGENIERÍA                                      SANTIAGO CRUZ CARLOS
+      APUNTES DE MICROPROCESADORES Y MICROCONTROLADORES                  02/04/2006 10:33
+      O4/P4
+      CODIGO PROGRAMA1
+
+
+           LDX    #$1000    ; carga índice X con 1000, declara apuntador p1
+           STX    $80       ; Como el índice X es de 16 bits, automáticamente el 10 se pone en
+                            la dirección $80 y el 00 se pone en la dirección $81, P1 $1000
+           LDX    #$2000    ; carga índice X con 2000, declara apuntador p2
+           STX    $82       ; Como el índice X es de 16 bits, automáticamente el 20 se pone en
+                            la dirección $82 y el 00 se pone en la dirección $83, P2  $2000
+SIGUE      LDX    $80       ; carga en el índice X con la que hay en la dirección $80
+           LDAA   $00,X     ; carga el acumulador A de manera indexada, con lo que hay en la
+                            dirección X+$00=$1000, cargo dato1 ¡TENGO dato1 en la cabeza!,
+                            ja ¡¡¡
+           INX              ; incremento el índice X, $1000+$0001=$1001, ¡TENGO dirección
+                            en la cabeza!, ja ¡¡¡
+           STX    $80       ;almaceno la dirección que tengo en la cabeza y la pongo otra vez
+                            en la dirección $80, automáticamente se ocupa la $81
+           LDX    $82       ; carga el índice X con lo que hay en la dirección $82, lo que hay es
+                            la dirección $2000, tengo dirección en la cabeza ¡¡¡¡ ja ¡¡
+           STAA   $00,X     Almacena lo que hay en el acumulador A de manera indexada en la
+                            X + $000 = $2000
+           INX              Incrementa el índice x, $2000+$0001=$2001
+           STX    $82       Almacena lo que tiene el índice X en la dirección $82
+           CPX    #$2500    Compara el índice X con el valor #$2500
+           BNE    SIGUE     Si los dos valores No son iguales, pasa a la etiqueta SIGUE
+FIN        BRA    FIN
+
+
+
+
+                                 3 de 4 Problemas (parte 3)
+UNAM, FACULTAD DE INGENIERÍA                            SANTIAGO CRUZ CARLOS
+APUNTES DE MICROPROCESADORES Y MICROCONTROLADORES        02/04/2006 10:33
+O4/P4
+
+
+
+
+                           4 de 4 Problemas (parte 3)
+

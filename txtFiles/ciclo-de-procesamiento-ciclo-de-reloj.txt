@@ -1,0 +1,28 @@
+UNAM, FACULTAD DE INGENIERÍA                                       SANTIAGO CRUZ CARLOS
+APUNTES DE MICROPROCESADORES Y MICROCONTROLADORES                   02/05/2006 07:44
+O5/P5
+
+           CICLO DE PROCESAMIENTO Y CICLO DE RELOJ DEL MPU
+
+Sea F=2[MHz]=(1/4)*8[MHz]
+
+T=0.5[s]
+
+
+
+
+                    0.5 [s]                              0.5 [s]
+                    FETCH                              EXECUTE
+
+                                       1 [s]
+
+                            CICLO DE PROCESAMIENTO
+
+EL CICLO DE PROCESAMIENTO SE EJECUTA EN 1[s]
+NO CONFUNDIR EL CICLO DE PROCESAMIENTO CON EL CICLO DE RELOJ DEL MPU
+
+
+
+
+                   9 de 19 Introducción a los mP y mC (parte 1)
+

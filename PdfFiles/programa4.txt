@@ -1,0 +1,109 @@
+UNAM, FACULTAD DE INGENIERÍA                                       SANTIAGO CRUZ CARLOS
+APUNTES DE MICROPROCESADORES Y MICROCONTROLADORES                   02/04/2006 10:33
+O4/P4
+PROGRAMA BUSCADOR DE 3F'S
+Se tiene una lista entre las localidades $0000 y $00FF en el cual algunos de estos datos
+son 3F desarrolle un programa que indique en la $120 la cantidad de números 3F
+encontrados.
+
+
+direcciòn     DATOS
+   $00         D1
+               D2
+                *
+                *
+   $FF         Dn
+
+
+
+  $120      Cantidad de
+               3F's
+
+ARQUITECTURA: Acumuladores A y B, y un registro X.
+
+
+
+
+                             1 de 3 Problemas (parte 3)
+UNAM, FACULTAD DE INGENIERÍA                                SANTIAGO CRUZ CARLOS
+APUNTES DE MICROPROCESADORES Y MICROCONTROLADORES            02/04/2006 10:33
+O4/P4
+DIAGRAMA DE FLUJO PROGRAMA BUSCADOR
+
+            INICIO
+
+
+     Limpia acumulador
+             B
+
+      Declarar apuntador
+              p1
+
+      Carga acumulador A
+            con 3F
+
+
+
+           Comparación
+           indexada con
+                3F
+                          NO
+               Z=0
+                ?
+      SI
+
+
+       Incrementa acum.
+              B
+
+               Incrementa P1
+
+
+       NO
+
+
+               P1=100
+                  ?
+                               SI
+
+
+           Almacenar el B
+            en memoria
+
+
+
+                FIN
+
+
+
+                               2 de 3 Problemas (parte 3)
+UNAM, FACULTAD DE INGENIERÍA                                       SANTIAGO CRUZ CARLOS
+APUNTES DE MICROPROCESADORES Y MICROCONTROLADORES                   02/04/2006 10:33
+O4/P4
+CODIGO PROGRAMA BUSCADOR DE 3F's
+RECUERDE SEGUIR EL CODIGO CONFORME AL DIAGRAMA DE FLUJO
+
+
+            LDAA     #$3F          ; carga el acumulador A de manera indexada con 3F
+            CLRB                   ; limpia el acumulador B
+            LDX      #$00          ; carga el índice X con 00
+            CMPA     $00,X         ;compara de manera indexada A con lo que apunta
+                                   x+0
+SIGUE       BEQ      INCRE_B       ; salta si son iguales a la etiqueta INCRE_B
+            INX                    ; si no, incrementa el indice X
+            CPX      #$100         ; compara el indice x de manera indexada con 100
+PROX        BNE      REGRESA       ; salta si no son iguales a la etiqueta REGRESA
+            STAB     $120          ; si no, almacena lo que hay en el acumulador B en
+                                   la dir $120
+            BRA      FIN           ; salta siempre a la etiqueta FIN
+
+            INCB                   ; incrementa el acumulador B
+FIN         BRA      INC_P1        ; salta siempre a la etiqueta INC_P1
+
+INC_MSB
+
+
+
+
+                             3 de 3 Problemas (parte 3)
+

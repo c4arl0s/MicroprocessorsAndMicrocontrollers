@@ -1,0 +1,108 @@
+UNAM, FACULTAD DE INGENIERÍA                                    SANTIAGO CRUZ CARLOS
+APUNTES DE MICROPROCESADORES Y MICROCONTROLADORES                02/04/2006 10:33
+O4/P4
+PROBLEMA SUMADOR:
+Suponiendo que las localidades de la $0100 a la $01FF contienen números no signados
+(absolutos), desarrollar un programa para sumar dichos números y cuyo resultado
+aparezca en las localidades $0200 (MSB) y $0201 (LSB).
+
+Dirección   DATOS
+$0100         D1
+              D2
+               *
+               *
+$01FF         Dn
+
+$0200        MSB
+$0201        LSB
+
+ARQUITECTURA: Contamos con registro A, B y X
+
+$0200         00
+$0201         00
+
+Cuando la suma se desborde en la dirección $201 generará un acarreo, estaremos
+monitoreando cuando suceda esto, es decir, cuando la bandera C se ponga en `1'. Cada
+vez que suceda esto, incrementaremos el contenido, de la localidad $200.
+
+
+
+
+                           1 de 3 Problemas (parte 3)
+UNAM, FACULTAD DE INGENIERÍA                                       SANTIAGO CRUZ CARLOS
+APUNTES DE MICROPROCESADORES Y MICROCONTROLADORES                   02/04/2006 10:33
+O4/P4
+              INICIO
+
+
+        Limpia registros
+        para LSB y MSB
+
+
+        Declarar apuntador
+                p1
+
+
+          Suma indexada
+
+
+
+                            SI
+                 C=1                           Incrementa
+                  ?                           registro para
+        NO                                         MSB
+
+          Incrementa p1
+
+
+   NO
+               P1=200
+                  ?
+                                 SI
+
+
+             Almacenar el
+                MSB en
+               memoria
+
+             Almacenar el
+                LSB en
+               memoria
+
+
+                  FIN
+
+
+
+
+                                      2 de 3 Problemas (parte 3)
+UNAM, FACULTAD DE INGENIERÍA                                       SANTIAGO CRUZ CARLOS
+APUNTES DE MICROPROCESADORES Y MICROCONTROLADORES                   02/04/2006 10:33
+O4/P4
+CODIGO PROGRAMA SUMADOR
+
+RECUERDE SEGUIR EL CODIGO CONFORME AL DIAGRAMA DE FLUJO
+
+
+            CLRA
+            CLRB
+            LDX     #$100
+
+SIGUE       ADDA    $00,X
+            BCS     INC_MSB      Branco carry set. Salta si C=1.
+
+PROX        INX
+            CPX     #$200
+            BNE     SIGUE
+            STAB    $00,X
+            STAA    $01,X
+FIN         BRA     FIN
+
+INC_MSB     INCB
+            BRA     PROX
+
+
+
+
+                            3 de 3 Problemas (parte 3)
+

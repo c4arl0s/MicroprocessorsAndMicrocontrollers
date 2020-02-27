@@ -1,0 +1,258 @@
+UNAM, FACULTAD DE INGENIERÍA                                           SANTIAGO CRUZ CARLOS
+APUNTES DE MICROPROCESADORES Y MICROCONTROLADORES                       18/04/2006 12:57
+O4/P4
+INTERRUPCIONES
+
+                       ENMASCARABLES                 1. IRQ interrupción externa
+                                                     2. PSI interrupción en modo síncrono
+                                                     3. SCI interrupción en modo
+                                                        asíncrono de comunicación serie.
+INTERRUPCIONES
+                       NO                            1. XIRQ interrupción externa no
+                       ENMASCARABLES                    enmascarable
+                                                     2. SWI interrupción por software
+
+
+IRQ INTERRUPCIÓN EXTERNA
+
+Se lleva acabo si el bit I del registro de código de condición de estados es `0' y el pin
+exterior IRQ_ es bajo, o sea `0', es decir se tiene que dar las dos siguientes condiciones:
+
+
+    CCR          S         X         H       I='0'       N         Z         V          C
+
+IRQ='0'
+
+
+
+
+      Cuando la interrupción es reconocida, el microprocesador termina la instrucción
+      que esta en proceso.
+      El estado actual de los registros del microprocesador se guarda en la pila del
+      stack.
+      La bandera I del CCR se pone en `1', este enmascaramiento asegura que ninguna
+      interrupción sea atendida hasta que la presente haya sido atendida.
+      La dirección de la rutina del servicio de esta interrupción vector de interrupción
+      esta especificada por el contenido de una dirección de 2 Bytes de acuerdo al
+      siguiente esquema:
+
+
+
+
+                     1 de 8 Modos de Direccionamiento (parte 2)
+UNAM, FACULTAD DE INGENIERÍA                                                             SANTIAGO CRUZ CARLOS
+APUNTES DE MICROPROCESADORES Y MICROCONTROLADORES                                         18/04/2006 12:57
+O4/P4
+CONDICIONES INICIALES AL RESET
+
+                           7                            6              5 4 3 2 1 0
+INTCR IRQE='0'                                IRQEN='1'                - - - - - - $001E
+             Interrupción configurada
+                                              Interrupción conectada
+             para reconectar de nivel bajo
+
+
+                       7 6 5     4     3 2     1         0
+PUCR           PUPKE='1' - - PUPEE='1' - - PUPBE='0' PUPAE='0' $000C
+PULL    UP
+CONTROL
+REGISTER
+
+
+
+
+               0 Resistencias de pull deshabilitadas
+PUPXE
+               1 Resistencias de pull habilitadas
+
+                                             SP       CCR
+Pc  --------------                                     B
+    -
+    --------------                                      A
+    -
+    --------------              ¤IRQ                   XH
+    -
+    --------------                                     XL
+    -
+    --------------                                     YH
+    -
+                                                   YL
+                                                 RTNH                  $FFF2 IRQH
+                                                 RTNL                  $FFF3 IRQL
+                                             SP    00
+                                                 Stack
+INT      --------------
+         -
+         --------------                                                              ;esto va al final del
+         -                                                                           prog
+         --------------                                                ORG   $FFF2
+         -
+         --------------                                                DB    $007E
+         -
+               RTI                                                     DW    INT     ; define word
+
+
+
+                               2 de 8 Modos de Direccionamiento (parte 2)
+UNAM, FACULTAD DE INGENIERÍA                                    SANTIAGO CRUZ CARLOS
+APUNTES DE MICROPROCESADORES Y MICROCONTROLADORES                18/04/2006 12:57
+O4/P4
+
+Secuencia de llamada de interrupción
+Secuencia de retorno de interrupción
+
+
+
+
+                   3 de 8 Modos de Direccionamiento (parte 2)
+UNAM, FACULTAD DE INGENIERÍA                                     SANTIAGO CRUZ CARLOS
+APUNTES DE MICROPROCESADORES Y MICROCONTROLADORES                 18/04/2006 12:57
+O4/P4
+PROGRAMA
+Desarrollar un programa que indique el numero de interruptores cerrados, el numero
+desplegará en binario, se deberá obtener mediante interrupción externa, es decir cada
+vez que se cierre el interruptor `s' alambrado a la terminal IRQ_
+
+
+
+
+                    4 de 8 Modos de Direccionamiento (parte 2)
+UNAM, FACULTAD DE INGENIERÍA                                           SANTIAGO CRUZ CARLOS
+APUNTES DE MICROPROCESADORES Y MICROCONTROLADORES                       18/04/2006 12:57
+O4/P4
+PROBLEMA
+Desarrolle un programa que intercambie los contenidos de las localidades de memoria
+$00 a $7F con los de las localidades $80 a $FF uno a uno, y coloque los valores repetidos
+a partir de la localidad $100. Considerar un MPU con dos registros índice y dos
+acumuladores.
+
+                            inicio                                 a
+
+
+              Declarar apuntador px                     Declarar apuntador px
+
+
+              Declarar apuntador py
+
+
+               Cargar dato vía px
+
+
+                     Comparación
+                       indexada
+                                     no
+                            Z
+                            =1
+                     si
+
+
+                Transferir dato a
+                 memoria vía py
+
+
+            Incrementar apuntador
+            px
+
+
+            Incrementar apuntador
+            py
+              no
+
+                          Px=8
+                           0?
+                si
+
+                            a
+
+
+
+
+                          5 de 8 Modos de Direccionamiento (parte 2)
+UNAM, FACULTAD DE INGENIERÍA                                        SANTIAGO CRUZ CARLOS
+APUNTES DE MICROPROCESADORES Y MICROCONTROLADORES                    18/04/2006 12:57
+O4/P4
+PROBLEMA
+Desarrolle un programa que compare los contenidos de las localidades de memoria $00
+con $40, $01 con $41, $02 con $42, etc., hasta $3F con 7F y coloque los valores
+repetidos a partir de la localidad $80 y el número de valores no repetidos en la localidad
+$C0. Considerar un MPU con dos registros índice y un acumulador.
+
+
+
+
+                     6 de 8 Modos de Direccionamiento (parte 2)
+UNAM, FACULTAD DE INGENIERÍA                                    SANTIAGO CRUZ CARLOS
+APUNTES DE MICROPROCESADORES Y MICROCONTROLADORES                18/04/2006 12:57
+O4/P4
+                             INICIO
+
+
+                  Limpiar registro contador
+
+
+                     Declarar apuntador
+                     px
+                     Declarar apuntador
+                     py
+                       Carga dato vía px
+
+
+                         Comparación
+                           indexada
+                                         Si
+
+                               Z=
+                               1?
+
+                                      Transfiere dato a
+    Incrementa dos veces                  memoria
+  contador de no repetidos
+
+
+
+                                       Incrementa
+                                      apuntador px
+
+
+
+                                     Incrementa
+                                    apuntador py
+
+                                                    No
+
+                                          px=40
+                                            ?
+
+                                              FIN
+
+
+
+
+                   7 de 8 Modos de Direccionamiento (parte 2)
+UNAM, FACULTAD DE INGENIERÍA                                      SANTIAGO CRUZ CARLOS
+APUNTES DE MICROPROCESADORES Y MICROCONTROLADORES                  18/04/2006 12:57
+O4/P4
+
+CONTADOR       EQU        $C0                        ;nos alcanza 8 bits para contar todo¡¡¡
+               CLR        $C0
+               LDX        $00
+               LDY        $40
+REGRESA        LDAA       $00,X
+               CMPA       $40,Y
+               BNEQ       CONTAR
+               STAA       $CO,X
+INCINDICES     INX
+               INY
+               CPX        #$40
+               BNEQ       REGRESA
+FIN            BRA        FIN
+
+CONTAR         INC        CONTADOR                   ;como las dos datos no son iguales
+               INC        CONTADOR                   ;existen dos datos diferentes a contar
+               BRA        INCINDICES                 ; por lo tanto incrementamos 2 veces.
+
+
+
+
+                     8 de 8 Modos de Direccionamiento (parte 2)
+

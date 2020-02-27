@@ -1,0 +1,498 @@
+           UNIVERSIDAD NACIONAL
+            AUTÓNOMA DE MÉXICO
+
+
+               FACULTAD DE INGENIERIA
+
+
+Trabajo: INTERRUPCIONES EN EL HC12
+
+EQUIPO:
+                      SANTIAGO CRUZ CARLOS
+
+
+ASIGNATURA:
+
+GRUPO:
+
+
+
+
+  miércoles, 16 de agosto de 2017, Ciudad Universitaria, México, DF
+UNAM, Facultad de Ingeniería                                                                            16/08/2017 13:20
+Autor: Santiago Cruz Carlos                                                                         Titulo: Interrupciones
+______________________________________________________________________________________________________________________
+PROBLEMA
+Un interruptor selector de tres posiciones y un interruptor de contacto momentáneo están
+alambrados como indica en el diagrama, desarrolle un programa que efectúe la señalización
+indicada.
+
+P            F1    F0    F2    Led
+Abierto      0     X     0     Off
+Abierto      X     0     0     F1
+Abierto      O     O     X     F2
+Cerrado      0     0     0     ON
+
+F1=0.5 [KHz]
+F2=1 [KHz]
+
+
+
+
+Notas: debido al interruptor que se tiene, no puede existir un `1' al mismo tiempo en las
+terminales PB0 y PB1, también, que el led debe ser encendido poniendo un `0' en el pin
+PB7,
+
+
+
+
+                                                      2 de 15
+UNAM, Facultad de Ingeniería                                                                            16/08/2017 13:20
+Autor: Santiago Cruz Carlos                                                                         Titulo: Interrupciones
+______________________________________________________________________________________________________________________
+
+                 INICI
+                   O
+
+        Programar puerto B
+
+
+        Iniciar con led OFF
+
+
+        Leer estado de pto
+                 B
+                                 SI
+
+                    P                     Enciende led
+                 cerrado
+                    ¿?
+            NO
+                                SI
+
+                 ¿Posición                  Genera F1
+                    F1?
+
+             NO
+                                 SI
+                 ¿Posición                  Genera F2
+                    F2?
+
+              NO
+
+                 Apagar led
+
+
+                 INICI
+                   O
+
+        Programar puerto B
+
+
+        Iniciar con led OFF
+
+
+        Leer estado de pto
+                 B
+                                 SI
+
+                    P                     Enciende led
+                 cerrado
+                    ¿?
+                                                      3 de 15
+
+                 ¿Posición                  Genera F1
+UNAM, Facultad de Ingeniería                                                                            16/08/2017 13:20
+                  ¿Posición
+Autor: Santiago Cruz Carlos                 Genera F2                                               Titulo: Interrupciones
+______________________________________________________________________________________________________________________
+                      F2?
+
+
+
+
+               Apagar led
+
+
+
+
+                                                      4 de 15
+UNAM, Facultad de Ingeniería                                                                            16/08/2017 13:20
+Autor: Santiago Cruz Carlos                                                                         Titulo: Interrupciones
+______________________________________________________________________________________________________________________
+
+
+PORTB                EQU           $01
+DDRB                 EQU           $03
+
+                     LDX           #$0000
+                     LDAA          #$
+
+
+                     BRSET         PORTB,X,$08,ENC
+                     BRSET         PORTB,X,$01,FREC1
+                     BRSET         PORTB,X,$01,FREC2
+
+                     BSET          PORTB,X,$80
+                     BRA           SIGUE
+
+ENC                  BRCLR         PORTB,X,$80
+                     BRA           SIGUE
+
+FREC1                BCLR          PORTB,X,$80
+                     JSR           RETRASO1
+                     BSET          PORTB,X,$80
+                     JSR           RETRASO1
+                     BRA           SIGUE
+
+FREC2                BCLR          PORTB,X,$80
+                     JSR           RETRASO2
+                     BSET          PORTB,X,$80
+                     JSR           RETRASO2
+                     BRA           SIGUE
+
+RETRASO1             LDY           #$(*)
+INLP                 NOP
+                     DEY
+                     BNE           INLP
+                     RTS
+
+
+
+
+                                                      5 de 15
+UNAM, Facultad de Ingeniería                                                                            16/08/2017 13:20
+Autor: Santiago Cruz Carlos                                                                         Titulo: Interrupciones
+______________________________________________________________________________________________________________________
+Desarrollar un programa que indique el numero de interruptores cerrados, el numero
+desplegará en binario, se deberá obtener mediante interrupción externa, es decir cada vez
+que se cierre el interruptor `s' alambrado a la terminal IRQ_
+
+
+
+
+                                                      6 de 15
+UNAM, Facultad de Ingeniería                                                                            16/08/2017 13:20
+Autor: Santiago Cruz Carlos                                                                         Titulo: Interrupciones
+______________________________________________________________________________________________________________________
+
+                  INICIO                                 Limpiar registro de cuentas
+
+
+          Programar puerto B
+                                                             Leer el puerto B
+
+
+                                                                               S
+                                                                               I
+       Iniciar con leds apagados                             ¿A
+                                                          cerrado?                      Incrementa
+                                                                                        registro de
+          Habilitar interrupción                                                          cuentas
+                                                   NO
+
+                                                                              S
+                                                                              I
+                                                             ¿B                         Incrementa
+                                                          cerrado?                      registro de
+                                                                                          cuentas
+
+
+                                                    NO
+                                                                              S
+                                                                              I
+                                                             ¿C                         Incrementa
+                                                          cerrado?                      registro de
+                                                                                          cuentas
+
+                                                  NO
+
+                                                   Rota registro de cuentas
+
+
+
+
+                                                   almacena cta en puerto b
+
+
+
+
+                                                                 RTI
+
+
+
+
+                                                       7 de 15
+UNAM, Facultad de Ingeniería                                                                            16/08/2017 13:20
+Autor: Santiago Cruz Carlos                                                                         Titulo: Interrupciones
+______________________________________________________________________________________________________________________
+
+
+PORTB                   EQU         $01
+DDRB                    EQU         $03
+
+                        LDX         #$0000                                      ;PROGRAMA
+                        LDAA        #$C0                                        ;1100 0000
+                        STAA        DDRB,X                                      ;
+
+CICLO                   CLI
+                        BRA         CICLO
+
+INTERRUPCION            CLRB
+                        BRSET PORTC,X,
+                              $04,INC_REG_CTA_A
+SIGUE1                  BRSET PORTC,X,$02,INC_REG_CTA_B
+SIGUE2                  BRSET PORTC,X,$01,INC_REG_CTA_C
+SIGUE3                  RORB
+                        RORB
+                        RORB
+                        STAB PORTB,X
+                        RTI
+
+INC_REG_CTA_A INCB
+              BRA                   SIGUE1
+INC_REG_CTA_B INCB
+              BRA                   SIGUE2
+INC_REG_CTA_C INCB
+              BRA                   SIGUE3
+
+VECTORES DE
+INTERRUPCION
+                        ORG         $FFF2                                       ;puede estar
+                        DB          $7E                                         ; en otro
+                        DW          INTERRUPCION                                ; orden
+
+
+
+
+                                                      8 de 15
+UNAM, Facultad de Ingeniería                                                                            16/08/2017 13:20
+Autor: Santiago Cruz Carlos                                                                         Titulo: Interrupciones
+______________________________________________________________________________________________________________________
+PROGRAMA
+Desarrollar un programa que genere una frecuencia de 0.5 [khz] por el pin 2 del puerto B
+cada vez que se cierra el interruptor s, (PB0 con resistencia de pull down e interruptor S a
+L+. Una vez generada la frecuencia solo se podrá interrumpir o anular por interrupción
+externa, debiéndose encender el led durante 1 [s] para indicar dicho evento.
+
+
+
+
+                                                      9 de 15
+UNAM, Facultad de Ingeniería                                                                            16/08/2017 13:20
+Autor: Santiago Cruz Carlos                                                                         Titulo: Interrupciones
+______________________________________________________________________________________________________________________
+
+                     INICIO                                                   PB2=0
+
+                  Programar
+                                                                            Prende led
+                   puerto B
+
+
+          Habilitar interrupción
+                                                                            ¿S cerrado?
+
+                                                                                                    si
+      Leer estado de interruptor S
+                                                                         no
+           no
+                                                                      Tiempo de 1s
+                ¿S cerrado ?
+
+
+                               si                                         Apaga led
+
+                   PB2=1
+
+
+                     tiempo
+
+
+                   PB2=0
+
+
+                     tiempo
+
+
+
+
+                                                     10 de 15
+UNAM, Facultad de Ingeniería                                                                            16/08/2017 13:20
+Autor: Santiago Cruz Carlos                                                                         Titulo: Interrupciones
+______________________________________________________________________________________________________________________
+
+
+PORTB                EQU         $01
+DDRB                 EQU         $03
+                     LDX         #$0000
+                     LDAA        #$14
+                     STAA        DDRB,X
+HABILITA             CLI
+ESPERA               BRCLR       PORTB,X,$01, ESPERA
+INFINITO             BSET        PORTB,X,$04
+
+
+             JSR                 TIEMPO
+             BCLR                PORTB,X,$04
+             JSR                 TIEMPO1S
+             BRA                 INFINITO
+TIEMPO       LDY                 #$63D
+LAZO1        NOP
+             DEY
+             BNE                 LAZO1
+             RTS
+INTERRUPCION BCLR                PORTB,X,$04
+             BSET                PORTB,X,$10
+AUN          BRSET               PORTB,X,$01, AUN
+             JSR                 1SEG                             (4)
+             BCLR                PORTB,X,$10
+             BRA                 HABILITA
+
+
+1SEG                 LDAA        #$14                             (1)         TIEMPO=
+OTRO2                LDY         #$FFFF                           (2)         {4JSR+1LDAA
+OTRO1                NOP                                          (1)         2LDY+[6+6(65535)]20+5RTS}0.
+                     NOP                                          (1)         125[s]
+                     DEY                                          (1)         =0.983 [s]
+                     BNE         OTRO1                            (3)
+                     DECA                                         (1)
+                     BNE         OTRO2                            (3)
+                     RTS                                          (5)
+                     ORG         $FFF2
+                     DB          $7E
+                     DW          INTERRUPCION
+
+
+
+
+                                                     11 de 15
+UNAM, Facultad de Ingeniería                                                                            16/08/2017 13:20
+Autor: Santiago Cruz Carlos                                                                         Titulo: Interrupciones
+______________________________________________________________________________________________________________________
+PROBLEMA
+Desarrolle un programa que encienda el led V 5 veces cada vez que el interruptor a se
+cierre, el tiempo de encendido como el de apagado debe ser de 1 [s], si el interruptor A,
+permanece cerrado después de que se haya completado el ciclo el led R se debe encender y
+permanecer así hasta que el interruptor A se abra y esperar al próximo cierre del
+interruptor para repetir el ciclo.
+
+El interruptor A de contacto momentáneo esta conectado al pin PB0 y a +L y una resistencia
+de pull down (resistencia a tierra), led V, ánodo a PB6 y cátodo a tierra; led R, ánodo a
+PB7, cátodo a tierra.
+
+
+
+
+                                                     12 de 15
+UNAM, Facultad de Ingeniería                                                                            16/08/2017 13:20
+Autor: Santiago Cruz Carlos                                                                         Titulo: Interrupciones
+______________________________________________________________________________________________________________________
+
+
+                          inicio
+
+                                                                                            c
+           Programar puerto
+                  B                                                       no
+
+
+                     Iniciar leds                                                        A aun
+                                                                                         cerrad
+                      apagados
+                                                                                           o?
+
+                                                                               si
+      no
+
+                         ¿A
+                      cerrado?                                                 Encender led R
+                si
+
+
+
+                Carga A con 5
+                                                                                           A
+                                                                                         abierto
+                                                                                            ?
+             Enciende led V
+                                                                                    si
+
+
+                     Tiempo 1s
+                                                                                    Apagar led R
+
+
+                     apaga led V
+
+
+                     Tiempo 1s
+
+
+                Decremento A
+
+
+
+           no
+
+                           A=
+                           0?
+                     si
+
+
+
+                             c
+
+
+
+                                                     13 de 15
+UNAM, Facultad de Ingeniería                                                                            16/08/2017 13:20
+Autor: Santiago Cruz Carlos                                                                         Titulo: Interrupciones
+______________________________________________________________________________________________________________________
+PORTB                EQU         $01
+
+
+
+
+                                                     14 de 15
+UNAM, Facultad de Ingeniería                                                                            16/08/2017 13:20
+Autor: Santiago Cruz Carlos                                                                         Titulo: Interrupciones
+______________________________________________________________________________________________________________________
+DDRB                 EQU         $03
+                     LDX         #$0000
+                     LDAA        #$C0                                         ; 1 = para salida
+                     STAA        DDRB,X                                       ; 0 = para entrada
+
+REGRESA              LDAA        #$00
+                     STAA        PORTB,X
+
+PREG                 BRCLR       PORTB,X,$01,PREG
+                     LDAA        #$05
+SIGUE                BSET        PORTB,X,$40
+                     JSR         1SEGUNDO
+                     BCLR        PORTB,X,$40
+                     JSR         1SEGUNDO                                     ;ojo, aquí quedo apagado V
+                     DECA
+                     BNE         SIGUE
+
+                     BRCLR       PORTB,X,$01,LEE
+                     BSET        PORTB,X,$80
+ESP                  BCLR        PORTB,X,$01,ESP
+                     BCLR        PORTB,X,$80
+                     BRA         REGRESA
+1SEGUNDO             LDAA        #$14                            (1)          TIEMPO=
+OTRO2                LDY         #$FFFF                          (2)          {4JSR+1LDAA
+                                                                              2LDY+[6+6(65535)]20+5RTS}0.125[s]
+OTRO1                NOP                                         (1)          =0.983 [s]
+                     NOP                                         (1)
+                     DEY                                         (1)
+                     BNE         OTRO1                           (3)
+                     DECA                                        (1)
+                     BNE         OTRO2                           (3)
+                     RTS                                         (5)
+
+
+
+
+                                                     15 de 15
+

@@ -1,0 +1,111 @@
+UNAM, FACULTAD DE INGENIERÍA                                        SANTIAGO CRUZ CARLOS
+APUNTES DE MICROPROCESADORES Y MICROCONTROLADORES                    02/04/2006 10:33
+O4/P4
+PROBLEMA NUMEROS PARES
+
+Se tiene una lista de números de la localidad $00 a la $7F no signados, desarrollar un
+programa que enliste los números pares de dicha lista a partir de la localidad $80 e
+indique el numero de los mismos en la localidad $100.
+
+
+$00        D1
+           D2
+            *
+            *
+            *
+            *
+$7F        Dn
+$80    Dato_par1
+$81    Dato_par2
+$82         *
+            *
+            *
+$100   # de pares
+
+Con función AND
+
+01010101
+00000001
+
+00000001 ­-> resultado diferente de cero, => impar Z=0
+
+01010100
+00000001
+
+00000000 ­-> resultado igual a cero, par.             La bandera Z se activa Z=1
+
+
+
+
+                             1 de 3 Problemas (parte 3)
+UNAM, FACULTAD DE INGENIERÍA                               SANTIAGO CRUZ CARLOS
+APUNTES DE MICROPROCESADORES Y MICROCONTROLADORES           02/04/2006 10:33
+O4/P4
+               INICIO
+
+       Limpiar localidad
+             $100
+
+     Declara apuntador px
+
+
+     Declara apuntador px
+
+
+       Carga dato via Px
+
+
+         Dato (and) 01
+
+
+                         SI
+                                   Carga dato via px
+               Z=1?
+
+         NO                        Transfiere dato a
+                                      memoria
+          Incrementa
+               px                     Incrementa
+    NO                                  contador
+
+                Px=$8                Incrementa py
+                  0
+
+          SI
+
+                INICIO
+
+
+
+
+                              2 de 3 Problemas (parte 3)
+  UNAM, FACULTAD DE INGENIERÍA                                     SANTIAGO CRUZ CARLOS
+  APUNTES DE MICROPROCESADORES Y MICROCONTROLADORES                 02/04/2006 10:33
+  O4/P4
+  CODIGO
+
+CONTADOR    EQU    $201          ; definición de pseudoperador
+
+            CLR    CONTADOR
+            LDX    #$00
+            LDY    #$80
+
+SIGUE       LDAA   $00,X
+            ANDA   #01
+            BEQ    TRANSFIERE ; si son iguales, la bandera z=1.
+INC_PX      INX
+            CPX    #$80
+            BNE    SIGUE
+FIN         BRA    FIN
+
+TRANSFIERE LDAA    $00,X         ;   volvemos a cargar A, debido a que ANDA modifica A
+           STAA    $00,Y         ;   almacena el dato de A de manera indexada a Y+00
+           INC     CONTADOR      ;   incrementa registro contador
+           INY                   ;   incrementa py
+           BRA     INC_PX        ;   salta a etiqueta INC_PX
+
+
+
+
+                             3 de 3 Problemas (parte 3)
+

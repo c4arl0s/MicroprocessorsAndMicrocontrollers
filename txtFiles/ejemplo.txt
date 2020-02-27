@@ -1,0 +1,21 @@
+EJEMPLO_USO_DEL_MNEMÓNICO_ANDA
+
+         org   $100
+
+porta    equ   $1000 ; dirección del puerto A
+portb    equ   $1004 ; dirección del puerto B
+
+inicio   ldaa porta ;   carga el acum A con lo que tenga elpuertoA
+         anda #$01         ; AND puerto A       A*MEM => puerto A
+                    ;   0 0 0 0 0 0 0 1
+                    ;   A7 A6 A5 A4 A3 A2 A1 A0
+                    ;
+         bne inicio ;   branch no equal; si no son iguales salta a inicio
+         inc portb ;    si, si son iguales salta incrementa el puerto B
+         bra inicio ;   branch always => inicio
+
+en este experimento comparamos el bit numero 0 PA0 con lo que el
+microcontrolador hc11 mantienen, mientras con un jumper mandábamos un
+cero a ese bit, cada vez que hacíamos esto, podíamos ver que en el puerto B
+se incrementaba.
+

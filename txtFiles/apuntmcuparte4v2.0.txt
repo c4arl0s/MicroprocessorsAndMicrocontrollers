@@ -1,0 +1,118 @@
+           UNIVERSIDAD NACIONAL
+            AUTÓNOMA DE MÉXICO
+
+
+               FACULTAD DE INGENIERIA
+
+
+Trabajo:
+
+EQUIPO:
+                      SANTIAGO CRUZ CARLOS
+
+
+ASIGNATURA:
+
+GRUPO:
+
+
+
+
+  miércoles, 16 de agosto de 2017, Ciudad Universitaria, México, DF
+UNAM, Facultad de Ingeniería                                                          16/08/2017 13:17
+Autor: Santiago Cruz Carlos                                                       Titulo: interrupciones
+___________________________________________________________________________
+________
+
+INTERRUPCIONES
+
+                                                       1. IRQ interrupción externa
+                                                       2. PSI interrupción en modo síncrono
+                               ENMASCARABLES
+                                                       3. SCI interrupción en modo
+                                                          asíncrono de comunicación serie.
+INTERRUPCIONES
+                                                       1. XIRQ interrupción externa no
+                                    NO
+                                                          enmascarable
+                               ENMASCARABLES           2. SWI interrupción por software
+
+
+IRQ INTERRUPCIÓN EXTERNA
+
+Se lleva acabo si el bit I del registro de código de condición de estados es `0' y el pin
+exterior IRQ_ es bajo, o sea `0', es decir se tiene que dar las dos siguientes condiciones:
+
+
+     CCR                S       X      H       I='0'        N        Z        V              C
+
+IRQ='0'
+
+
+
+
+    1 Cuando la interrupción es reconocida, el microprocesador termina la instrucción que
+      esta en proceso.
+    2 El estado actual de los registros del microprocesador se guarda en la pila del stack.
+    3 La bandera I del CCR se pone en `1', este enmascaramiento asegura que ninguna
+      interrupción sea atendida hasta que la presente haya sido atendida.
+    4 La dirección de la rutina del servicio de esta interrupción vector de interrupción esta
+      especificada por el contenido de una dirección de 2 Bytes de acuerdo al siguiente
+      esquema:
+
+
+
+                                           2 de 3
+UNAM, Facultad de Ingeniería                                                                            16/08/2017 13:17
+Autor: Santiago Cruz Carlos                                                                         Titulo: interrupciones
+___________________________________________________________________________
+________
+CONDICIONES INICIALES AL RESET
+
+                         7                        6                  5 4 3 2 1 0
+INTCR IRQE='0'                              IRQEN='1'                - - - - - - $001E
+           Interrupción configurada
+                                            Interrupción conectada
+           para reconectar de nivel bajo
+
+
+                    7             6 5      4                     3 2      1                  0
+PUCR           PUPKE='1'          - - PUPEE='1'                  - - PUPBE='0'          PUPAE='0'        $000C
+PULL     UP
+CONTROL
+REGISTER
+
+
+
+
+               0    Resistencias de pull deshabilitadas
+PUPXE
+               1    Resistencias de pull habilitadas
+
+                                           SP       CCR
+Pc            ------------                           B
+              ------------                           A
+              ------------     *IRQ                  XH
+              ------------                           XL
+              -------------                          YH
+                                                     YL
+                                                   RTNH              $FFF2    IRQH
+                                                   RTNL              $FFF3    IRQL
+                                           SP        00
+                                                   Stack
+INT           --------------
+              --------------                                                       ;esto va al final del prog
+              --------------                                         ORG     $FFF2
+              --------------                                         DB      $007E
+                   RTI                                               DW      INT   ; define Word
+
+
+
+Secuencia de llamada de interrupción
+Secuencia de retorno de interrupción
+
+
+
+
+                                                           3 de 3
+

@@ -1,0 +1,189 @@
+UNAM, FACULTAD DE INGENIERÍA                                      SANTIAGO CRUZ CARLOS
+APUNTES DE MICROPROCESADORES Y MICROCONTROLADORES                  14/04/2006 10:26
+O4/P4
+PROGRAMA EXAMEN
+Realizar un programa que compare dos grupos de datos, que se muestran abajo, y que
+almacene los datos iguales a partir de una localidad $80, y que almacene los datos
+diferentes a partir de otra localidad $C0.
+
+Arquitectura: acumuladores A y B, registro índice X y Y.
+
+Ejemplo:
+
+X+0      $00        2B              X+40        $40        2F
+X+1                 1D              X+41                   45
+X+2                 2C              X+42                   2C
+X+3                 FE              X+43                   FF
+X+4                 0E              X+44                   0E
+          ·          ·                           ·          ·
+          ·          ·                           ·          ·
+          ·          ·                           ·          ·
+         $3F        Dn                          $7F        Dn
+
+Y+80     $80        2C               Y+C0       $C0        2B
+Y+81     $81        0E               Y+C1       $C1        2F
+         $82                         Y+C2       $C2        1D
+         $83                         Y+C3       $C3        45
+         $84                         Y+C4       $C4        FE
+                                     Y+C5       $C5        FF
+
+
+¿Cómo vaciar los datos en las direcciones correspondientes?
+
+Estrategia a seguir: que el apuntador x apunte a los datos a comparar, después que el
+apuntador y apunte a las direcciones de destino.
+
+Segunda estrategia: primero buscar los números iguales, y almacenarlos, después buscar
+los números diferentes y almacenarlos.
+
+
+
+
+                         1 de 5 Comunicación paralela (parte 3)
+UNAM, FACULTAD DE INGENIERÍA                                   SANTIAGO CRUZ CARLOS
+APUNTES DE MICROPROCESADORES Y MICROCONTROLADORES               14/04/2006 10:26
+O4/P4
+                               INICIO
+
+                     Declarar apuntador
+                     px
+                     Declarar apuntador
+                     py
+                       Carga dato vía px
+
+
+                            Comparación
+                              indexada
+                                        Si
+
+                               Z=
+                               1?
+
+                                     Transfiere dato a
+   Transfiere dato de A a                memoria
+          memoria
+
+  Transfiere dato vía pX a
+          memoria
+
+                                     Incrementa
+                                    apuntador px
+
+                                     Incrementa
+                                    apuntador py
+
+                                                   No
+
+                                         px=40
+                                           ?
+
+                                             FIN
+
+
+
+
+                      2 de 5 Comunicación paralela (parte 3)
+UNAM, FACULTAD DE INGENIERÍA                                    SANTIAGO CRUZ CARLOS
+APUNTES DE MICROPROCESADORES Y MICROCONTROLADORES                14/04/2006 10:26
+O4/P4
+
+               LDX        $00
+               LDY        $40
+               LDAA       $00,X
+               CMPA       $40,X
+               BEQ        TRANSFERIR
+               STAA       $C0,Y
+               LDAA       $40,X
+               INX
+               STAA       $C0,X
+               BRA        REGRESA
+
+   1.   Declarar apuntador px
+   2.   Declarar apuntador py
+   3.   Carga acumulador A vía px
+   4.   Comparación indexada vía py
+
+
+
+
+                       3 de 5 Comunicación paralela (parte 3)
+UNAM, FACULTAD DE INGENIERÍA                                               SANTIAGO CRUZ CARLOS
+APUNTES DE MICROPROCESADORES Y MICROCONTROLADORES                           14/04/2006 10:26
+O4/P4
+             INICIO                                            B
+
+
+  Declarar apuntador                                 Declarar apuntador
+  px                                                 px
+  Declarar apuntador                                 Declarar apuntador
+  py                                                 py
+     Carga dato vía px                                  Carga dato vía px
+
+
+       Comparación                                        Comparación
+         indexada                                           indexada
+        No                                                                 Si
+                      Z=
+                      1?                                       Z=
+                                 si                            1?
+                                                        No
+
+          Transfiere dato a
+           memoria vía py                               Transfiere dato a
+                                                         memoria vía py
+
+                Incrementa                                Carga dato vía
+               apuntador py                                     px
+
+                                                          Incrementa py
+                Incrementa
+               apuntador px
+                                                         Transfiere dato
+                                      No                     vía py
+
+                                                          Incrementa px
+                           px=40
+             si              ?
+                                                              px=80
+                                                   No           ?
+                             B
+                                                                      si
+
+                                                               FIN
+
+
+
+
+                             4 de 5 Comunicación paralela (parte 3)
+UNAM, FACULTAD DE INGENIERÍA                                  SANTIAGO CRUZ CARLOS
+APUNTES DE MICROPROCESADORES Y MICROCONTROLADORES              14/04/2006 10:26
+O4/P4
+
+             LDX        $00
+             LDY        $80
+RETURN1      LDAA       $00,X
+             CMPA       $40,X
+             BNEQ       CONTINUA1
+             STAA       $C0,Y
+             INY
+             INX
+             BNEQ       RETURN1
+
+             LDX        $00
+             LDY        $80
+RETURN2      LDAA       $00,X
+             CMPA       $40,X
+             BEQ        CONTINUA2
+             STAA       $C0,Y
+             LDAA       $40,X
+             INY
+             STAA       $C0,Y
+             INX
+             BNEQ       RETURN2
+FIN          BRA        FIN
+
+
+
+
+                     5 de 5 Comunicación paralela (parte 3)
+

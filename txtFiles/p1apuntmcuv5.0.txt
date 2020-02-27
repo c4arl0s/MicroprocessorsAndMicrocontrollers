@@ -1,0 +1,696 @@
+UNAM, FACULTAD DE INGENIERÍA                                      SANTIAGO CRUZ CARLOS
+APUNTES DE MICROPROCESADORES Y MICROCONTROLADORES                  02/05/2006 07:44
+O5/P5
+       APUNTES DE MICROPROCESADORES Y MICROCONTROLADORES
+
+Temario
+  1. Introducción a los microcontroladores (MCU) y Microprocesadores (MPU)
+  2. Estructura de un MPU
+  3. Estructura de un MCU
+  4. Elementos estructurales de la memoria
+  5. Programación del MPU
+  6. Interfase del MCU con dispositivos externos
+  7. Puertos de comunicación E/S paralelo
+  8. Puertos de comunicación serial asíncrona y síncrona
+  9. Temporizadores
+  10.Aplicaciones de los MPU y MCU
+
+BIBLIOGRAFIA
+
+                                                               TEXAS
+                     INTEL            MOTOROLA
+                                                            INSTRUMENT
+                 Computadoras      Control de procesos       Procesamiento
+    NICHO
+                  personales          industriales            digital (DSP)
+
+
+
+ARQUITECTURA VON NEWMAN
+
+Propuso dos conceptos básicos:
+   1. Utilización del sistema de numeración binaria
+   2. Almacenamiento de la secuencia de instrucciones de que consta el programa de
+      una memoria interna, fácilmente accesible, junto con los datos de referencia,
+      con esto se aumento la velocidad de proceso.
+
+           Un solo bus de datos y direcciones, el mismo bus se emplea para enviar y
+recibir instrucciones y datos. Los datos y las instrucciones son almacenados en una
+memoria principal, CPU va a la memoria principal, extrae las instrucciones y después
+los datos.
+
+ARQUITECTURA HARVARD
+
+Esta arquitectura se caracteriza por tener por separado el bus de datos y el bus de
+direcciones. Esto significa que las instrucciones y los datos son almacenados en
+memorias diferentes que son accedidas de forma separada por la CPU.
+
+
+
+
+                   1 de 19 Introducción a los mP y mC (parte 1)
+UNAM, FACULTAD DE INGENIERÍA                                      SANTIAGO CRUZ CARLOS
+APUNTES DE MICROPROCESADORES Y MICROCONTROLADORES                  02/05/2006 07:44
+O5/P5
+
+
+
+                          ARQUITECTURA VON
+                              NEWMAN
+
+
+  MEMORIA
+     MEMORIA
+  PRINCIPAL
+     PRINCIPAL                                           CPU   CPU
+
+
+  DATOS +                         BUS de CONTROL         DATOS +
+      DATOS
+  INSTRUCCIONES                                          INSTRUCCIONES
+                                                            UNIDAD DE
+        +                                                   CONTROL
+  INSTRUCCIONES                BUS DE DIRECCIONES
+
+
+                                                            UNIDAD
+                          BUS DE DATOS E INSTRUCCIONES     OPERATIVA
+
+
+                                                         DATOS +
+                                                         INSTRUCCIONES
+                             ARQUITECTURA
+                               HARVARD
+
+
+
+ MEMORIA
+   MEMORIA DE                   CPU     CPU                CPU
+                                                             MEMORIA DE
+ PRINCIPAL
+ INSTRUCCIONES                                                 DATOS
+
+                                DATOS +
+ DATOS +                        INSTRUCCIONES
+                                   UNIDAD DE               DATOS +
+ INSTRUCCIONES                     CONTROL                 INSTRUCCIONES
+                                                               DATOS
+  INSTRUCCIONES
+
+
+                                     UNIDAD
+                                    PERATIVA
+
+
+                                DATOS +
+                                INSTRUCCIONES
+
+
+
+
+                   2 de 19 Introducción a los mP y mC (parte 1)
+UNAM, FACULTAD DE INGENIERÍA                                          SANTIAGO CRUZ CARLOS
+APUNTES DE MICROPROCESADORES Y MICROCONTROLADORES                      02/05/2006 07:44
+O5/P5
+                         ELEMENTOS DE UNA COMPUTADORA
+                               UNIDAD ARITMÉTICA
+                                    LOGICA
+
+
+
+      UNIDAD                                                     UNIDAD
+        DE                    UNIDAD DE MEMORIA                    DE
+     ENTRADA                                                     SALIDA
+
+
+
+                              UNIDAD DE CONTROL
+
+
+
+
+MICROPROCESADORES
+
+   1. La unión de una Unidad Central de Control y la ALU, junto con algunos registros
+      de transferencia forman la Unidad Central de Procesos o CPU de una
+      computadora.
+   2. El concepto de CPU nace con las computadoras electrónicas de la primera
+      generación fabricadas con tubo de vacío.
+   3. El concepto de Microprocesador nace con las computadoras electrónicas de la
+      tercera generación fabricadas a base de circuitos integrados.
+
+
+                UN MICROPROCESADOR ES UN CPU INTEGRADO
+
+ALU: procesa uno o dos números binarios efectuando operaciones aritméticas y
+operaciones lógicas.
+UNIDAD DE CONTROL: responsable del control de todo el sistema, se encarga de
+proporcionar la secuencia y tiempo para el procesamiento de las instrucciones axial
+como la trayectoria y destino de los datos, se apoya en una señal de reloj el cual
+sincroniza el desarrollo temporal de todas las señales de control dentro y fuera del
+microprocesador. El sistema en cada instante en un estado perfectamente definido.
+ANALOGIA: un policía de transito, dice quien pasa y quien no, su dirección y el
+momento en que deben hacerlo.
+
+REGISTRO DE CONTROL DE CONDICION DE ESTADOS (CCR): este registro
+proporciona información acerca de la última operación efectuada en la ALU, también
+conocido como REGISTRO DE BANDERAS.
+
+ACUMULADORES A Y B: registros para almacenar operandos para ser procesados por
+la ALU.
+
+                       3 de 19 Introducción a los mP y mC (parte 1)
+UNAM, FACULTAD DE INGENIERÍA                                        SANTIAGO CRUZ CARLOS
+APUNTES DE MICROPROCESADORES Y MICROCONTROLADORES                    02/05/2006 07:44
+O5/P5
+
+REGISTRO DE DIRECCIONAMIENTO DE MEMORIA (MAR): registro para
+direccionar unívocamente localidades de memoria principal. Si 16 bits, 2 16= localidades
+direccionadas.
+
+REGISTRO DE DIRECCIONAMIENTO DE DATOS (MDR): registro para transferir
+datos desde o hacia la memoria principal.
+
+REGISTRO DE INSTRUCCIONES (IR): registro para almacenar el código de la
+instrucción de cada operación efectuada por el microprocesador.
+
+CONTADOR DE PROGRAMA (PC): registro para almacenar el número de la
+siguiente instrucción a ser procesada por el microprocesador.
+
+REGISTRO X: registro para el manejo de índices, es como un directorio, con índice
+para acceder rápidamente y hacer tareas.
+
+APUNTADOR DE PILA (SP): registro para el manejo de subrutinas o interrupciones y
+otras operaciones.
+
+
+
+
+                        COMUNICACIÒN ENTRE MODULOS
+
+La comunicación entre los módulos se efectúa en atención al tipo de información que se
+procesa. Puede ser de 3 tipos:
+
+CONTROL
+DATOS
+DIRECCIONES
+
+
+
+
+                     4 de 19 Introducción a los mP y mC (parte 1)
+UNAM, FACULTAD DE INGENIERÍA                                      SANTIAGO CRUZ CARLOS
+APUNTES DE MICROPROCESADORES Y MICROCONTROLADORES                  02/05/2006 07:44
+O5/P5
+
+
+ ¿ QUE ES ESTO ?: SE INTEGRARON EN UN SOLO CHIP Y SE LE LLAMA
+                      MICROCONTROLADOR
+
+                            BUS DE DIRECCIONES
+
+
+
+     Microproc                                                UNIDAD
+      esador               RAM                ROM             DE E/S
+
+
+
+
+                      P+RAM+ROM+PUERTOS-E/S
+
+
+
+
+                   5 de 19 Introducción a los mP y mC (parte 1)
+UNAM, FACULTAD DE INGENIERÍA                                        SANTIAGO CRUZ CARLOS
+APUNTES DE MICROPROCESADORES Y MICROCONTROLADORES                    02/05/2006 07:44
+O5/P5
+APUNTE ANEXO PARA LA COMPRENSION DE LA MAR Y LA MDR
+
+  REGISTRO     DE           DECODIFICADOR
+  DIRECCION    DE           DE DIRECCIONES
+  MEMORIA (MAR)              (2n-1) líneas de
+      n lineas                 direcciones
+
+
+
+           Contiene la                Activa una
+          dirección que             sola línea de
+          debe "abrirse            direcciones en
+            "para los                la memoria
+              datos
+                                                         REGISTRO DE
+                                                          DATOS DE
+                                                        MEMORIA (MDR)
+                                                       (Salen los 8 bits)
+
+
+
+                    Esta diseñado de modo que se
+                       conecte adecuadamente
+                     todas las celdas en la unidad
+                              de memoria
+
+
+
+PROBLEMA:
+Para una memoria RAM de 2Kb y una ROM de 4Kb se usan como memoria principal de un
+microprocesador que tiene una longitud de palabra de 1 byte.
+   a) Determinar el número de palabras de la memoria RAM
+
+1Kb=1024 bits
+#bits totales RAM = 2(1024)=2048 bits --> 2048 [bits]/ 8 [bits/palabra]= 256 [palabras]
+   b) Determinar el número de palabras de la memoria ROM
+1Kb=1024 bits
+#bits totales ROM= 4(1024)=4096 bits --> 4096 [bits]/ 8 [bits/palabra]= 512 [palabras]
+
+   c) Numero total de palabras de la memoria total.
+#palabras totales = =256+512 = 768 palabras
+
+     d) Número de líneas necesarias para el direccionamiento.
+2#lineas=768
+#lineas pertenece a los enteros.
+#lineas = 10
+
+
+                    6 de 19 Introducción a los mP y mC (parte 1)
+UNAM, FACULTAD DE INGENIERÍA                                      SANTIAGO CRUZ CARLOS
+APUNTES DE MICROPROCESADORES Y MICROCONTROLADORES                  02/05/2006 07:44
+O5/P5
+
+
+
+
+                       MICROCONTROLADOR MCU
+
+
+               Oscilador
+                y reloj             MPU
+
+
+                                Memoria de
+                                 programa
+
+                                Memoria de
+                                  datos
+
+
+
+                                Puertos de
+                               comunicación
+
+
+
+                Entradas
+                Digitales                           Salidas
+                                                    Digitales
+
+
+
+
+                   7 de 19 Introducción a los mP y mC (parte 1)
+UNAM, FACULTAD DE INGENIERÍA                                          SANTIAGO CRUZ CARLOS
+APUNTES DE MICROPROCESADORES Y MICROCONTROLADORES                      02/05/2006 07:44
+O5/P5
+                             UNIDAD DE CONTROL
+ES UN SISTEMA COMPLETO QUE INCLUYE EN UN SOLO CHIP:
+ PARA QUE SEA MCU DEBE  MPU
+ TENER AL MENOS ESTOS   MEMORIA (ROM,RAM,EPROM, E2PROM
+       ELEMENTOS        PUERTOS DE ENTRADA-SALIDA PARALELO
+                        PUERTOS DE COMUNICACIÓN SERIE ASINCRONA
+                        PUERTOS DE COMUNICACIÓN SERIE SINCRONA
+                        CONVERTIDOR A/D
+                        UNIDAD DE TIEMPO (TIMERS)
+                        OSCILADOR Y RELOJ INTERNOS
+     LA MEMORIA NO ES MASIVA YA QUE SOLO SE REQUIERE PARA CONTROL DE PROCESOS.
+              ESTRUCTURA DE UN MICROPROPROCESADOR
+      ES EL CENTRO NERVIOSO DEL MPU, PROPORCIONA LA SECUENCIA Y TIEMPO PARA EL
+ PROCESAMIENTO DE LAS INSTRUCCIONES, ASI COMO PARA EL CONTROL DE LA TRAYECTORIA Y EL
+                                DESTINO DE LOS DATOS.
+
+                                        SECUENCIA
+
+       UNIDAD DE                          TIEMPO
+       CONTROL
+                                         DATOS
+                                         DATOS
+                                           +
+                                     TRAYECTORIA  Y
+                                           + DE LOS
+                                     INSTRUCCIONES
+                                     DESTINO
+        DATOS                        INSTRUCCIONES
+                                     DATOS
+          +
+    INSTRUCCIONES
+                         En una instrucción en un P se efectúa uno o mas ciclos
+¿CÓMO ES LA
+                         de procesamiento (o ciclo máquina, o ciclo de
+SECUENCIA?               procesamiento)
+                                                         Direccionamiento de una
+                                                          localidad de memoria
+                           FETCH
+   CICLO DE                               Etapa de          principal vía MAR y
+PROCESAMIENTO                         direccionamiento    transferencia de datos
+                                                             entre el MDR y la
+ (consta de dos                                             memoria principal
+    etapas)
+                                         Etapa de          Se efectúa la operación
+                         EXECUTE
+                                         ejecución                indicada.
+
+   El formato para        Campo para especificar la                     Al menos un
+                                                         OPERADOR
+    especificar una            instrucción                                  ciclo
+   instrucción esta
+ compuesto por dios
+                          Campo para especificar los                     Uno o más
+        campos                                           OPERANDO
+                                   datos                                   ciclos
+ fundamentalmente
+
+Cada operador y operando ocupan un lugar especifico en la memoria principal de
+forma tal que c/u de ellos, tiene que ser direccionado en forma secuencial y uno
+a la vez
+
+
+                    8 de 19 Introducción a los mP y mC (parte 1)
+UNAM, FACULTAD DE INGENIERÍA                                       SANTIAGO CRUZ CARLOS
+APUNTES DE MICROPROCESADORES Y MICROCONTROLADORES                   02/05/2006 07:44
+O5/P5
+
+           CICLO DE PROCESAMIENTO Y CICLO DE RELOJ DEL MPU
+
+Sea F=2[MHz]=(1/4)*8[MHz]
+
+T=0.5[s]
+
+
+
+
+                    0.5 [s]                              0.5 [s]
+                    FETCH                              EXECUTE
+
+                                       1 [s]
+
+                            CICLO DE PROCESAMIENTO
+
+EL CICLO DE PROCESAMIENTO SE EJECUTA EN 1[s]
+NO CONFUNDIR EL CICLO DE PROCESAMIENTO CON EL CICLO DE RELOJ DEL MPU
+
+
+
+
+                   9 de 19 Introducción a los mP y mC (parte 1)
+UNAM, FACULTAD DE INGENIERÍA                                       SANTIAGO CRUZ CARLOS
+APUNTES DE MICROPROCESADORES Y MICROCONTROLADORES                   02/05/2006 07:44
+O5/P5
+
+
+EJEMPLO:
+De acuerdo a la siguiente instrucción del P especificado determinar el número de ciclos
+necesarios para que se efectúe la instrucción y lo que sucede en cada ciclo.
+MPU  8 BITS
+MEMORIA PRINCIPAL  65KBYTE
+INSTRUCCIÓN: suma contenido de la localidad de memoria $04b5 al contenido del
+acumulador y coloca el resultado en el acumulador
+            FALTA DIAGRAMA ILUSTRATIVO DE LAS OPERACIONES
+
+
+
+
+                   10 de 19 Introducción a los mP y mC (parte 1)
+UNAM, FACULTAD DE INGENIERÍA                                                                SANTIAGO CRUZ CARLOS
+APUNTES DE MICROPROCESADORES Y MICROCONTROLADORES                                            02/05/2006 07:44
+O5/P5
+
+
+
+
+                              4 CICLOS DE TRABAJO
+FETCH            EJECUTE FETCH EJECUTE FETCH EJECUTE FETCH                                                 EJECUTE
+                                                                                                  Se
+       Pc                              Se                                                    direcciona
+  direcciona                      direcciona                       Pc                       pc con 04B5
+ localidad 65                    0066 por pc                 direcciona el                   por pc, via
+  via MAR pc                     via MAR , PC                siguiente via                  MAR y como
+  0065 y su                            se                       MAR, su                      el registro
+                                                                                                           Hace la suma la
+contenido se      Se ignora     incrementa y     Se ignora   contenido se      Se igniora         de
+                                                                                                                ALU.
+va al registro                  su contenido                 va al registro                 intrucciones
+       de                           se va al                       de                            esta
+instrucciones                    resgistro de                instrucciones                  completo se
+    via MDR                     instrucciones                   via MDR                      transfierea
+                                    via MDR                                                 a la ALU via
+                                                                                                 MDR
+
+CICLO DE PROCESAMIENTO          CICLO DE PROCESAMIENTO       CICLO DE PROCESAMIENTO         CICLO DE PROCESAMIENTO
+           1                               2                            3                   4
+T1               T2             T3              T4           T5               T6            T7             T8
+
+Señal: cualquier magnitud física de naturaleza eléctrica codificada en código binario.
+Este código puede ejecutarse directamente en el microprocesador.
+
+Lenguaje maquina:
+
+Una reducción significativa en la dificultad de programación se consiguió con la
+ejecución de los lenguajes ensambladores.
+
+Lenguaje ensamblador: el lenguaje que permite escribir instrucciones en forma
+simbólica utilizando nombres fácilmente recordables (nemotécnicos).
+
+
+
+
+                              11 de 19 Introducción a los mP y mC (parte 1)
+UNAM, FACULTAD DE INGENIERÍA                                      SANTIAGO CRUZ CARLOS
+APUNTES DE MICROPROCESADORES Y MICROCONTROLADORES                  02/05/2006 07:44
+O5/P5
+               ESTRUCTURA DE LOS ELEMENTOS DE MEMORIA
+                   ESTADO ACTUAL DE LA TECNOLOGÍA
+
+                      Esquema básico de una memoria
+
+
+
+
+MEMORIA DE SEMICONDUCTOR
+MEMORIA RAM MEMORIA ROM MEMORIA SERIE
+
+
+
+
+                  12 de 19 Introducción a los mP y mC (parte 1)
+UNAM, FACULTAD DE INGENIERÍA                                                                                                   SANTIAGO CRUZ CARLOS
+APUNTES DE MICROPROCESADORES Y MICROCONTROLADORES                                                                               02/05/2006 07:44
+O5/P5
+
+
+
+
+                                                                                       MEMORIA DE SEMICONDUCTOR
+
+
+
+
+                    MEMORIA RAM                                                                        MEMORIA ROM                                       MEMORIA SERIE
+
+
+
+
+     RAM ESTATICA                    RAM DINAMICA   ROM DE PROGRAMACION ENMASCARABLE                                 PROM            BURBUJA MAGNETICA                   CCD'S
+
+                                                                                                                             PROM
+
+
+
+
+                                                                                                                            EPROM
+
+
+
+
+                                                                                                                            E2PROM
+
+
+
+
+                                  PROGRAMA EN                                             PROGRAMA EN
+                                    LENGUAJE                                              LENGUAJE DE
+                                  ENSAMBLADOR                                              ALTO NIVEL
+
+
+
+
+                                  ENSAMBLADOR                                                COMPILADOR
+                                   (traductor)
+
+
+
+
+                                   LENGUAJE                                                LENGUAJE DE
+                                    MÀQUINA                                                  MAQUINA
+                                   (programa
+                                     objeto)
+
+
+
+
+                                  13 de 19 Introducción a los mP y mC (parte 1)
+UNAM, FACULTAD DE INGENIERÍA                                       SANTIAGO CRUZ CARLOS
+APUNTES DE MICROPROCESADORES Y MICROCONTROLADORES                   02/05/2006 07:44
+O5/P5
+
+
+
+
+         MODOS EN QUE TRABAJA EL MICROCONTROLADOR HC11
+
+
+    MODO               MODO B MODO A                       ¿QUE HACE?
+    SINGLE CHIP                               El mC funciona como tal, es decir, con toda
+                                              la disponibilidad de sus puertos y con un
+                           1           0      alcance para el usuario definido por su
+                                              memoria interna
+    EXPANDED                                  El mC funciona como microprocesador,
+                                              direccionando una memoria externa, la cual
+    MODE                                      s direcciona vía el bus de expansión de
+                           1           1      direcciones, perdiéndose por lo tanto los
+                                              puertos D y C del mP. Así, quedan
+                                              disponibles 16 pines para direccionar una
+                                              memoria exterior hasta 64Kb
+    BOOTSTRAP                                 Variación del modo single chip, modo que
+                                              ejecuta un programa bootloader en una
+                                              memoria ROM interna llamada bootstrap. La
+                           0           0      memoria contiene el programa bootloader y
+                                              conjunto especial de vectores de
+                                              interrupción y reset.
+    TEST                                      Modo especial de prueba para los recursos
+                           0           1      del mC, ejecutado por el fabricante.
+
+
+         MODOS EN QUE TRABAJA EL MICROCONTROLADOR HC12
+
+
+
+
+                  14 de 19 Introducción a los mP y mC (parte 1)
+   UNAM, FACULTAD DE INGENIERÍA                                                     SANTIAGO CRUZ CARLOS
+   APUNTES DE MICROPROCESADORES Y MICROCONTROLADORES                                 02/05/2006 07:44
+   O5/P5
+   PROGRAMACION DEL MICROCONTROLADOR Y EL MICROPROCESADOR
+
+                           FORMATO BASE  NUMERICA
+                                      DE INSTRUCCIONES
+               DECIMAL TIPO DE ---
+             OPERADOR                         BASE     OPERANDO OPERANDO
+               HEXADECIMAL        $
+                         DIRECCIONAMIENTO NUMERICA
+Mnemónic       OCTAL
+              Alfabético          @
+                                ASCCI           ASCCI  *según base *según base
+    o          BINARIO            %                     numérica    numérica
+Código de    Hexadecimal     -----------------------         --------             Hexadecimal      Hexadecimal
+Operación
+Numero de
+                LDAB
+                  8                 ---------
+                                                       #  ------
+                                                                                    $        20
+                                                                                              16
+   Bits                                 Tipo de direccionamiento                Base
+                                               (inmediato)                    numérica
+                LDAB                                                                $        20
+                LDAB                                                                $        B3
+
+
+
+
+                          TAMAÑO DE LAS INSTRUCCIONES
+            TAMAÑO DE LAS     TIPO DE                                              NOTACION
+            INSTRUCCIONES     DIRECCIONAMIENTO
+            1 BYTE (SIN
+                              INHERENTE                                            ------
+            OPERANDOS)
+                              DIRECTO     dato reside en memoria                   ------
+                              INMEDIATO Dato   esta junto a
+                                          operador                                 #
+                                    INDEXADO
+                                                         Numero que se ha de
+                                                       sumar al registro índice
+                                                                                   **,X (** de
+                                                            junto al operador      referencia)
+                                                        Estas indican a la CPU
+            2 BYTE (CON                                 que realice un salto de
+                                                        bytes hacia adelante o
+            OPERANDOS) (1+1)                                  hacia atrás. El
+                                                         desplazamiento tiene
+                                                         signo y es de un byte     *,±H (*
+                                    RELATIVO                      por lo
+                                                         que las bifurcaciones
+                                                                                   desplazamiento)
+                                                         sólo se pueden hacer
+                                                          de 128 bytes hacia
+                                                       atrás ó 127 bytes hacia
+                                                                 delante.
+                                                       El dato se encuentra en
+                                                             la dirección de            Condicionado
+                                                       memoria especificada.
+                                                        El dato puede estar en
+            3 BYTE (CON DOS                              cualquier posición de     -
+                                    EXTENDIDO
+            OPERANDOS) (1+2)                            la memoria dentro del
+                                                       límite de las 64Kb, por     - Incondicionado
+                                                           lo que la dirección
+                                                              ocupa 2 bytes.
+
+
+                       15 de 19 Introducción a los mP y mC (parte 1)
+UNAM, FACULTAD DE INGENIERÍA                                      SANTIAGO CRUZ CARLOS
+APUNTES DE MICROPROCESADORES Y MICROCONTROLADORES                  02/05/2006 07:44
+O5/P5
+
+
+
+
+                  16 de 19 Introducción a los mP y mC (parte 1)
+UNAM, FACULTAD DE INGENIERÍA                                      SANTIAGO CRUZ CARLOS
+APUNTES DE MICROPROCESADORES Y MICROCONTROLADORES                  02/05/2006 07:44
+O5/P5
+
+
+
+
+                  17 de 19 Introducción a los mP y mC (parte 1)
+UNAM, FACULTAD DE INGENIERÍA                                      SANTIAGO CRUZ CARLOS
+APUNTES DE MICROPROCESADORES Y MICROCONTROLADORES                  02/05/2006 07:44
+O5/P5
+MODELO DE PROGRAMACION DEL HC12
+
+
+
+
+                  18 de 19 Introducción a los mP y mC (parte 1)
+UNAM, FACULTAD DE INGENIERÍA                                      SANTIAGO CRUZ CARLOS
+APUNTES DE MICROPROCESADORES Y MICROCONTROLADORES                  02/05/2006 07:44
+O5/P5
+COSAS INTERESANTES ACERCA DE UN MICROPROCESADOR.
+
+UNA FORMA TIPICA DE MEDIR EL RENDIMIENTO ES POR EL TIEMPO DE EJECUCION DE LOS
+PROGRAMAS:
+
+RENDIMIENTO = 1/(TIEMPO DE EJECUCIÓN)
+
+MIPS: MILLONES DE INSTRUCCIONES POR SEGUNDO
+MFLOPS: MILLONES DE OPERACIONES EN COMA FLOTANTE POR SEGUNDO
+
+EXISTEN UNA SERIE DE TEST QUE PERMITEN MEDIR EL RENDIMIENTO DE TODO EL SISTEMA
+EN CONJUNTO.
+
+
+
+
+                  19 de 19 Introducción a los mP y mC (parte 1)
+

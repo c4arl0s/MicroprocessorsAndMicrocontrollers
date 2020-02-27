@@ -1,0 +1,31 @@
+PROGRAMA RELATIVO
+
+              ORG           $0100
+UNO           BRA           TRES
+DOS           BRA           UNO
+TRES          BRA           CUATRO
+CUATRO        BRA           DOS
+
+
+RELATIVO.ASM                Assembled with IASM   04/22/2004 17:46 PAGE
+1
+
+/* verificar a donde apunta el program counter */
+
+DIR           COD OP             ETIQUETA
+0100                         1                    ORG      $0100
+0100   [03]   2002          2    UNO              BRA      TRES
+0102   [03]   20FC          3    DOS              BRA      UNO
+0104   [03]   2000          4    TRES             BRA      CUATRO
+0106   [03]   20FA          5    CUATRO           BRA      DOS
+                             6
+                             7
+                             8
+
+Symbol Table
+
+CUATRO               0106
+DOS                  0102
+TRES                 0104
+UNO                  0100
+

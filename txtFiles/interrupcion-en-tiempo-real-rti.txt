@@ -1,0 +1,5 @@
+Un circuito periódico programable de la interrupción llamado la interrupción en tiempo real (RTI) se
+golpea ligeramente apagado del contador 16-bit principal del contador de tiempo. El software
+puede seleccionar una de cuatro tarifas para el RTI, que se utiliza lo más comúnmente posible para
+establecer el paso de la ejecución de las rutinas del software.
+

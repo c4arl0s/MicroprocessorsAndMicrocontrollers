@@ -1,0 +1,551 @@
+UNAM, FACULTAD DE INGENIERÍA                                       SANTIAGO CRUZ CARLOS
+APUNTES DE MICROPROCESADORES Y MICROCONTROLADORES                   24/03/2006 18:01
+O3/P3
+PROGRAMA1
+Una lista de datos que inicia en la localidad de memoria $1000 y termina en la localidad
+$14FF debe ser relocalizada para que inicie en la localidad de memoria $2000, describa
+un programa para efectuar dicha transferencia.
+
+
+          7       0
+DIRECCION CONTENIDO
+
+
+
+  $1000         DAT01
+    *             *
+    *             *
+    *             *
+  $14FF         DATOn
+
+
+
+  $2000         DATO1
+    *             *
+    *             *
+  $2500         DATOn
+
+
+   1 Lectura de direcciones de memoria (DATO1)
+   2 Escritura de las direcciones de memoria
+   3 Suponemos que $80 a $83 no son ocupados y las utilizaremos para almacenar a los
+     apuntadores.
+
+ARQUITECTURA: Suponga un apuntador A y un índice X.
+
+
+
+
+                            1 de 19 Problemas (parte 3)
+UNAM, FACULTAD DE INGENIERÍA                                 SANTIAGO CRUZ CARLOS
+APUNTES DE MICROPROCESADORES Y MICROCONTROLADORES             24/03/2006 18:01
+O3/P3
+                 INICIO
+
+
+              Declara
+           apuntadores P1
+                y P2
+
+
+    Cargo dato vía apuntador P1
+
+
+
+           Incrementa p1
+
+
+               Guarda p1
+
+
+   Transfiere dato vía apuntador p2
+
+
+               Incrementa p2
+
+
+
+                Guarda p2
+
+
+
+
+     NO
+                 Apuntado
+                     r
+                 P2=$2500
+                    ??
+
+          SI
+
+                    FIN
+
+
+
+
+                               2 de 19 Problemas (parte 3)
+      UNAM, FACULTAD DE INGENIERÍA                                      SANTIAGO CRUZ CARLOS
+      APUNTES DE MICROPROCESADORES Y MICROCONTROLADORES                  24/03/2006 18:01
+      O3/P3
+      CODIGO PROGRAMA1
+
+
+           LDX    #$1000    ; carga índice X con 1000, declara apuntador p1
+           STX    $80       ; Como el índice X es de 16 bits, automáticamente el 10 se pone en
+                            la dirección $80 y el 00 se pone en la dirección $81, P1 $1000
+           LDX    #$2000    ; carga índice X con 2000, declara apuntador p2
+           STX    $82       ; Como el índice X es de 16 bits, automáticamente el 20 se pone en
+                            la dirección $82 y el 00 se pone en la dirección $83, P2  $2000
+SIGUE      LDX    $80       ; carga en el índice X con la que hay en la dirección $80
+           LDAA   $00,X     ; carga el acumulador A de manera indexada, con lo que hay en la
+                            dirección X+$00=$1000, cargo dato1 ¡TENGO dato1 en la cabeza!,
+                            ja ¡¡¡
+           INX              ; incremento el índice X, $1000+$0001=$1001, ¡TENGO dirección
+                            en la cabeza!, ja ¡¡¡
+           STX    $80       ;almaceno la dirección que tengo en la cabeza y la pongo otra vez
+                            en la dirección $80, automáticamente se ocupa la $81
+           LDX    $82       ; carga el índice X con lo que hay en la dirección $82, lo que hay es
+                            la dirección $2000, tengo dirección en la cabeza ¡¡¡¡ ja ¡¡
+           STAA   $00,X     Almacena lo que hay en el acumulador A de manera indexada en la
+                            X + $000 = $2000
+           INX              Incrementa el índice x, $2000+$0001=$2001
+           STX    $82       Almacena lo que tiene el índice X en la dirección $82
+           CDX    #$2500    Compara el índice X con el valor #$2500
+           BNE    SIGUE     Si los dos valores No son iguales, pasa a la etiqueta SIGUE
+FIN        BRA    FIN
+
+
+
+
+                                3 de 19 Problemas (parte 3)
+  UNAM, FACULTAD DE INGENIERÍA                                         SANTIAGO CRUZ CARLOS
+  APUNTES DE MICROPROCESADORES Y MICROCONTROLADORES                     24/03/2006 18:01
+  O3/P3
+  DIAGRAMA DE FLUJO PROGRAMA 2
+  Considerando dos registros índices X y Y, el programa queda de la siguiente manera.
+
+  DIAGRAMA DE FLUJO
+
+                    INICIO
+
+
+                  Declara
+               apuntadores P1
+                    y P2
+
+
+        Cargo dato vía apuntador P1
+
+
+
+        Transfiero dato vía apuntador
+                     p2
+
+
+
+        Incrementa apuntadores p1 y p2
+
+
+        NO
+                   Apuntado
+                       r
+                   P2=$2500
+                       ?
+             SI
+                      FIN
+
+
+  CODIGO PROGRAMA 2
+
+        LDX       #$1000     ; carga índice X con 1000, declara apuntador p1
+        LDY       #$2000
+SIGUE   LDDA      $00,X
+        STAA      $00,Y
+        INX
+        INY
+        CPY       #$2500
+        BNE       SIGUE
+FIN     BRA       FIN
+
+                                 4 de 19 Problemas (parte 3)
+UNAM, FACULTAD DE INGENIERÍA                                    SANTIAGO CRUZ CARLOS
+APUNTES DE MICROPROCESADORES Y MICROCONTROLADORES                24/03/2006 18:01
+O3/P3
+
+
+PROBLEMA SUMADOR:
+Suponiendo que las localidades de la $0100 a la $01FF contienen números no signados
+(positivos), desarrollar un programa para sumar dichos números y cuyo resultado
+aparezca en las localidades $0200 (MSB) y $0201 (LSB).
+
+Dirección   DATOS
+$0100         D1
+              D2
+               *
+               *
+$01FF         Dn
+
+$0200        MSB
+$0201        LSB
+
+ARQUITECTURA: Contamos con registro A, B y X
+
+$0200         00
+$0201         00
+
+Cuando la suma se desborde en la dirección $201 generará un acarreo, estaremos
+monitoreando cuando suceda esto, es decir, cuando la bandera C se ponga en `1'. Cada
+vez que suceda esto, incrementaremos el contenido, de la localidad $200.
+
+
+
+
+                           5 de 19 Problemas (parte 3)
+UNAM, FACULTAD DE INGENIERÍA                                    SANTIAGO CRUZ CARLOS
+APUNTES DE MICROPROCESADORES Y MICROCONTROLADORES                24/03/2006 18:01
+O3/P3
+              INICIO
+
+
+        Limpia registros
+        para LSB y MSB
+
+
+        Declarar apuntador
+                p1
+
+
+          Suma indexada
+
+
+
+                            SI
+                 C=1                        Incrementa
+                  ?                        registro para
+        NO                                      MSB
+
+          Incrementa p1
+
+
+   NO
+               P1=200
+                  ?
+                                 SI
+
+
+             Almacenar el
+                MSB en
+               memoria
+
+             Almacenar el
+                LSB en
+               memoria
+
+
+                  FIN
+
+
+
+
+                                  6 de 19 Problemas (parte 3)
+UNAM, FACULTAD DE INGENIERÍA                              SANTIAGO CRUZ CARLOS
+APUNTES DE MICROPROCESADORES Y MICROCONTROLADORES          24/03/2006 18:01
+O3/P3
+CODIGO PROGRAMA SUMADOR
+
+RECUERDE SEGUIR EL CODIGO CONFORME AL DIAGRAMA DE FLUJO
+
+
+            CLRA
+            CLRB
+            LDX     #$100
+
+SIGUE       ADDA    $00,X
+            BCS     INC_MSB       Salta si C=1.
+
+PROX        INX
+            CPX     #$200
+            BNE     SIGUE
+            STAB    $00,X
+            STAA    $01,X
+FIN         BRA     FIN
+
+INC_MSB     INCB
+            BRA     PROX
+
+
+
+
+                            7 de 19 Problemas (parte 3)
+UNAM, FACULTAD DE INGENIERÍA                            SANTIAGO CRUZ CARLOS
+APUNTES DE MICROPROCESADORES Y MICROCONTROLADORES        24/03/2006 18:01
+O3/P3
+
+
+
+
+                          8 de 19 Problemas (parte 3)
+UNAM, FACULTAD DE INGENIERÍA                                       SANTIAGO CRUZ CARLOS
+APUNTES DE MICROPROCESADORES Y MICROCONTROLADORES                   24/03/2006 18:01
+O3/P3
+PROGRAMA BUSCADOR DE 3F'S
+Se tiene una lista entre las localidades $0000 y $00FF en el cual algunos de estos datos
+son 3F desarrolle un programa que indique en la $120 la cantidad de números 3F
+encontrados.
+
+
+direcciòn     DATOS
+   $00         D1
+               D2
+                *
+                *
+   $FF         Dn
+
+
+
+  $120      Cantidad de
+               3F's
+
+ARQUITECTURA: Acumuladores A y B, y un registro X.
+
+
+
+
+                            9 de 19 Problemas (parte 3)
+UNAM, FACULTAD DE INGENIERÍA                                 SANTIAGO CRUZ CARLOS
+APUNTES DE MICROPROCESADORES Y MICROCONTROLADORES             24/03/2006 18:01
+O3/P3
+DIAGRAMA DE FLUJO PROGRAMA BUSCADOR
+
+            INICIO
+
+
+     Limpia acumulador
+             B
+
+      Declarar apuntador
+              p1
+
+      Carga acumulador A
+            con 3F
+
+
+
+           Comparación
+             indexada
+
+                         NO
+               Z=0
+                ?
+      SI
+
+
+       Incrementa acum.
+              B
+
+              Incrementa P1
+
+
+       NO
+
+
+              P1=100
+                 ?
+                              SI
+
+
+           Almacenar el B
+            en memoria
+
+
+
+                FIN
+
+
+
+                              10 de 19 Problemas (parte 3)
+UNAM, FACULTAD DE INGENIERÍA                                        SANTIAGO CRUZ CARLOS
+APUNTES DE MICROPROCESADORES Y MICROCONTROLADORES                    24/03/2006 18:01
+O3/P3
+CODIGO PROGRAMA BUSCADOR DE 3F's
+RECUERDE SEGUIR EL CODIGO CONFORME AL DIAGRAMA DE FLUJO
+
+
+            LDAA     #$3F           ; carga el acumulador A de manera indexada con 3F
+            CLRB                    ; limpia el acumulador B
+            LDX      #$00           ; carga el índice X con 00
+            CMPA     $00,X          ;compara de manera indexada A con lo que apunta
+                                    x+0
+SIGUE       BEQ      INCRE_B        ; salta si son iguales a la etiqueta INCRE_B
+            INX                     ; si no, incrementa el indice X
+            CPX      #$100          ; compara el indice x de manera indexada con 100
+PROX        BNE      REGRESA        ; salta si no son iguales a la etiqueta REGRESA
+            STAB     $120           ; si no, almacena lo que hay en el acumulador B en
+                                    la dir $120
+            BRA      FIN            ; salta siempre a la etiqueta FIN
+
+            INCB                    ; incrementa el acumulador B
+FIN         BRA      INC_P1         ; salta siempre a la etiqueta INC_P1
+
+INC_MSB
+
+
+
+
+                             11 de 19 Problemas (parte 3)
+UNAM, FACULTAD DE INGENIERÍA                             SANTIAGO CRUZ CARLOS
+APUNTES DE MICROPROCESADORES Y MICROCONTROLADORES         24/03/2006 18:01
+O3/P3
+
+
+
+
+                          12 de 19 Problemas (parte 3)
+UNAM, FACULTAD DE INGENIERÍA                              SANTIAGO CRUZ CARLOS
+APUNTES DE MICROPROCESADORES Y MICROCONTROLADORES          24/03/2006 18:01
+O3/P3
+PROBLEMA
+Sumar los datos que hay en las direcciones $00 a la $1FF, y que el resultado
+aparezca en las direcciones de memoria $201 y $202
+
+
+Dirección   Datos
+   $00       D1
+             D2
+              *
+              *
+              *
+              *
+  0200       Dm
+  $201       MSB
+  $202       LSB
+
+
+
+ARQUITECTURA: Acumulador A, B y un registro X
+
+
+
+
+                          13 de 19 Problemas (parte 3)
+UNAM, FACULTAD DE INGENIERÍA                             SANTIAGO CRUZ CARLOS
+APUNTES DE MICROPROCESADORES Y MICROCONTROLADORES         24/03/2006 18:01
+O3/P3
+
+
+
+
+                          14 de 19 Problemas (parte 3)
+  UNAM, FACULTAD DE INGENIERÍA                                   SANTIAGO CRUZ CARLOS
+  APUNTES DE MICROPROCESADORES Y MICROCONTROLADORES               24/03/2006 18:01
+  O3/P3
+
+MSB     EQU     $201     ; definición de pseudoperador
+LSB     EQU     $202     ; definición de pseudoperador
+
+        LDX     #$00
+        CLR     MSB
+        CLR     LSB     ; se pone la bandera en Z=0
+SIGUE   LDAA    $00,X
+        CMPA    #$2ª
+        BEQ     INC_LSB
+        INX
+        CPX     #$201
+        BNE     SIGUE    ; tomar en cuenta las banderas que se afectan en BNE z=1
+FIN     BRA     FIN
+
+INC_LSB INC     LSB
+        BNE     PROX
+        INC     MSB
+        BRA     PROX
+
+
+
+
+                            15 de 19 Problemas (parte 3)
+UNAM, FACULTAD DE INGENIERÍA                             SANTIAGO CRUZ CARLOS
+APUNTES DE MICROPROCESADORES Y MICROCONTROLADORES         24/03/2006 18:01
+O3/P3
+
+
+
+
+                          16 de 19 Problemas (parte 3)
+UNAM, FACULTAD DE INGENIERÍA                                        SANTIAGO CRUZ CARLOS
+APUNTES DE MICROPROCESADORES Y MICROCONTROLADORES                    24/03/2006 18:01
+O3/P3
+PROBLEMA NUMEROS PARES
+
+Se tiene una lista de números de la localidad $00 a la $7F no signados, desarrollar un
+programa que enliste los números pares de dicha lista a partir de la localidad $80 e
+indique el numero de los mismos en la localidad $100.
+
+
+$00        D1
+           D2
+            *
+            *
+            *
+            *
+$7F        Dn
+$80    Dato_par1
+$81    Dato_par2
+$82         *
+            *
+            *
+$100   # de pares
+
+Con función AND
+
+01010101
+00000001
+
+00000001 ­-> resultado diferente de cero, impar Z=0
+
+01010100
+00000001
+
+00000000 ­-> resultado cero, par Z=1
+
+
+
+
+                            17 de 19 Problemas (parte 3)
+UNAM, FACULTAD DE INGENIERÍA                             SANTIAGO CRUZ CARLOS
+APUNTES DE MICROPROCESADORES Y MICROCONTROLADORES         24/03/2006 18:01
+O3/P3
+
+
+
+
+                          18 de 19 Problemas (parte 3)
+  UNAM, FACULTAD DE INGENIERÍA                                   SANTIAGO CRUZ CARLOS
+  APUNTES DE MICROPROCESADORES Y MICROCONTROLADORES               24/03/2006 18:01
+  O3/P3
+  CODIGO
+
+CONTADOR    EQU    $201          ; definición de pseudoperador
+
+            CLR    CONTADOR
+            LDX    #$00
+            LDY    #$80
+
+SIGUE       LDAA   $00,X
+            ANDA   #01
+            BEQ    TRANSFIERE
+INC_PX      INX
+            CPX    #$80
+            BNE    SIGUE
+FIN         BRA    FIN
+
+TRANSFIERE LDAA    $00,X         ; volvemos a cargar A, debido a que ANDA modifica A
+           STAA    $00,Y
+           INC     CONTADOR
+           INY
+           BRA     INC_PX
+
+
+
+
+                            19 de 19 Problemas (parte 3)
+

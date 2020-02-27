@@ -1,0 +1,62 @@
+UNAM, FACULTAD DE INGENIERÍA                             SANTIAGO CRUZ CARLOS
+APUNTES DE MICROPROCESADORES Y MICROCONTROLADORES           27/04/05 12:14 A. M.
+
+
+
+
+                          ARQUITECTURA VON
+                              NEWMAN
+
+
+   MEMORIA
+      MEMORIA
+   PRINCIPAL
+      PRINCIPAL                                         CPU CPU
+
+
+   DATOS +
+                                 BUS de CONTROL         DATOS +
+   INSTRUCCIONES
+       DATOS                                            INSTRUCCIONES
+                                                           UNIDAD DE
+         +                                                 CONTROL
+                              BUS DE DIRECCIONES
+   INSTRUCCIONES
+
+                                                           UNIDAD
+                         BUS DE DATOS E INSTRUCCIONES     OPERATIVA
+
+
+                                                        DATOS +
+                                                        INSTRUCCIONES
+
+                            ARQUITECTURA
+                              HARVARD
+
+
+ MEMORIA
+   MEMORIA DE                  CPU CPU                    CPU
+                                                           MEMORIA DE
+ PRINCIPAL
+ INSTRUCCIONES                                                DATOS
+
+                               DATOS +
+ DATOS +                       INSTRUCCIONES
+                                  UNIDAD DE               DATOS +
+ INSTRUCCIONES                    CONTROL                     DATOS
+                                                          INSTRUCCIONES
+ INSTRUCCIONES
+
+
+                                     UNIDAD
+                                    PERATIVA
+
+
+                               DATOS +
+                               INSTRUCCIONES
+
+
+
+
+                                                                                   2
+

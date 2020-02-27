@@ -1,0 +1,51 @@
+                                      STEERING DIODES
+
+Electronic equipment that can operate on either AC power or battery power (like a laptop) or that
+have a backup battery in case of power failure (like an alarm clock), need to have a way of
+switching from one power source to the other.
+
+This can be done very simply with steering diodes
+                                           D1
+
+                    DC
+        110       power
+        VAC                  12V                     D2               equipment
+                  supply
+
+
+
+
+                                                9V
+The key here is that the 9V battery voltage is less than the 12V DC power supply voltage.
+
+While the DC power supply is on, D1 has +12 volts on its anode, and is forward biased, powering
+the equipment. Since there is about 0.7 volts across the diode, there is about +11.3 volts on the
+cathode of D2, so it's reversed biased and doesn't conduct, isolating the battery.
+
+However, if the DC power supply fails or is turned off, then diode D1 will become reversed
+biased, and diode D2 will conduct current from the battery to power the equipment.
+
+
+                               DIODE CIRCUIT PROTECTION
+
+Diodes are widely used to protect circuits from being damaged by the high voltages produced by
+electrostatic discharges or the rapid turn-off of current through inductors.
+                                   +V
+
+
+
+                                                     remainder
+                     input                            of circuit
+
+
+
+
+The diode arrangement above is used on the inputs of many integrated circuits as the tiny
+transistors in integrated circuits are very susceptible to being damaged by electrostatic voltage
+spikes that can occur when the circuit is being handled.
+
+
+
+
+                                                20
+

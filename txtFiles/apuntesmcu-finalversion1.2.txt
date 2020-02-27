@@ -1,0 +1,1615 @@
+UNAM, FACULTAD DE INGENIERÍA                                 SANTIAGO CRUZ CARLOS
+APUNTES DE MICROPROCESADORES Y MICROCONTROLADORES               29/03/05 20:34 O3/P3
+
+       APUNTES DE MICROPROCESADORES Y MICROCONTROLADORES
+
+Temario
+  1. Introducción a los microcontroladores (MCU) y Microprocesadores (MPU)
+  2. Estructura de un MPU
+  3. Estructura de un MCU
+  4. Elementos estructurales de la memoria
+  5. Programación del MPU
+  6. interfase del MCU con dispositivos externos
+  7. puertos de comunicación E/S paralelo
+  8. puertos de comunicación serial asíncrona y síncrona
+  9. temporizadores
+  10.aplicaciones de los MPU y MCU
+
+BIBLIOGRAFÍA:
+
+
+                                                                  TEXAS
+                      INTEL             MOTOROLA
+                                                               INSTRUMENT
+  NICHO de       Computadoras        Control de procesos    Procesamiento
+  mercado        personales          industriales           digital (DSP)
+
+
+
+ARQUITECTURA VON NEWMAN
+
+Propuso dos conceptos básicos:
+
+   1. Utilización del sistema de numeración binaria
+   2. Almacenamiento de la secuencia de instrucciones de que consta el programa de
+      una memoria interna, fácilmente accesible, junto con los datos de referencia,
+      con esto se aumento la velocidad de proceso.
+
+       Un solo bus de datos y direcciones, el mismo bus se emplea para enviar y recibir
+instrucciones y datos. Los datos y las instrucciones son almacenados en una memoria
+principal, CPU va a la memoria principal, extrae las instrucciones y después los datos.
+
+ARQUITECTURA HARVARD
+
+Esta arquitectura se caracteriza por tener por separado el bus de datos y el bus de
+direcciones. Esto significa que las instrucciones y los datos son almacenados en
+memorias diferentes que son accedidas de forma separada por la CPU.
+
+
+
+
+                                                                                       1
+UNAM, FACULTAD DE INGENIERÍA                              SANTIAGO CRUZ CARLOS
+APUNTES DE MICROPROCESADORES Y MICROCONTROLADORES            29/03/05 20:34 O3/P3
+
+
+
+
+                          ARQUITECTURA VON
+                              NEWMAN
+
+
+  MEMORIA
+     MEMORIA
+  PRINCIPAL
+     PRINCIPAL                                          CPU   CPU
+
+
+  DATOS +                        BUS de CONTROL         DATOS +
+      DATOS
+  INSTRUCCIONES                                         INSTRUCCIONES
+                                                           UNIDAD DE
+        +                                                  CONTROL
+  INSTRUCCIONES               BUS DE DIRECCIONES
+
+
+                                                           UNIDAD
+                         BUS DE DATOS E INSTRUCCIONES     OPERATIVA
+
+
+                                                        DATOS +
+                                                        INSTRUCCIONES
+
+                            ARQUITECTURA
+                              HARVARD
+
+
+ MEMORIA
+   MEMORIA DE                  CPU     CPU                CPU
+                                                            MEMORIA DE
+ PRINCIPAL
+ INSTRUCCIONES                                                DATOS
+
+                               DATOS +
+ DATOS +                          UNIDAD DE
+                               INSTRUCCIONES              DATOS +
+ INSTRUCCIONES                    CONTROL                 INSTRUCCIONES
+                                                              DATOS
+  INSTRUCCIONES
+
+
+                                    UNIDAD
+                                   PERATIVA
+
+
+                               DATOS +
+                               INSTRUCCIONES
+
+
+
+
+                                                                                    2
+UNAM, FACULTAD DE INGENIERÍA                             SANTIAGO CRUZ CARLOS
+APUNTES DE MICROPROCESADORES Y MICROCONTROLADORES           29/03/05 20:34 O3/P3
+
+                       ELEMENTOS DE UNA COMPUTADORA
+
+
+
+                           UNIDAD ARITMÉTICA
+                                LOGICA
+
+
+
+      UNIDAD                                                UNIDAD
+        DE                UNIDAD DE MEMORIA                   DE
+     ENTRADA                                                SALIDA
+
+
+
+                          UNIDAD DE CONTROL
+
+
+
+
+MICROPROCESADORES
+
+   1. La unión de una Unidad Central de Control y la ALU, junto con algunos registros
+      de transferencia forman la Unidad Central de Procesos o CPU de una
+      computadora.
+   2. El concepto de CPU nace con las computadoras electrónicas de la primera
+      generación fabricadas con tubo de vacío.
+   3. El concepto de Microprocesador nace con las computadoras electrónicas de la
+      tercera generación fabricadas a base de circuitos integrados.
+
+
+                UN MICROPROCESADOR ES UN CPU INTEGRADO
+
+ALU: procesa uno o dos números binarios efectuando operaciones aritméticas y
+operaciones lógicas.
+UNIDAD DE CONTROL: responsable del control de todo el sistema, se encarga de
+proporcionar la secuencia y tiempo para el procesamiento de las instrucciones axial
+como la trayectoria y destino de los datos, se apoya en una señal de reloj el cual
+sincroniza el desarrollo temporal de todas las señales de control dentro y fuera del
+microprocesador. El sistema en cada instante en un estado perfectamente definido.
+ANALOGIA: un policía de transito, dice quien pasa y quien no, su dirección y el
+momento en que deben hacerlo.
+
+
+
+
+                                                                                    3
+UNAM, FACULTAD DE INGENIERÍA                               SANTIAGO CRUZ CARLOS
+APUNTES DE MICROPROCESADORES Y MICROCONTROLADORES             29/03/05 20:34 O3/P3
+
+REGISTRO DE CONTROL DE CONDICION DE ESTADOS (CCR): este registro
+proporciona información acerca de la última operación efectuada en la ALU, también
+conocido como REGISTRO DE BANDERAS.
+
+ACUMULADORES A Y B: registros para almacenar operandos para ser procesados por
+la ALU.
+
+REGISTRO DE DIRECCIONAMIENTO DE MEMORIA (MAR): registro para
+direccionar unívocamente localidades de memoria principal. Si 16 bits, 2 16= localidades
+direccionadas.
+
+REGISTRO DE DIRECCIONAMIENTO DE DATOS (MDR): registro para transferir
+datos desde o hacia la memoria principal.
+
+REGISTRO DE INSTRUCCIONES (IR): registro para almacenar el código de la
+instrucción de cada operación efectuada por el microprocesador.
+
+CONTADOR DE PROGRAMA (PC): registro para almacenar el número de la siguiente
+instrucción a ser procesada por el microprocesador.
+
+REGISTRO X: registro para el manejo de índices, es como un directorio, con índice
+para accesar rápidamente y hacer tareas.
+
+APUNTADOR DE PILA (SP): registro para el manejo de subrutinas o interrupciones y
+otras operaciones.
+                        COMUNICACIÒN ENTRE MODULOS
+La comunicación entre los módulos se efectúa en atención al tipo de información que se
+procesa. Puede ser de 3 tipos:
+
+CONTROL
+DATOS
+DIRECCIONES
+
+
+
+
+                                                                                      4
+UNAM, FACULTAD DE INGENIERÍA                        SANTIAGO CRUZ CARLOS
+APUNTES DE MICROPROCESADORES Y MICROCONTROLADORES      29/03/05 20:34 O3/P3
+
+
+
+¿ QUE ES ESTO ?: SE INTEGRARON EN UN SOLO CHIP Y SE LE LLAMA
+                      MICROCONTROLADOR
+
+                           BUS DE DIRECCIONES
+
+
+
+     Microproc                                          UNIDAD
+      esador              RAM                ROM        DE E/S
+
+
+
+
+                      mP+RAM+ROM+PUERTOS-E/S
+
+APUNTE ANEXO PARA LA COMPRESION DE LA MAR Y LA MDR
+
+
+
+
+                                                                              5
+UNAM, FACULTAD DE INGENIERÍA                              SANTIAGO CRUZ CARLOS
+APUNTES DE MICROPROCESADORES Y MICROCONTROLADORES            29/03/05 20:34 O3/P3
+
+
+
+
+  REGISTRO     DE        DECODIFICADOR
+  DIRECCION    DE        DE DIRECCIONES
+  MEMORIA (MAR)           (2n-1) líneas de
+      n lineas              direcciones
+
+
+
+          Contiene la               Activa una
+         dirección que            sola línea de
+         debe "abrirse           direcciones en
+           "para los               la memoria
+             datos
+                                                      REGISTRO DE
+                                                       DATOS DE
+                                                     MEMORIA (MDR)
+                                                    (Salen los 8 bits)
+
+
+
+                  Esta diseñado de modo que se
+                     conecte adecuadamente
+                   todas las celdas en la unidad
+                            de memoria
+
+
+
+
+                                                                                    6
+UNAM, FACULTAD DE INGENIERÍA                                   SANTIAGO CRUZ CARLOS
+APUNTES DE MICROPROCESADORES Y MICROCONTROLADORES                 29/03/05 20:34 O3/P3
+
+
+
+
+                 Oscilador              MPU
+                  y reloj
+
+
+                                    Memoria de
+                                     programa
+
+                                    Memoria de
+                                      datos
+
+                                    Puertos de
+                                    comunicación
+
+
+
+
+                             UNIDAD DE CONTROL
+
+ES EL CENTRO NERVIOSO DEL MPU, PROPORCIONA LA SECUENCIA Y TIEMPO PARA EL
+PROCESAMIENTO DE LAS INSTRUCCIONES, ASI COMO PARA EL CONTROL DE LA TRAYECTORIA Y EL
+DESTINO DE LOS DATOS.
+
+                                        SECUENCIA
+
+        UNIDAD DE                         TIEMPO
+        CONTROL
+                                         DATOS
+                                         DATOS
+                                           +
+                                     TRAYECTORIA  Y
+                                           +
+                                     INSTRUCCIONES
+                                     DESTINO DE LOS
+        DATOS                        INSTRUCCIONES
+                                     DATOS
+          +
+    INSTRUCCIONES
+
+                                                                                         7
+UNAM, FACULTAD DE INGENIERÍA                              SANTIAGO CRUZ CARLOS
+APUNTES DE MICROPROCESADORES Y MICROCONTROLADORES            29/03/05 20:34 O3/P3
+
+                       En una instrucción en un mP se efectúa uno o mas ciclos
+¿CÓMO ES LA
+                       de procesamiento (o ciclo maquina, o ciclo de
+SECUENCIA?             procesamiento)
+                                                     Direccionamiento de una
+                                                     localidad de memoria
+                       FETH
+   CICLO DE                       Etapa de           principal vía MAR y
+PROCESAMIENTO                     direccionamiento transferencia de datos
+                                                     entre el MDR y la memoria
+ (consta de dos                                      principal
+    etapas)
+                                 Etapa de           Se efectúa la operación
+                       EJECUTE
+                                 ejecución          indicada.
+El formato para        Campo para especificar la                 Al menos un
+especificar una                                     OPERADOR
+                       instrucción                               ciclo
+instrucción esta
+compuesto por          Campo para especificar los                Uno o más
+dios campos                                         OPERANDO
+                       datos                                     ciclos
+fundamentalmente
+Cada operador y operando ocupan un lugar especifico en la memoria principal de
+forma tal que c/u de ellos, tiene que ser direccionando en forma secuencial y
+uno a la vez
+
+
+
+
+                                                                                    8
+UNAM, FACULTAD DE INGENIERÍA                                                  SANTIAGO CRUZ CARLOS
+APUNTES DE MICROPROCESADORES Y MICROCONTROLADORES                                29/03/05 20:34 O3/P3
+
+
+
+EJEMPLO:
+De acuerdo a la siguiente instrucción del mP especificado determinar el
+número de ciclos necesarios para que se efectúe la instrucción y lo que
+sucede en cada ciclo.
+MPU  8 BITS
+MEMORIA PRINCIPAL  65KBYTE
+INSTRUCCIÓN: suma contenido de la localidad de memoria $04b5 al
+contenido del acumulador y coloca el resultado en el acumulador
+                         4 CICLOS DE TRABAJO
+FETCH EJECUTE FETCH EJECUTE FETCH EJECUTE FETCH EJECUTE
+pc              Se ignora   Se              Se ignora   Pc              Se igniora   Se             Hace la suma la
+direcciona                  direcciona                  direcciona el                direcciona     ALU.
+localidad 65                0066 por pc                 siguiente via                pc con 04B5
+via MAR pc                  via MAR , PC                MAR,       su                por pc, via
+ 0065 y su                  se                          contenido se                 MAR y como
+contenido se                incrementa                  va         al                el registro
+va         al               y          su               registro de                  de
+registro de                 contenido se                instrucciones                intrucciones
+instrucciones               va         al               via MDR                      esta
+via MDR                     resgistro de                                             completo se
+                            instrucciones                                            transfierea
+                            via MDR                                                  a la ALU via
+                                                                                     MDR
+
+CICLO DE PROCESAMIENTO      CICLO DE PROCESAMIENTO      CICLO DE PROCESAMIENTO       CICLO DE PROCESAMIENTO
+           1                           2                           3                 4
+T1              T2          T3              T4          T5              T6           T7             T8
+
+       MODO                     MODO B MODO A                                 ¿QUE HACE?
+       SINGLE CHIP              1      0                     El mC funciona como tal, es decir, con toda
+                                                             la disponibilidad de sus puertos y con un
+                                                             alcance para el usuario definido por su
+                                                             memoria interna
+       EXPANDED                 1                 1          El mC funciona como microprocesador,
+                                                             direccionando una memoria externa, la cual
+       MODE                                                  s direcciona vía el bus de expansión de
+                                                             direcciones, perdiéndose por lo tanto los
+                                                             puertos D y C del mP. Así, quedan
+                                                             disponibles 16 pines para direccional una
+                                                             memoria exterior hasta 64kB
+       BOOTSTRAP                0                 0          Variación del modo single chip, modo que
+                                                             ejecuta un programa bootloader en una
+                                                             memoria ROM interna llamada bootstrap. La
+                                                             memoria contiene el programa bootloader y
+                                                             conjunto especial de vectores de
+                                                             interrupción y reset.
+       TEST                     0                 1          Modo especial de prueba para los recursos
+                                                             del mC, ejecutado por el fabricante.
+
+
+
+
+                                                                                                                 9
+UNAM, FACULTAD DE INGENIERÍA                                 SANTIAGO CRUZ CARLOS
+APUNTES DE MICROPROCESADORES Y MICROCONTROLADORES               29/03/05 20:34 O3/P3
+
+   PROGRAMACION DEL MICROCONTROLADOR Y EL MICROPROCESADOR
+                         FORMATO DE INSTRUCCIONES
+          OPERADOR TIPO DE BASE NUMERICA         BASE       OPERANDO OPERANDO
+                   DECIMAL
+                       DIRECCIONAMIENTO     ---  NUMERICA
+           Alfabético
+                   HEXADECIMAL   ASCCI $            ASCCI   *según base *según base
+Mnemónico
+                                                             numérica    numérica
+                   OCTAL                    @
+Código de Hexadecimal    -----------------------   -------- Hexadecimal
+                   BINARIO                  %                           Hexadecimal
+Operación
+Numero de        8               ---------              ------                          16
+   Bits              LDAB                    #           $                20
+                                             Tipo de base
+                                             dirección numérica
+                                             direccion
+                                             amiento
+                                             (inmediat
+                                             o)
+                     LDAB                                $                20
+
+                     LDAB                      $               2B3
+                          TAMAÑO DE LAS INSTRUCCIONES
+            TAMAÑO DE LAS     TIPO DE                            NOTACION
+            INSTRUCCIONES     DIRECCIONAMIENTO
+            1 BYTE (SIN
+                              INHERENTE                          ------
+            OPERANDOS)
+                              DIRECTO     Dato reside en memoria ------
+
+                              INMEDIATO Dato   esta junto a
+                                          operador               #
+                              INDEXADO sumar al registro indice **,X (** de
+                                          Numero que se ha de
+
+                                                    junto al operador         referencia)
+                                                    Estas indican a la CPU
+            2 BYTE (CON                             que realice un salto de
+                                                    bytes hacia adelante o
+            OPERANDOS) (1+1)                        hacia atrás. El
+                                                    desplazamiento tiene
+
+                                   RELATIVO
+                                                    signo y es de un byte     *,±H (*
+                                                    por lo
+                                                    que las bifurcaciones
+                                                                              desplazamiento)
+                                                    sólo se pueden hacer
+                                                    de 128 bytes hacia
+                                                    atrás ó 127 bytes hacia
+                                                    delante.
+                                                    El dato se encuentra en
+                                                    la dirección de              Condicionado
+                                                    memoria especificada.
+                                                    El dato puede estar en
+            3 BYTE (CON DOS                         cualquier posición de     -
+                                   EXTENDIDO
+            OPERANDOS) (1+2)                        la memoria dentro del
+                                                    límite de las 64Kb, por   - Incondicionado
+                                                    lo que la dirección
+                                                    ocupa 2 bytes.
+
+
+
+
+                                                                                             10
+UNAM, FACULTAD DE INGENIERÍA                                SANTIAGO CRUZ CARLOS
+APUNTES DE MICROPROCESADORES Y MICROCONTROLADORES              29/03/05 20:34 O3/P3
+
+PROGRAMA1
+Una lista de datos que inicia en la localidad de memoria $1000 y termina en la localidad
+$14FF debe ser relocalizada para que inicie en la localidad de memoria $2000, describa
+un programa para efectuar dicha transferencia.
+
+
+         7       0
+
+
+
+$1000        DAT01
+*              *
+*              *
+*              *
+$14FF        DATOn
+
+
+$2000        DATO1
+*              *
+*              *
+$2500        DATOn
+
+
+        Lectura de direcciones de memoria (DATO1)
+        Escritura de las direcciones de memoria
+        Suponemos que $80 a $83 no son ocupados y las utilizaremos para almacenar a los
+        apuntadores.
+
+Suponga un apuntador A y un índice X.
+
+
+
+
+                                                                                      11
+UNAM, FACULTAD DE INGENIERÍA                         SANTIAGO CRUZ CARLOS
+APUNTES DE MICROPROCESADORES Y MICROCONTROLADORES       29/03/05 20:34 O3/P3
+
+
+                               INICIO
+
+
+                             Declara
+                          apuntadores P1
+                               y P2
+
+
+                    Cargo dato vía apuntador P1
+
+
+                            Incrementa p1
+
+
+                            Guarda p1
+
+
+                  Transfiere dato vía apuntador p2
+
+
+                          Incrementa p2
+
+
+                            Guarda p2
+
+
+
+
+                                 Apuntado
+                                     r
+                                 P2=$2500
+                                    ??
+
+
+
+
+                                 FIN
+
+
+
+
+                                                                               12
+UNAM, FACULTAD DE INGENIERÍA                             SANTIAGO CRUZ CARLOS
+APUNTES DE MICROPROCESADORES Y MICROCONTROLADORES           29/03/05 20:34 O3/P3
+
+       LDX #$1000 ; carga índice X con 1000, declara apuntador p1
+       STX $80    ; Como el índice X es de 16 bits, automáticamente el 10 se pone
+                  en la dirección $80 y el 00 se pone en la dirección $81, P1
+                  $1000
+      LDX  #$2000 ; carga índice X con 2000, declara apuntador p2
+      STX  $82    ; Como el índice X es de 16 bits, automáticamente el 20 se pone
+                  en la dirección $82 y el 00 se pone en la dirección $83, P2 
+                  $2000
+SIGUE LDX  $80    ; carga en el índice X con la que hay en la dirección $80
+      LDAA $00,X  ; carga el acumulador A de manera indexada, con lo que hay en
+                  la dirección X+$00=$1000, cargo dato1 ¡TENGO dato1 en la
+                  cabeza!, ja ¡¡¡
+      INX         ; incremento el índice X, $1000+$0001=$1001, ¡TENGO dirección
+                  en la cabeza!, ja ¡¡¡
+      STX  $80    ;almaceno la dirección que tengo en la cabeza y la pongo otra
+                  vez en la dirección $80, automáticamente se ocupa la $81
+      LDX  $82    ; carga el índice X con lo que hay en la dirección $82, lo que hay
+                  es la dirección $2000, tengo dirección en la cabeza ¡¡¡¡ ja ¡¡
+      STAA $00,X  Almacena lo que hay en el acumulador A de manera indexada en
+                  la X + $000 = $2000
+      INX         Incrementa el índice x, $2000+$0001=$2001
+      STX  $82    Almacena lo que tiene el índice X en la dirección $82
+      CDX #$2500 Compara el índice X con el valor #$2500
+      BNE SIGUE Si los dos valores No son iguales, pasa a la etiqueta SIGUE
+FIN   BRA FIN
+
+
+
+
+                                                                                   13
+UNAM, FACULTAD DE INGENIERÍA                                SANTIAGO CRUZ CARLOS
+APUNTES DE MICROPROCESADORES Y MICROCONTROLADORES              29/03/05 20:34 O3/P3
+
+PROBLEMA SOLUCIÓN:
+
+
+PORTC          EQU     $03
+DDRC           EQU     $07
+
+               LDX     #$1000
+               LDAA    #$80
+               STAA    DDRC,X
+               STAA    PORTC,X
+
+REGRESA        BRSET   PORTC,X,$80
+               BRSET   PORTC,X,$01
+               BRSET   PORTC,X,$02
+               BSET    PORTC,X,$80
+               BRA     REGRESA
+
+ENCIENDE       BCLR    PORC,X,$80
+               BRA     SIGUE
+
+FRECUENCIA1 BCLR       PORTC,X,%80
+            JSR        RETRASO1
+            BSET       PORTC,X,$80
+            JSR        RETRASO1
+            BRA        REGRESA
+
+FRECUENCIA2 BCLR       PORTC,X,%80
+            JSR        RETRASO2
+            BSET       PORTC,X,$80
+            JSR        RETRASO2
+            BRA        REGRESA
+
+RETRASO1       LDY     #$**          (4)   F=0.5 [kHz]; T=2[mS]
+LAZO1          NOP                   (2)   T/2=1[ms]=1000[µs]
+               DEY                   (4)   1000[µs]=5JSR+4LDY+9(**)+5RTS
+               BNE     LAZO1         (3)   (**)= 6Eh
+               RTS                   (5)
+
+RETRASO2       LDY     #$**          (4)   T=1[ms]; f=0.
+LAZO2          NOP                   (2)   T/2=0.5[ms]=500[µs]
+               DEY                   (4)   500[µs]=5JSR+4LDY+9(**)+5RTS
+               BNE     LAZO2         (3)   **= 36h
+               RTS                   (5)
+
+
+
+
+                                                                                      14
+UNAM, FACULTAD DE INGENIERÍA                                        SANTIAGO CRUZ CARLOS
+APUNTES DE MICROPROCESADORES Y MICROCONTROLADORES                      29/03/05 20:34 O3/P3
+
+
+
+                               INTERRUPCIONES
+ENMASCARABLES                          NO ENMASCARABLES
+IRQ Interrupción externa               SWI interrupción por software
+      Interrupción en modo sincrono
+SPI de comunicación.
+      Interrupción en modo asíncrono
+SCI de comunicación.
+               Interrupción por tiempo XIRQ
+TIMER          Interrupción en tiempo
+               real1
+
+                                     Interrupt           Pseudo-vector
+
+                                       SCI                  $00C4
+
+                                       SPI                  $00C7
+
+                             Pulse Accumulator Input        $00CA
+
+                            Pulse Accumulator Overflow      $00CD
+
+                                 Timer Overflow             $00D0
+
+                                Output Compare 5            $00D3
+
+                                Output Compare 4            $00D6
+
+                                Output Compare 3            $00D9
+
+                                Output Compare 2            $00DC
+
+                                Output Compare 1            $00DF
+
+                                 Input Compare 3            $00E2
+
+                                 Input Compare 2            $00E5
+
+                                 Input Compare 1            $00E8
+
+                                Real Time Interrupt         $00EB
+
+                                       IRQ                  $00EE
+
+                                      XIRQ                  $00F1
+
+
+1
+ Tiempo real, es el tiempo en el que se están procesando las variables al mismo tiempo que
+están sucediendo, razónese en un momento ideal.
+
+                                                                                              15
+UNAM, FACULTAD DE INGENIERÍA                                SANTIAGO CRUZ CARLOS
+APUNTES DE MICROPROCESADORES Y MICROCONTROLADORES              29/03/05 20:34 O3/P3
+
+
+                                   SWI              $00F4
+
+                            Illegal Instruction     $00F7
+
+                                  COP               $00FA
+
+                             Clock Monitor          $00FD
+
+
+
+
+                                                                                      16
+UNAM, FACULTAD DE INGENIERÍA                            SANTIAGO CRUZ CARLOS
+APUNTES DE MICROPROCESADORES Y MICROCONTROLADORES          29/03/05 20:34 O3/P3
+
+IRQ:
+
+                                                PILA              MEMORIA
+                                                                  PRINCIPAL
+
+
+                                                           00EE
+                                              CCR          00EF   IRQH
+                                              AC-B                IRQL
+                                              AC-A
+                                              IX-HIGH
+       PROGRAMA                               IX-LOW
+       PRINCIPAL
+   ---------                                  IY-HIGH
+PC ---------                                  IY-LOW       BFF2 00
+   ---------                                  PC-HIGH      BFF3 EE
+   ---------         sucede una *IRQ  SP  PC-LOW
+   ---------
+                                                           FFFE
+                     *SECUENCIA                            FFFF
+
+
+INT    -----------
+       ---------
+       ---------
+       ---------
+
+
+
+
+                                                                                  17
+UNAM, FACULTAD DE INGENIERÍA                              SANTIAGO CRUZ CARLOS
+APUNTES DE MICROPROCESADORES Y MICROCONTROLADORES            29/03/05 20:34 O3/P3
+
+Desarrollar un programa que indique mediante los leds L0 y L1 el número de
+interruptores cerrados. El número se deberá obtener por interrupción externa es decir
+cuando el interruptor S se cierre.
+0
+1
+2
+3
+4
+5
+6
+7
+
+
+
+
+                                                                                    18
+UNAM, FACULTAD DE INGENIERÍA                             SANTIAGO CRUZ CARLOS
+APUNTES DE MICROPROCESADORES Y MICROCONTROLADORES           29/03/05 20:34 O3/P3
+
+
+            INICIO                   Limpiar registro de cuentas
+
+
+          Programar
+                                         Leer el puerto C
+           puerto C
+
+
+   Iniciar con leds apagados               ¿A
+                                        cerrado?              Incrementa
+                                                              registro de
+     Habilitar interrupción                                    cuentas A
+
+
+
+
+                                           ¿B                 Incrementa
+                                        cerrado?              registro de
+                                                               cuentas B
+
+
+
+
+                                           ¿C                 Incrementa
+                                        cerrado?              registro de
+                                                               cuentas C
+
+
+
+                                      Rota registro de
+                                     cuentas (2 veces)
+
+
+                                      Rota registro de
+                                     cuentas (2 veces)
+
+
+                                            RTI
+
+
+
+
+                                                                                   19
+UNAM, FACULTAD DE INGENIERÍA                          SANTIAGO CRUZ CARLOS
+APUNTES DE MICROPROCESADORES Y MICROCONTROLADORES        29/03/05 20:34 O3/P3
+
+
+
+PORTC           EQU     $03
+DDRC            EQU     $07
+
+                LDX     #$1000                      ;Programa
+                LDAA    #$C0                        ;1100 0000b
+                STAA    DDRC,X                      ;
+
+MONITOREA       CLI
+                BRA     MONITOREA
+
+INTERRUPCION    CLRB
+                BRSET PORTC,X,$04,INC_REG_CTA_A
+REGRESA1        BRSET PORTC,X,$02,INC_REG_CTA_B
+REGRESA2        BRSET PORTC,X,$01,INC_REG_CTA_C
+REGRESA3        RORB
+                RORB
+
+                STAB    PORTC,X
+                RTI
+
+INC_REG_CTA_A INCB
+              BRA       REGRESA1
+INC_REG_CTA_B INCB
+              BRA       REGRESA2
+INC_REG_CTA_C INCB
+              BRA       REGRESA3
+
+VECTORES DE
+INTERRUPCION
+                ORG     $00EE                       ;puede estar
+                DB      $75                         ; en otro
+                DW      INTERRUPCION                ; orden
+
+
+
+
+                                                                                20
+UNAM, FACULTAD DE INGENIERÍA                                SANTIAGO CRUZ CARLOS
+APUNTES DE MICROPROCESADORES Y MICROCONTROLADORES              29/03/05 20:34 O3/P3
+
+Desarrollar un programa que genere una frecuencia de 0.5 [kHz] cuando, cada vez que
+se cierra el interruptor S. Una vez generada la frecuencia solo se podrá interrumpir por
+interrupción externa, debiéndose encender el led durante 1 [s] para indicar dicho
+evento.
+
+0
+1
+2
+3
+4
+5
+6
+7
+
+
+
+
+                                                                                      21
+UNAM, FACULTAD DE INGENIERÍA                                 SANTIAGO CRUZ CARLOS
+APUNTES DE MICROPROCESADORES Y MICROCONTROLADORES               29/03/05 20:34 O3/P3
+
+
+             INICIO                                  Pc1=0
+
+
+          Programar
+                                                    Encender leds
+           puerto C
+
+
+                                                     Pc1=0
+      Habilitar interrupción
+
+
+   Leer estado de interruptor S                       ¿S aún
+                                                     cerrado?
+
+
+                                              Tiempo de 1s
+            ¿S
+        cerrado ?
+                                                    Apaga led
+
+
+          Pc1=1
+
+
+            tiempo
+
+
+          Pc1=0
+
+
+            tiempo
+
+
+
+
+                                                                                       22
+UNAM, FACULTAD DE INGENIERÍA                              SANTIAGO CRUZ CARLOS
+APUNTES DE MICROPROCESADORES Y MICROCONTROLADORES            29/03/05 20:34 O3/P3
+
+
+
+PORTC        EQU     $03
+DDRC         EQU     $07
+             LDX     #$1000
+             LDAA    #$C0
+             STAA    DDRC,X
+VUELVE       CLI
+REVISA       BRSET   PORTC,X,$01, FREC1
+             BRA     REVISA
+
+FREC1        BSET    PORTC,X,$02
+             JSR     TIEMPO1ms
+             BCLR    PORTC,X,$02
+             JSR     TIEMPO1ms
+             BRA     FREC1
+TIEMPO1ms    LDY     #$6E
+LAZO1        NOP
+             DEY
+             BNE     LAZO1
+             RTS
+INTERRUP     BCLR    PORTC,X,$02
+             BSET    PORTC,X,$10
+LOOP         BRCLR   PORTC,X,$01, CONTINUA
+             BRA     LOOP
+
+CONTINUA     JSR     TIEMPO1s                  (5)
+             BCLR    PORTC,X,$10
+             BRA     VUELVE
+TIEMPO1s     LDAA    #$14                      (2)inmed       T=1[s]
+LOOP2        LDY     #$15B2                    (4)inmed       T=1,000,000[s]
+LO0P1        NOP                               (2)inh         50,000[s]=
+             DEY                               (4)inh       9 5JSR+2LDAA
+             BNE     LOOP1                     (3)rel         4LDY+9(**)
+                                                              (**)=(50,000-11)/9
+             DECA                              (2)inh
+                                                              (**)=(5554)10
+             BNE     LOOP2                     (3)rel
+                                                              (**)=15B2h
+             RTS                               (5)inh
+                                                              1,000,000/50,000=
+                                                              =20 veces debe
+                                                              Realizarse ese lazo
+                                                              2010=14h
+             ORG     $00EE
+             DB      $7E
+             DW      INTERRUP
+
+
+
+
+                                                                                    23
+UNAM, FACULTAD DE INGENIERÍA                                SANTIAGO CRUZ CARLOS
+APUNTES DE MICROPROCESADORES Y MICROCONTROLADORES              29/03/05 20:34 O3/P3
+
+SISTEMAS DE TIEMPO DEL HC11
+
+EXTAL     8[MHz] Frecuencia exterior
+E=EXTAL/4 2[MHz] Frecuencia de operación del mP
+
+A partir de la frecuencia base E se generan 5 servicios mediante preselección
+programable se generan las variaciones de frecuencia para cada servicio.
+
+SERVICIO                   PREESC. REGISTRO TERMINALES                FREC
+SPI                          E/    SPCR      SPR1       SPR0
+Comunicación
+Serial sincronía
+                              2              0          0             1[MHz]
+                              4              0          1             500[kHz]
+                             16              1          0             175[kHz]
+                             32              1          1             62.5[KHz]
+SCI                          E/    BAUD      SCP1       SCP0          FREC
+                                             0          0             125000
+                             1
+                                                                      baud
+                              3              0          1             41447
+                              4              1          0             31250
+                             13              1          1             96000*
+                                   BAUD                               BAUD
+            *                  1             0      0        0        9600
+                               2             0      0        1        4800
+                               4             0      1        0        2400
+                               8             0      1        1        1200
+                              16             1      0        0        600
+                              32             1      0        1        300
+                              64             1      1        0        150
+                             128             1      1        1        75
+    SERVICIO               PREESC FREC                                T[ms]
+     acum..                       31250                               32
+     PULSOS
+  Dispositivo que puede
+servir como contador de     E/26
+ eventos o para saber el
+ tiempo de duración de
+        un evento
+
+
+                                                                                      24
+UNAM, FACULTAD DE INGENIERÍA                                        SANTIAGO CRUZ CARLOS
+APUNTES DE MICROPROCESADORES Y MICROCONTROLADORES                      29/03/05 20:34 O3/P3
+
+           RTI                         PACTL
+                                          RT RT0
+                              E/
+    Real time interrupt
+                                          1
+Cada 4 [ms] se genera
+     un vector de
+                          1               0    0    4.096
+interrupción en forma     2               0    1    8.192
+  automática con la
+    cmbinacion 00         4               1    0    16.384
+                          8               1    1    32.768
+        COP                  OPTION       CR CR0 T[ms]
+                         E/2
+                                          1
+                          1               0    0    32.768
+                          4               0    1    131.072
+                         16               1    0    262.144
+                         64               1    1    524.288
+                  ¿DE DONDE PARTE EL TEMPORIZADOR?
+      TIMER            E TMSK2 PR1 PR0 CUENTA TOF
+        TCNT           1        0     0   0.5[s] 32.768[s]
+    $100E(MSB)
+     $100F(LSB)        4        0     1   2[s]     131.072[s]
+para leer el timer:    8        1     0   4[s]     262.144[s]
+     LDY $100E
+                      16        1     1   8[s]     524.288[s]
+
+        16 BITS DEL CONTADOR                        LIBRE
+15 14 13 12 11 10 9 8 7 6                           5 4 3       2    1   0
+0 0 0 0 0 0 0 0 0 0                                 0 0 0       0    0   0
+0 0 0 0 0 0 0 0 0 0                                 0 0 0       0    0   1
+0 0 0 0 0 0 0 0 0 0                                 0 0 0       0    1   0
+0 0 0 0 0 0 0 0 0 0                                 0 0 0       0    1   1
+0 0 0 0 0 0 0 0 0 0                                 0 0 0       1    0   0
+*      *      *     *     *    *   *    *   *   *   *   *   *   *    *   *
+*      *      *     *     *    *   *    *   *   *   *   *   *   *    *   *
+*      *      *     *     *    *   *    *   *   *   *   *   *   *    *   *
+
+1      1      1     1     1    1   1 1 1 1 1 1 1 1 1 1                       existe un
+                                                                             sobreflujo y un
+0      0      0     0     0    0   0 0 0 0 0 0 0 0 0 0                       acarreo, hay que
+                                                                             borrarlo para que
+                                                                             nuevamente
+                                                                             vuelva a detectar
+                                                                             la interrupción
+
+                                                                                                 25
+UNAM, FACULTAD DE INGENIERÍA                                 SANTIAGO CRUZ CARLOS
+APUNTES DE MICROPROCESADORES Y MICROCONTROLADORES               29/03/05 20:34 O3/P3
+
+Se produce una señal de sobreflujo TOF cada vez que la cuenta pasa de FFFF a 0000, y
+continúa su incremento, todas las funciones de tiempo incluyendo TOF y RTI tienen sus
+propios controles de interrupción y vectores de interrupciones independientes.
+
+
+COMO SE RELACIONA LA RTI Y EL TIMER
+
+
+
+
+                    TOF         TOF        TOF
+
+
+                      Podríamos variar el ciclo de trabajo
+                      con la RTI y tener un modulador de
+                      ancho de pulsos
+¿Para que nos sirve la interrupción de tiempo real?
+Para programar relojes en tiempo real, cronómetros, calendarios, muestrear datos, etc.
+
+
+
+
+                                                                                       26
+UNAM, FACULTAD DE INGENIERÍA                               SANTIAGO CRUZ CARLOS
+APUNTES DE MICROPROCESADORES Y MICROCONTROLADORES             29/03/05 20:34 O3/P3
+
+SISTEMA DE COMPARACION Y CAPTURACION
+
+Se tiene:
+
+3 canales de entrada para captura
+4 canales de salida para comparación
+1 canal bidireccional (IC4 o IC5)
+
+ENTRADA DE CAPTURA (3)
+
+
+                              ICXI
+      Del
+      contador
+      libre                   TMSK1
+
+
+                                                                MODO
+           16 BITS                                              POLEO
+           LATCH CLK                                            PAX
+           TIC-H TIC-L
+                                 ICF
+                                 Input                       MODO
+                                 capture                     INTERRUPCION
+                                 flag
+
+                                 TFLG1
+Registra el tiempo de ocurrencia de un evento externo mediante la fijación del valor de
+su contador libre, cuando sucede un flanco predeterminado en la entrada
+correspondiente.
+El contador de tiempo libre continua su cuenta, por programación se pueden almacenar
+los valores fijados y usarlos para computar la periodicidad y duración de los eventos
+
+Por ejemplo, almacenando las veces de flancos sucesivos de una señal de entrada, por
+programación se pueden determinar el periodo y el ancho del pulso de una señal.
+
+Para medir el periodo, dos flancos sucesivos son capturados; para medir el ancho de
+pulso, dos flancos sucesivos de polaridad alterna son capturados.
+
+La ocurrencia de eventos (en la mayoría de los eventos) es asincrona con respecto al
+contador de tiempo libre, el cual esta sincronizado con el reloj de bus interno (PH2).
+Esta captura de eventos se tiene que sincronizar con (PH2), de modo que la fijación de
+
+
+                                                                                     27
+UNAM, FACULTAD DE INGENIERÍA                                SANTIAGO CRUZ CARLOS
+APUNTES DE MICROPROCESADORES Y MICROCONTROLADORES              29/03/05 20:34 O3/P3
+
+tiempo libre cuando un flanco predeterminado se detecta ocurre al medio ciclo opuesto
+de PH2 desde el momento que dicho contador llega a ser incrementado.
+
+ENTRADA PARA CAPTURA
+REGISTROS
+EDG EDG EDG EDG EDG EDG EDG EDG
+4B 4A 1B 1ª              2B 2A 3B 3A
+                                               Prog. Pol.
+                                               Flanco P/IC3
+                                               Prog. Pol.
+                                               Flanco P/IC2
+                                               Prog. Pol.
+                                               Flanco P/IC1
+                                               Prog. Pol.
+                                               Flanco P/IC42
+
+
+EDGxB     EDGxA   Captura
+0         0       Deshabilitada
+0         1       Por flanco de subida
+1         0       Por flanco de bajada
+1         1       Por cualquier flanco
+
+      7    6    5    4    3     2    1    0
+TFLG1 OC1F OC2F OC3F OC4F I4/0S IC1F IC2F IC3F
+
+      7    6    5    4    3      2    1    0
+TMSK1 OC1I OC2I OC3I OC4F I4/05I IC1I IC2I IC3I
+
+
+Indica cuando un flanco ha sido detectado o cuando un contador ha sido igualado,
+habilita con (1) y deshabilita con (0) la entrada para captura y/o salida para
+comparación.
+
+
+Del contador libre                                                      Flanco        
+                                      
+          TICX
+                                MSB                    LSB
+
+
+
+2
+    Si DDRA =0(b1+3) DEL REG PACTL E I4/O5=1(b1+2) DEL PACTL
+
+                                                                                      28
+UNAM, FACULTAD DE INGENIERÍA                                SANTIAGO CRUZ CARLOS
+APUNTES DE MICROPROCESADORES Y MICROCONTROLADORES              29/03/05 20:34 O3/P3
+
+Ejemplo:
+Cuenta: cada 2[s]
+Tiempos de ocurrencia, Flancos de subida:
+Tiempos: t1=2430h, t2=2500h, t3=3500h, t4=3750h, t5=4570h,
+
+
+
+
+  t0                t1                   t2                 t3
+  (a) ¿Cuánto es tiempo entre t1 y t3?
+  (b) La señal recibida tiene un periodo constante
+  (c) ¿cuánto dura el evento en t1 y t2?
+
+   (a) (t3-t1)= (3500h-2430h)( 2[s])=(10D0h) ( 2[s])=4304d( 2[s])=8,608[s]
+   (b) 416 [s]
+   (c) t35 =8416 [s]  t13        QUE ES ESTO ?
+
+
+PROGRAMA:
+Desarrollar un programa que cambie el estado del LED cada vez que se detecta un flanco
+de bajada por el pin PA0 (entrada para captura) mediante interrupción.
+
+
+
+         INICIO                                       A
+
+        Programar
+                                              Cargar estado de
+         captura
+                                                  puerto A
+       P/flanco de
+          bajada
+                                               Enciende/apaga
+                                                     LED
+     Habilitar modo
+      interrupción
+       P/entrada                                      RTI
+         captura
+
+
+    Habilitar interrupción
+
+
+        Reestablecer
+       bandera (FC3F)             A
+
+
+
+
+                                                                                      29
+UNAM, FACULTAD DE INGENIERÍA                             SANTIAGO CRUZ CARLOS
+APUNTES DE MICROPROCESADORES Y MICROCONTROLADORES           29/03/05 20:34 O3/P3
+
+TMSK1     EQU    $22
+TFLG1     EQU    $33
+TCTL      EQU    $21
+PORTA     EQU    $00
+
+          LDX    #$1000
+          LDAA   #$02
+          STAA   TCTL2,X
+          LDAA   #$01
+          STAA   TMSK1,X
+CICLO     CLI
+          BRA    CICLO
+
+INTERRUP BSET    TFLG1,X,$01
+         LDAA    PORTA, X
+         EORA    #$40
+         STAA    PORTA,X
+         RTI
+
+          ORG    $00E2
+          DB     $7E
+          DW     INTERRUP
+
+PROGRAMA:
+Desarrollar un programa que cambie el Edo. Del LED cada vez que se detecta 5 flancos
+de bajada por el pin PA1 (entrada para captura 2 Puerto A) mediante interrupciones.
+
+
+
+
+                                                                                   30
+UNAM, FACULTAD DE INGENIERÍA                                SANTIAGO CRUZ CARLOS
+APUNTES DE MICROPROCESADORES Y MICROCONTROLADORES              29/03/05 20:34 O3/P3
+
+
+              INICIO
+                                         Establecer bandera
+                                                IC2F
+        Configurar captura
+        P/flanco de bajada
+                                              Decrementar
+                                                contador
+        Habilitar para modo
+            interrupción
+         p/entrada captura
+
+                                        ¿ Contador
+                                        =1?
+        Habilitar para modo
+            interrupción                                       Cargar estado del
+         p/entrada captura                                         puerto A
+
+                                                               Encende/apagar
+        Cargar contador de                                          LED
+         flancos con "5"                RTI
+                                                             Cargar contador con
+                                                                     "5"
+             Habilitar
+           interrupción
+
+
+            LDX    #$1000
+            LDAA   #$08
+            STAA   TCTL2,X
+            LDAA   #$02
+            STAA   TMSK1,X
+            LDAB   #$05
+CICLO       CLI
+            BRA    CICLO
+
+INTERRUP BSET      TTLG1,X,$02
+         DECB
+         CMPB      #$01
+         BEQ       ACTUA
+         RTI
+ACTUA    LDAA      PORTA,X
+         EORA      #$40
+         STAA      PORTA,X
+         LDAB      #$05
+         RTI
+
+                                                                                      31
+UNAM, FACULTAD DE INGENIERÍA                                SANTIAGO CRUZ CARLOS
+APUNTES DE MICROPROCESADORES Y MICROCONTROLADORES              29/03/05 20:34 O3/P3
+
+SALIDA POR COMPARACIÓN
+Programa un evento que debe ocurrir a un tiempo específico cuando el contador libre
+(TCNT) alcanza un valor especificado.
+Cada salida de comparación tiene un registro de 16 bits de referencia para comparación
+(TOCX) y un comparador de 16 bits dedicado.
+El valor programado en el registro de referencia de 16 bits ( TOCX) se compara con el
+valor de contador libre cada ciclo de reloj. Cuando el registro de comparación se iguala
+con el valor programado en el registro de referencia una bandera de salida se pone en
+(1) (OCXI) esta bandera se puede usar para iniciar funciones automático producto de los
+valores de comparación.
+
+
+
+                                             OCXI (TMSK1)
+                                                                                 IRQ
+            Comparador de 16 bits
+
+                                              OCXF(TFLG1)
+            TOCX(H)      TOCX(L)
+                                                                                 OCX
+                                             FOCX(CFORX)
+  Del contador
+       libre
+
+
+
+UML OL2 OM3 OL3 OM4 OL4 OM5 OL5
+                                                    TCTL1
+                                                 Programa OC5
+                                                 Programa
+                                                 Programa
+                                                 Programa
+                                                 Programa
+                                                 Programa
+                                                 Programa
+                                                 Programa
+
+OMX   OLX   Acción después de una comparación exitosa.
+0     0     Ninguna (temporizador desconectado
+0     1     Cambio de estado en la línea OCX (toggle)
+1     0     Línea OCX=0
+1     1     Línea OCX=1
+
+
+
+
+                                                                                       32
+UNAM, FACULTAD DE INGENIERÍA                                  SANTIAGO CRUZ CARLOS
+APUNTES DE MICROPROCESADORES Y MICROCONTROLADORES                29/03/05 20:34 O3/P3
+
+OC1 difiera de las otras salidas de comparación en que una comparación exitosa puede
+afectar a uno o a todos los 5 pines de la línea de comparación. Esta situación se controla
+por medio de los registros OCIM y OCID de 8 bits cada uno.
+
+OCIM especifica cuales salidas del puerto A seran usadas por una comparación exitosa
+en OC1.
+OCID especifica que dato se mandará por estos pines después de una comparación
+exitosa.
+
+PROGRAMA
+
+Desarrollar un programa para generar una onda cuadrada de 400 [Hz] por la salida de
+comparación dos, con una cuenta por cada 0.5 [s] en el TCNT.
+
+PUERTO A
+            T=2.5[ms]
+            T/2=1.25[ms]
+            #de cuentas: 1250/0.5=2500
+            f=400[Hz]
+
+                  INICIO
+
+
+                  Programar                               A
+                    salida
+                 comparación
+                   en modo
+                   TOGGLE                             Almacenar
+                                                     resultado en
+                                                    reg. REFTOC2
+                  Iniciar con
+                  salida alta
+
+
+
+                 Cargar valor                         ¿OCT2=1
+                  act. Cont.                          ?
+                    Libre
+
+                   Sumar el
+                   ancho de
+                     pulso
+
+
+
+                        A
+
+
+
+                                                                                        33
+UNAM, FACULTAD DE INGENIERÍA                             SANTIAGO CRUZ CARLOS
+APUNTES DE MICROPROCESADORES Y MICROCONTROLADORES           29/03/05 20:34 O3/P3
+
+Programa Terminar
+
+
+INTERRUPCIÓN POR TIEMPO PROGRAMABLE
+
+
+                                          TOI (TMSK2)
+          TCNT(H)     TCNT(L)                                                 IRQ
+
+                                           TOF (TFLG2)
+              Contador libre
+
+
+
+
+              7   6 5 4 3 2 1   0              PR1   PR0    CUENTA     TOF
+TMSK2         TOI           PR1 PR2            0     0      0.5[s]     32.768[s]
+$1024                                          0     1      2[s]       131.072[s]
+                                               1     0      4[s]       262.144[s]
+                                               1     1      8[s]       524.288[s]
+
+
+
+            7   6 5 4 3 2 1 0
+TFLG2 $1025 TOF
+
+
+
+
+                                                                                    34
+UNAM, FACULTAD DE INGENIERÍA                              SANTIAGO CRUZ CARLOS
+APUNTES DE MICROPROCESADORES Y MICROCONTROLADORES            29/03/05 20:34 O3/P3
+
+PROGRAMA
+Desarrollar un programa que ponga un nivel alto en el pin PC7 5 segundos después de
+que se cierre el interruptor S y permanecer así hasta que el interruptor S se abra. La
+acción del tiempo se deberá obtener por interrupción de tiempo programable.
+
+                             S                            TOF=262.14[ms]
+ 0                                                        262.14[ms]*X=5000[ms]
+ 1                                                        X=13h
+ 2
+ 3
+ 4                           PC7    5 [s]
+ 5
+ 6
+ 7
+SALIDA
+PUERTO C
+
+
+
+
+                                                                                    35
+UNAM, FACULTAD DE INGENIERÍA                        SANTIAGO CRUZ CARLOS
+APUNTES DE MICROPROCESADORES Y MICROCONTROLADORES      29/03/05 20:34 O3/P3
+
+
+
+
+      INICIO
+
+
+      Programar               A
+       puerto C
+
+
+      Programar
+     contador de             ¿Interrupto
+        TOF's                rS
+                             cerrado?
+
+  Programar
+  tiempo para
+  TOF's
+                      D
+     Leer estado
+                                  ¿TOF=1?                     Incrementar
+         de
+    interruptor S                                               contador
+                                                                 TOF's
+
+
+
+           A
+                                                       B
+
+
+
+
+                                                                              36
+UNAM, FACULTAD DE INGENIERÍA                                   SANTIAGO CRUZ CARLOS
+APUNTES DE MICROPROCESADORES Y MICROCONTROLADORES                 29/03/05 20:34 O3/P3
+
+
+                     B
+
+
+            Reset de TOF, TOF=1
+
+
+
+
+                   Interru
+                   ptor S
+                   cerrad
+                   o?
+
+
+
+
+                   Contado
+                   r
+                   TOF=12=
+                   ?
+
+
+
+
+COMUNICACIÓN SERIE
+
+         ASINCRONA (SCI) = UART FULL-DUPLEX
+         INTERFACE NORMA RS-232
+         RS232 (CONECTOR DB9)
+         SEÑALES DE LA COMPUTADORA (PC) NIVEL TTL
+         SEÑALES FUERA DE LA PC: ±15V VIA EL CIRCUITO INTEGRADO MAX232
+         PARA MOTOROLA MC145406
+
+                                  PINES DEL CONECTOR DB9
+PIN      Señal   Descripción
+2        TX      Transmisión de datos
+3        RX      Recepcion de datos
+4        RTS     Recuest to send        Señal mandada por la PC cuando quiere transmitir
+                                        a un dispositivo.
+5        CTS     Clear                  Señal recibida por la PC cuando el dispositivo esta
+                                        listo para recibir
+6        DSR     Data set ready         Señal recibida por la PC cuando el MODEM esta
+                                        listo.
+
+                                                                                         37
+UNAM, FACULTAD DE INGENIERÍA                           SANTIAGO CRUZ CARLOS
+APUNTES DE MICROPROCESADORES Y MICROCONTROLADORES         29/03/05 20:34 O3/P3
+
+7    GND    Ground
+8    CD     Carrier detected      Señal recibida por la PC cuando el MODEM detecta
+                                  portadora (se supone que uno siempre detecta
+                                  portadora)
+20   DTR    Data terminal ready   Señal mandada por la PC cuando hay
+                                  comunicación
+22   RI     Ring indicador        Señal recibida por la pc cuando el MODEM recibe
+                                  señal de tono.
+
+
+
+
+                                                    CONFIGURACIÓN PARA
+          MCU                                          MODEM NULO
+
+
+
+
+COMUNICACIÓN SERIE
+
+CODIFICACIÓN NRZ
+
+
+CARACTERÍSTICAS
+
+PROTOCOLO DE COMUNICACIÓN
+
+CÓDIGO DE TRANSMISIÓN
+
+
+
+
+                                                                                 38
+UNAM, FACULTAD DE INGENIERÍA                        SANTIAGO CRUZ CARLOS
+APUNTES DE MICROPROCESADORES Y MICROCONTROLADORES      29/03/05 20:34 O3/P3
+
+
+
+
+                                                                              39
+

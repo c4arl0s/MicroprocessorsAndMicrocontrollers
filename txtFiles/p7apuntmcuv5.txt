@@ -1,0 +1,390 @@
+           UNIVERSIDAD NACIONAL
+            AUTÓNOMA DE MÉXICO
+
+
+               FACULTAD DE INGENIERIA
+
+
+Trabajo:
+
+EQUIPO:
+                      SANTIAGO CRUZ CARLOS
+
+
+ASIGNATURA:
+
+GRUPO:
+
+
+
+
+      jueves, 05 de julio de 2007, Ciudad Universitaria, México, DF
+UNAM, Facultad de Ingeniería                                                                           05/07/2007 18:43
+Autor: Santiago Cruz Carlos                                                                         Entrada para captura
+______________________________________________________________________________________________________________________
+                                    SISTEMA DE TIEMPO DEL HC12
+
+MPU: MC9S12E128
+TiM0
+TiM1    F=24 [MHz]                (racon electronics) (dio diagrama de bloques)
+TM2
+
+MPU:        MC68HC912B32
+TiM         F=8 [MHz]    (amigo12, Ing. Salva)
+
+EXTAL=16 [MHz]
+(16 [MHz])/2= 8 [MHz]             Frecuencia teorica           T=0.125 [µs]
+
+A partir de un contador libre de 16 bits (TCNT) se generan las siguientes funciones.
+
+    a)   entrada para captura
+    b)   salida para comparación
+    c)   interrupción por tiempo programable
+    d)   acumulador de pulsos
+
+    a) ENTRADA PARA CAPTURA
+
+
+                                                     (CXI)
+    Del                                  CXI
+    contador
+    libre
+    (TCNT)                               TMSK1
+                                                                                             IRQ
+
+
+                   16 BITS
+                 LATCH (CLK)                          (CXF)                            PTx
+
+                                               ICF
+               TIC-H TIC-L                     Input
+                                               capture
+                                               Flag
+
+
+                                             TFLG1
+
+Registra el tiempo de ocurrencia de un evento externo mediante la fijación del valor de su
+contador libre cuando un flanco predeterminado se detecta en la entrada de tiempo
+correspondiente, el contador libre continúa con su cuenta.
+
+Por programación se pueden almacenar los valores fijados y usarlos para computar
+periodicidad y duración de los eventos por ejemplo almacenando las veces de flancos
+
+
+                                                     2 de 10
+UNAM, Facultad de Ingeniería                                                                           05/07/2007 18:43
+Autor: Santiago Cruz Carlos                                                                         Entrada para captura
+______________________________________________________________________________________________________________________
+sucesivos de una señal de entrada se puede determinar el periodo y ancho de pulso de la
+señal.
+
+        15 14 13 12 11 10 9 8 7 6 5 4 3 2 1 0
+TCNT                                                                 $0080
+
+        TOF
+
+
+Se produce una señal de sobreflujo TOF cada vez que la cuenta pasa de FFFF a 0000 y
+continúa su incremento.
+
+¿Dónde se detecta TOF?
+
+                 7             6 5 4 3 2 1 0
+TFLG2           TOF            0 0 0 0 0 0 0 $008F
+                TIMER
+              OVERFLOW
+                FLAG
+
+         (se borra volviendo
+             a poner un
+               Un `1')
+
+
+Si F=8[MHz]
+
+
+
+
+              0000                                           0001
+                               0.125[µs]                                      0.125[µs]
+
+
+Por lo tanto el tiempo que tarda en hacer una cuenta de 0000 a FFFF, es decir, de 0 a
+65535, es de:
+8.1919 [ms]= 65535(0.125[µs])
+
+
+
+
+                                                     3 de 10
+UNAM, Facultad de Ingeniería                                                                           05/07/2007 18:43
+Autor: Santiago Cruz Carlos                                                                         Entrada para captura
+______________________________________________________________________________________________________________________
+¿Se puede cambiar esta base de tiempo para una mayor precisión?
+
+Esto se realiza configurando un registro, el registro TMSK2
+
+        7              6 5 4 3 2       1   0
+TMSK2 TOI              0 PUPT - - PR2 PR1 PRO $008D
+            TIMER
+          OVERFLOW
+           INHIBIT
+
+
+PR2 PR1 PR0                       F                Cuenta                         TOF                 PREESCALAR
+                                            Una cuenta la realize en:   La bandera TOF se activa en
+  0         0          0      8 [MHz]           0.125 [µs]                   9.192 [ms]                   1
+  0         0          1      4 [MHz]           0.250 [µs]                   16.38 [ms]                   2
+  0         1          0      2 [MHz]           0.500 [µs]                   37.77 [ms]                   4
+  0         1          1      1 [MHz]             1 [µs]                      65.53 [ms]                  8
+  1         0          0     0.5 [MHz]            2 [µs]                     131.07 [ms]                 16
+  1         0          1    0.25 [MHz]            4 [µs]                     262.14 [ms]                 32
+  1         1          0                                                                              Reservado
+  1         1          1                                                                              Reservado
+
+¿En que registro programo el flanco de entrada?
+
+      EDG EDG EDG EDG EDG EDG EDG EDG
+TCTL3 7B 7ª   6B 6A 5B 5A 4B 4ª       $008A
+
+
+      EDG EDG EDG EDG EDG EDG EDG EDG
+TCTL4 3B 3ª   2B 2A 1B 1A 0B 0A $008B
+
+
+¿Cómo aparecen los registros después del reset? Todos en cero.
+
+EDGnB EDGnA                      CAPTURA
+      0            0            Deshabilitado
+      0            1          Flanco de subida
+      1            0          Flanco de bajada
+      1            1         Por cualquier flanco
+
+
+
+
+                                                     4 de 10
+UNAM, Facultad de Ingeniería                                                                           05/07/2007 18:43
+Autor: Santiago Cruz Carlos                                                                         Entrada para captura
+______________________________________________________________________________________________________________________
+
+
+Si ICI=1 ICF=1 por programación cuando por evento se produce un requerimiento de
+interrupción por hardware (sistema de tiempo trabaja en modo interrupción).
+
+Si ICI=0 por programación el sistema de tiempo trabaja en modo poleo.
+
+
+TMSK1                             C7I C6I C5I C4I C3I C2I C1I C0I $008C
+Timer Interrupt Mask 1 Register
+
+
+
+
+TFLG1 C7F C6F C5F C4F C3F C2F C1F C0F $008A
+
+
+
+
+                                                     5 de 10
+UNAM, Facultad de Ingeniería                                                                           05/07/2007 18:43
+Autor: Santiago Cruz Carlos                                                                         Entrada para captura
+______________________________________________________________________________________________________________________
+¿Dónde se habilita la interrupción?
+
+           7               6                   5                   4               3 2 1 0
+TSCR TEN                   TSWAI               TSBCK               TFFCA                           $
+                     TIMER STOP      TIMER STOP      TIMER
+           TIMER
+                    WHILE IN WAIT WHILE BACKGROUD    FAST
+         ENABLE BIT
+                         BIT           MOD BIT    FLAG ALL BIT
+Al reset     0            0               0            0                           0   0   0   0
+
+
+               0 Los registros TFLG1, TFLG2, PAFG1, PAFG2, se limpian escribiendo en `1'
+TFFCA
+               1 Los registros TFLG1, TFLG2, PAFG1, PAFG2, se limpian escribiendo en `1', al
+                 leer el registro.
+
+               0 El timer continua corriendo en modo background.
+TSBCK
+               1 Deshabilita el timer en modo background
+
+               0 El timer continua corriendo en wait mode
+TSWAI
+               1 Deshabilita el timer en modo wait mode
+
+           0 Deshabilita el timer (incluyendo el TCNT)
+TEN
+           1 Habilita el timer
+
+¿Dónde se configura el pin como entrada para captura o salida para
+comparación?
+
+           7       6           5       4           3       2       1       0
+TIOS IOS7 IOS6 IOS5 IOS4 IOS3 IOS2 IOS1 IOS0
+
+Al reset       0       0           0       0           0       0       0       0
+
+
+           0 Actúa como entrada para captura
+IOSn
+           1 Actúa como salida para comparación
+
+Método a seguir: habilitar timer, habilitar si requerimos salida para comparación o entrada
+para captura,, y habilitamos el flanco que requerimos.
+
+Posibilidades:
+
+     1. Entrada de propósito general Salida de propósito general
+     2. Entrada para captura         Salida de propósito general
+     3. Entrada de propósito general Salida para comparación
+
+                                                                   6 de 10
+UNAM, Facultad de Ingeniería                                                                           05/07/2007 18:43
+Autor: Santiago Cruz Carlos                                                                         Entrada para captura
+______________________________________________________________________________________________________________________
+     4. Entrada para captura                    Salida para comparación
+
+
+Como sería la programación para los casos anteriores.
+
+            7 6              5 4 3 2 1 0
+Puerto T       DDR6=0                                  $00AE
+                  Salida                     Entrada
+                   para                       Para
+               comparación                   captura
+
+
+
+
+1)
+       7 6 5 4 3 2 1 0
+TSCR 0 0 0 0 0 0 0 0 $
+
+
+       7 6 5 4 3 2 1 0
+TIOS 0 0 0 0 0 0 0 0 $
+
+
+2)
+
+       7 6 5 4 3 2 1 0
+TSCR 1 0 0 0 0 0 0 0 $
+
+
+       7 6 5 4 3 2 1 0
+TIOS 0 1 0 0 0 0 0 0 $
+
+
+
+
+                                                       7 de 10
+UNAM, Facultad de Ingeniería                                                                           05/07/2007 18:43
+Autor: Santiago Cruz Carlos                                                                         Entrada para captura
+______________________________________________________________________________________________________________________
+Ejemplo:
+
+
+
+
+Cada vez que se obtiene el flanco de bajada por el pin0 del puerto T se debe cambiar el
+estado del led mediante interrupción por entrada para captura.
+
+
+                                                     (CXI)
+    Del                                  C0I
+    contador
+    libre
+    (TCNT)                               TMSK1
+                                                                                             IRQ
+
+
+              16 BITS LATCH
+                    (CLK)                             (CXF)                            PTT0
+
+                                               C0F
+             IC0R-H IC0R-L                     I
+
+
+
+
+                                             TFLG1
+
+
+
+
+                                                     8 de 10
+UNAM, Facultad de Ingeniería                                                                           05/07/2007 18:43
+Autor: Santiago Cruz Carlos                                                                         Entrada para captura
+______________________________________________________________________________________________________________________
+
+
+                      INICIO                                                        IRQ
+
+
+                    Habilitar timer            (TSCR)               Limpia bandera de interrupción COF
+                                                                      (recuerda: con un `1', para que
+                                                                     vuelva a detectar la interrupción)
+               Configurar captura para
+                 flancos de bajada              (TCTL4)
+
+                                                                           Lee estado del puerto T
+                    Habilitar modo
+                  interrupción para             (TMSK1)
+                entrada para captura
+                                                                            Prende led ­ apaga led
+
+               Habilitar entrada para
+               captura y/o salida para           (TIOS)
+                    comparación                                                         IRQ
+
+
+
+               Habilitar interrupción.           (CCR)
+
+
+PORTT                   EQU           $00AE
+TSCR                    EQU           $0086
+TCTL4                   EQU           $008B
+TMSK1                   EQU           $008C
+TIOS                    EQU           $0080
+TFLG1                   EQU           $008E
+
+                        LDX           #$0000
+                        BSET          TSCR,X,$80             ;habilita el timer, poniendo un `1' en el bit 7 del
+                                                             TSCR
+                        LDAA          #$02
+                        STAA          TCTL4,X                ;10, programa el flanco de bajada para el pin 0
+                        LDAA          #$01                   ;carga un 1
+                        STAA          TMSK1,X                ;habilita el modo de interrupción de entrada
+                                                             para captura
+                        LDAA          #$40                   ;
+                        STAA          TIOS,X                 ;selecciona si es IC, o OC
+
+CICLO                   CLI
+                        BRA           CICLO
+
+INTERRUPCION            BSET          TFLG1,X,$01
+                        LDAA          PORTT,X
+                        EORA          #$40
+                        STAA          PORTT,X
+                        RTI
+
+                                                     9 de 10
+UNAM, Facultad de Ingeniería                                                                           05/07/2007 18:43
+Autor: Santiago Cruz Carlos                                                                         Entrada para captura
+______________________________________________________________________________________________________________________
+
+
+                        ORG         $                        ;se deja libre el espacio en función de la tarjeta
+                        DB          $7E
+                        DW          INTERRUPCION
+
+
+
+
+                                                    10 de 10
+

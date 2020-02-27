@@ -1,0 +1,107 @@
+                         ADDRESSING MODES
+
+INHERENT ADDRESSING MODE
+
+       With inherent addressing, the opcode does not require an
+       operand.
+       In other words, all information needed to carry out (para llevar a
+       cabo) an instruction is contained (is inherent) within the opcode.
+       Most inherent instructions are 1 byte long.
+       Others, with prebytes, are 2 bytes long.
+       The name of the mnemonic opcode itself specifies where the
+       operand data can be found.
+       Inherent addressing always deals with register instead of the
+       memory.
+
+
+       The fetch/execute example in the next section used the instruction
+       clear accumulator A.
+       It changes the value of the byte in accumulator A to zero.
+       Since this instruction uses the inherent addressing mode, its
+       source code is simply the mnemonic opcode CLRA.
+       The corresponding machine code is 1 byte, wich is $4F.
+
+
+Listing:
+
+;demonstrate inherent addressing mode:
+
+E0000       4F          ORG $E0000       ;define start address
+E0001       5C          CLRA             ;clears ACCA
+E0002       18 8F       XGDY                   ;swap ACCD with IY
+E0004       18 09       DEY              ;decrement IY
+
+4F  opcode tells CPU  change all the bits in ACCA to zero
+
+we suppose that it have:
+
+ACCA        $6C
+ACCB        $80
+IY          $1A47
+
+Now, we shown how the microcontroller modifies the registers as
+explained by the coments in listing 2.4
+Initial condition
+              ACCA            ACCB
+                6C             80            ACCD
+                1A             47             IY
+
+Address        Machine code
+E000           4F
+
+
+
+
+address.asm           Assembled with IASM    05/07/2004 09:22
+PAGE 1
+
+
+
+E000                      1         ORG     $E000        ;define
+                                       start address
+E000      [02] 4F         2         CLRA             ;clears ACCA
+E001      [02] 5C         3       INCB            ;increment
+                                             ACCB
+E002      [04] 188F       4         XGDY              ;swap ACCD
+                                           with IY
+E004      [04] 1809       5         DEY             ;decrement
+                                              IY
+E006      [03] 20FE       6    CICLO         BRA      CICLO
+                          7    CICLO         BRA      CICLO
+Symbol Table
+CICLO      E006
+INMEDIATE ADDRESSING MODE
+
+With immediate addressing, there is an opcode and an operand.
+What to do and where to do it:
+Opcode specifies the action
+Operand specifies the data that is to be acted upon.
+
+
+LDAA                 #$5C
+
+              Memory
+Address       machine code
+E000          86              opcode tells CPU      copy   data   that   follows
+opcode and put copy in ACCA
+E001          5C              load data (copy data) with 5C
+DIRECT AND EXTENDED ADDRESSING MODES
+
+     The direct and extended addressing modes are similar.
+     In both cases the operand is an address, not the data itself.
+
+Examples:
+LDAA $05 is a direct address mode instruction shown in source code.
+This is the instruction Load ACCA with the contents of address $05
+Note the word contents.
+The operand tells the CPU where to find the data.
+If address happened to contain the byte $FC, then ACCA contains after
+the execution.
+The difference between the two is that the operand is a 1 byte address
+for direct mode.
+In extended mode the operand is 2 byte address
+
+For example: now we tells:
+LDAA $0005  extended addressing mode. (2 bytes for this case)
+INDEXED ADDRESSING MODE
+

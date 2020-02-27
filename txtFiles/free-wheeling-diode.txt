@@ -1,0 +1,69 @@
+This diode arrangement can also be used to clip input signals going into an amplifier so that it
+does not get overdriven or damaged. If the second diode is connected to a negative voltage ­V
+instead of ground, any input signals that are too large will be clipped so that they do not exceed ±
+V.
+
+
+                 +V
+
+
+                  -V
+
+
+
+Another type of diode protection is needed for circuits that drive inductive loads such as relays
+and electric motors. Here a problem occurs when the current through an inductor is suddenly cut
+off.
+A common example occurs when a transistor is used to control a relay, as shown below:
+                                            +V
+
+
+
+
+                                     a
+
+
+                                          power
+                                         MOSFET
+                       gate
+
+
+
+
+For now, the only thing we need to know about the transistor is that a positive voltage on the gate
+causes the transistor to turn on and be a good conductor, while pulling the gate voltage to ground
+causes the transistor to turn off and behave like an open circuit.
+
+Suppose that initially the transistor is turned on, so that a current flows through the
+electromagnet coil, opening the relay switch. If the transistor is then turned off, the current
+through the inductor will be cut off on a time scale of a few nanoseconds.
+
+But, as a result of Faraday's law, this current change will produce a back emf of V = L dI dt
+across the inductor, which can be very large. For example, if a 100 mA current through a 100
+µH coil is cut off within 5 nanoseconds, a voltage of +2000 V would be produced at point a in
+the circuit, destroying the transistor.
+
+
+
+
+                                                 21
+Placing a diode across the inductance, as shown above, prevents this. The diode, which is reverse
+biased while the transistor is turned on, becomes forward biased by the back emf, and conducts,
+its low resistance short circuiting the back emf and protecting the transistor.
+
+The diode can be thought of as providing a circular path for the current through the inductor to
+continue flowing briefly after the transistor is turned off.
+
+If you've ever pulled out the plug for a vacuum cleaner or electric motor while it was running,
+you`ve probably seen the effect of the back emf in the form of sparks at the plug. Since the field
+strength required to break down air is about 30,000 V/cm, it's evident that very large voltages are
+being produced.
+
+The bottom line is that whenever transistors are used to drive an inductive load, a diode (called a
+snubber diode) needs to be inserted across the inductance to prevent circuit damage.
+
+
+
+
+                                                22
+

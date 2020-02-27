@@ -1,0 +1,6 @@
+Cuestionario
+
+¿ Que es un ciclo de maquina?
+¿Que es un ciclo de instrucción?
+¿Que es un ciclo E?
+

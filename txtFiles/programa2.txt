@@ -1,0 +1,59 @@
+  UNAM, FACULTAD DE INGENIERÍA                                         SANTIAGO CRUZ CARLOS
+  APUNTES DE MICROPROCESADORES Y MICROCONTROLADORES                     02/04/2006 10:33
+  O4/P4
+  DIAGRAMA DE FLUJO PROGRAMA 2
+  Considerando dos registros índices X y Y, el programa queda de la siguiente manera.
+
+  DIAGRAMA DE FLUJO
+
+                    INICIO
+
+
+                  Declara
+               apuntadores P1
+                    y P2
+
+
+        Cargo dato vía apuntador P1
+
+
+
+        Transfiero dato vía apuntador
+                     p2
+
+
+
+        Incrementa apuntadores p1 y p2
+
+
+        NO
+                   Apuntado
+                       r
+                   P2=$2500
+                       ?
+             SI
+                      FIN
+
+
+  CODIGO PROGRAMA 2
+
+        LDX       #$1000     ; carga índice X con 1000, declara apuntador p1
+        LDY       #$2000
+SIGUE   LDDA      $00,X
+        STAA      $00,Y
+        INX
+        INY
+        CPY       #$2500
+        BNE       SIGUE
+FIN     BRA       FIN
+
+                                  1 de 2 Problemas (parte 3)
+UNAM, FACULTAD DE INGENIERÍA                            SANTIAGO CRUZ CARLOS
+APUNTES DE MICROPROCESADORES Y MICROCONTROLADORES        02/04/2006 10:33
+O4/P4
+
+
+
+
+                           2 de 2 Problemas (parte 3)
+

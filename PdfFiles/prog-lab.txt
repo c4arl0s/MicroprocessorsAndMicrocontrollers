@@ -1,0 +1,145 @@
+            UNIVERSIDAD NACIONAL
+             AUTÓNOMA DE MÉXICO
+
+
+               FACULTAD DE INGENIERIA
+
+
+    Trabajo: Programa control de rotación de motores de
+                   corriente directa
+
+EQUIPO:
+                  SANTIAGO CRUZ CARLOS
+                  CORTES ALVARADO CARLOS
+
+
+ASIGNATURA: Laboratorio de Microprocesadores y Microcontroladores
+
+GRUPO:
+UNAM, Facultad de Ingeniería                                                5-may-06
+Autor: Santiago Cruz Carlos, Carlos Cortes Alvarado              Titulo: Prog Lab
+________________________________________________________________________________
+__________
+
+            sábado, 28 de octubre de 2017, Ciudad Universitaria, México, DF
+
+
+
+
+                                        2 de 5
+UNAM, Facultad de Ingeniería                                                5-may-06
+Autor: Santiago Cruz Carlos, Carlos Cortes Alvarado              Titulo: Prog Lab
+________________________________________________________________________________
+__________
+PROGRAMA LABORATORIO
+Hacer un programa que controle el sentido de rotación de un motor de corriente
+directa, utilizando un puerto de salida, se utilizara el puerto b, b7,b6,b5,b4.
+ B7 y b6 controlaran el motor m2, b5 y b4 controlaran el motor m1.
+
+                                                         Salida en $ 801
+                           Entrada
+                                          M2                 M1     B7     B6   B5   B4
+                            $800
+                             $01        derecha          Derecha    1      1    1    1
+                             $02       Izquierda         Derecha    1      0    1    1
+                             $03        Derecha         Izquierda   1      1    1    0
+                             $04       Izquierda        izquierda   1      0    1    0
+                                          Stop             Stop     0      *    0    *
+
+
+                              INICIO
+
+
+
+                        Programar puerto
+
+
+
+                             LEE DATO
+
+
+
+                                                             SI
+                              ¿dato=1?                                      Saca por el puerto F0
+
+                                                    NO
+
+                                                             SI
+                            ¿dato=2?                                     Saca por el puerto B0
+
+                      NO
+
+                                                   SI
+                            ¿dato=3?                                     Saca por el puerto D0
+
+
+                      NO
+                                                        SI
+                            ¿dato=4?                                    Saca por el puerto A0
+                       NO
+
+
+
+                      Saca por el puerto 00
+
+
+
+                                                    3 de 5
+UNAM, Facultad de Ingeniería                                                5-may-06
+Autor: Santiago Cruz Carlos, Carlos Cortes Alvarado              Titulo: Prog Lab
+________________________________________________________________________________
+__________
+
+
+
+
+                                       4 de 5
+UNAM, Facultad de Ingeniería                                                5-may-06
+Autor: Santiago Cruz Carlos, Carlos Cortes Alvarado              Titulo: Prog Lab
+________________________________________________________________________________
+__________
+CODIGO
+             ORG    $8000
+PORTA        EQU    $801
+DDRA         EQU    $02
+             LDX    #$0000
+             LDAA   #$00
+             STAA   DDRA, X
+
+             LDAA   #$02
+             STAA   $800
+
+REG          LDAA   $800
+             CMPA   #$01
+             BEQ    M2M1DER
+             CMPA   #$02
+             BEQ    M2IZQM1DER
+             CMPA   #$03
+             BEQ    M2DERM1IZQ
+             CMPA   #$04
+             BEQ    SALTA
+             LDAA   #$00
+             STAA   PORTA, X
+             BRA    REG
+
+M2M1DER      LDAA   #$F0
+             STAA   PORTA, X
+             BRA    REG
+
+M2IZQM1DER   LDAA   #$B0
+             STAA   PORTA, X
+             BRA    REG
+
+M2DERM1IZQ   LDAA   #$D0
+             STAA   PORTA, X
+             BRA    REG
+
+SALTA        LDAA   #$A0
+             STAA   PORTA, X
+             BRA    REG
+
+
+
+
+                                       5 de 5
+

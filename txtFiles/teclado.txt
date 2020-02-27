@@ -1,0 +1,356 @@
+           UNIVERSIDAD NACIONAL
+            AUTÓNOMA DE MÉXICO
+
+
+             FACULTAD DE INGENIERIA
+
+
+           Trabajo: Programa Teclado matricial
+
+EQUIPO:
+                  SANTIAGO CRUZ CARLOS
+                  CORTES ALVARADO CARLOS
+
+
+ASIGNATURA: Lab. Microprocesadores y Microcontroladores
+
+GRUPO: 3
+UNAM, Facultad de Ingeniería                                                                              16/08/2017 13:28
+Autor: Santiago Cruz Carlos, Cortes Alvarado Carlos                                      Titulo: Programa teclado matricial
+______________________________________________________________________________________________________________________
+
+
+                 miércoles, 16 de agosto de 2017, Ciudad Universitaria, México, DF
+
+
+
+
+                                                       2 de 9
+UNAM, Facultad de Ingeniería                                                                              16/08/2017 13:28
+Autor: Santiago Cruz Carlos, Cortes Alvarado Carlos                                      Titulo: Programa teclado matricial
+______________________________________________________________________________________________________________________
+                                               Teclado matricial
+
+
+
+
+                                                       3 de 9
+UNAM, Facultad de Ingeniería                                                                              16/08/2017 13:28
+Autor: Santiago Cruz Carlos, Cortes Alvarado Carlos                                      Titulo: Programa teclado matricial
+______________________________________________________________________________________________________________________
+                   inicio
+
+
+          Programa el puerto A
+            (pb4-pb7 salidas)
+           (pb0-pb3 entradas)
+
+
+
+                Programa el
+                  puerto B
+                  (salidas)
+
+
+
+
+                Saca por el
+               puerto A 70h
+
+
+
+               Lee puerto A
+
+
+                              si
+                    A=
+                    07?                saca por PB el
+                                            00h
+                                                                           si
+                          n
+                                                                 Sigue
+                          o
+                                                                 A=07?
+
+                                                          n
+                                                          o
+                                                              Limpia puerto B
+
+
+                    A=
+                    0B?                  saca por PB el
+                                              04h
+                                                                                si
+                                                                  Sigue
+                                                                  A=07?
+
+                                                              n
+                                                              o
+                                                              Limpia puerto B
+
+
+
+
+                                                        4 de 9
+UNAM, Facultad de Ingeniería                                                                              16/08/2017 13:28
+Autor: Santiago Cruz Carlos, Cortes Alvarado Carlos                                      Titulo: Programa teclado matricial
+______________________________________________________________________________________________________________________
+
+
+  Salida            Si lee        Saca por el puerto B
+0 1 1 1 0            1 1      1            0
+         1           0 1      1            4
+         1           1 0      1            8
+         1           1 1      0            C
+1 0 1 1 0            1 1      1            1
+         1           0 1      1            5
+         1           1 0      1            9
+         1           1 1      0            D
+1 1 0 1 0            1 1      1            2
+         1           0 1      1            6
+         1           1 0      1            A
+         1           1 1      0            E
+1 1 1 0 0            1 1      1            3
+         1           0 1      1            7
+         1           1 0      1            B
+         1           1 1      0            F
+
+  Salida        Si lee                                       Saca por el puerto B
+   70h X  $3000 07h Y                             $4000               0
+          $3001   0B                              $4001               4
+          $3002   0D                              $4002               8
+          $3003   0E                              $4003               C
+    B0           07h                              $4004               1
+                  0B                              $4005               5
+                  0D                              $4006               9
+                  0E                              $4007               D
+    D0           07h                              $4008               2
+                  0B                              $4009               6
+                  0D                              $400ª               A
+                  0E                              $400B               E
+    E0           07h                              $400C               3
+                  0B                              $400D               7
+                  0D                              $400E               B
+                  0E                              $400F               F
+
+
+
+
+                                                       5 de 9
+UNAM, Facultad de Ingeniería                                                                              16/08/2017 13:28
+Autor: Santiago Cruz Carlos, Cortes Alvarado Carlos                                      Titulo: Programa teclado matricial
+______________________________________________________________________________________________________________________
+
+
+PORTA         EQU          $0000
+PORTB         EQU          $0001
+DDRA          EQU          $0002
+DDRB          EQU          $0003
+
+              LDX          #$0000
+              LDAA         #$FO
+              STAA         DDRA
+              LDAA         #$FF
+              STAA         DDRB
+
+LEE           LDAA         #$70              ;columna 1
+              STAA         PORTA
+              LDAA         PORTA,X
+              CMPA         #$07
+              BEQ          CERO
+              CMPA         #$0B
+              BEQ          CUATRO
+              CMPA         #$0D
+              BEQ          OCHO
+              CMPA         #$0E
+              BEQ          C
+
+              LDAA         #$B0              ;columna 2
+              STAA         PORTA
+              LDAA         PORTA,X
+              CMPA         #$07
+              BEQ          UNO
+              CMPA         #$0B
+              BEQ          CINCO
+              CMPA         #$0D
+              BEQ          NUEVE
+              CMPA         #$0E
+              BEQ          D
+
+              LDAA         #$D0              ;columna 3
+              STAA         PORTA
+              LDAA         PORTA,X
+              CMPA         #$07
+              BEQ          DOS
+              CMPA         #$0B
+              BEQ          SEIS
+              CMPA         #$0D
+              BEQ          A
+              CMPA         #$0E
+              BEQ          E
+
+                                                       6 de 9
+UNAM, Facultad de Ingeniería                                                                              16/08/2017 13:28
+Autor: Santiago Cruz Carlos, Cortes Alvarado Carlos                                      Titulo: Programa teclado matricial
+______________________________________________________________________________________________________________________
+
+
+              LDAA         #$E0              ;columna 4
+              STAA         PORTA
+              LDAA         PORTA,X
+              CMPA         #$07
+              BEQ          TRES
+              CMPA         #$0B
+              BEQ          SIETE
+              CMPA         #$0D
+              BEQ          B
+              CMPA         #$0E
+              BEQ          F
+
+              BRA          LEE
+
+CERO          LDAA         #$00
+              STAA         PORTB,X
+              BRA          LEE
+              LDAA         PORTA,X
+              CMPA         #$07
+              BEQ          CERO
+              CLRB
+              BRA          LEER
+
+UNO           LDAA         #$01
+              STAA         PORTB,X
+              BRA          LEE
+              LDAA         PORTA,X
+              CMPA         #$07
+              BEQ          CERO
+              CLRB
+              BRA          LEER
+
+
+
+
+                                                       7 de 9
+UNAM, Facultad de Ingeniería                                                                              16/08/2017 13:28
+Autor: Santiago Cruz Carlos, Cortes Alvarado Carlos                                      Titulo: Programa teclado matricial
+______________________________________________________________________________________________________________________
+                    inicio
+
+                                                               a
+          Programa el puerto A
+            (pb4-pb7 salidas)
+           (pb0-pb3 entradas)                              Incrementa
+                                                           apuntador X
+
+
+                Programa el                                Incrementa
+                  puerto B                                 apuntador Y
+                  (salidas)
+
+                                                      no
+               Inicializa
+           apuntadores X y Y
+                                                               X=
+                                                               4?
+            Cargar tabla de                                          si
+              valores en
+               memoria                                 Limpia índice X
+
+                                       c
+                  Declara
+                 contador                                  Incrementa
+                                                             contador
+
+                  Limpia
+                 contador                              no
+           Carga B con dato
+           vía px+contador                                     Y=?
+                                                        si
+              Rota B a la izq
+               cuatro veces                                     c
+
+
+              Almacena B en
+                 puerto A
+
+
+               Carga A con
+              dato vía índice
+                     X
+
+
+              Compara A vía
+                índice Y
+
+
+
+                                  si
+                     Z=1?
+                                           b
+
+               no
+
+                       a
+
+
+                                                       8 de 9
+PORTA                 EQU             $0000
+PORTB                 EQU             $0001
+DDRA                  EQU
+UNAM, Facultad de Ingeniería          $0002                                                               16/08/2017 13:28
+Autor: Santiago Cruz Carlos, Cortes Alvarado Carlos                                      Titulo: Programa teclado matricial
+DDRB                  EQU             $0003
+______________________________________________________________________________________________________________________
+CONT                  EQU             $6000
+
+                    LDX          #$4000
+                    LDY          #$5000
+
+                    LDAA         #$07
+                    STAA         $0,X
+                    LDAA         #$0B
+                    STAA         $1,X
+                    LDAA         #$0D
+                    STAA         $2,X
+                    LDAA         #$0E
+                    STAA         $3,X
+
+                    LDAA         #$00
+                    STAA         $0,Y
+                    LDAA         #$04
+                    STAA         $1,Y
+                    LDAA         #$08
+                    STAA         $2,Y
+                    LDAA         #$0C
+                    STAA         $3,Y
+                    LDAA         #$01
+                    STAA         $4,Y
+                    LDAA         #$05
+                    STAA         $5,Y
+                    LDAA         #$09
+                    STAA         $6,Y
+                    LDAA         #$0D
+                    STAA         $7,Y
+                    LDAA         #$02
+                    STAA         $8,Y
+                    LDAA         #$06
+                    STAA         $9,Y
+                    LDAA         #$0A
+                    STAA         $A,Y
+                    LDAA         #$0E
+                    STAA         $B,Y
+                    LDAA         #$03
+                    STAA         $C,Y
+                    LDAA         #$07
+                    STAA         $D,Y
+                    LDAA         #$0B
+                    STAA         $E,Y
+                    LDAA         #$0F
+                    STAA         $F,Y
+
+EMPIEZA             CLR          CONT
+
+LAZO                LDAB         CONT,X                  9 de 9
+                    ROLB                             ;
+                    ROLB                             ;
+

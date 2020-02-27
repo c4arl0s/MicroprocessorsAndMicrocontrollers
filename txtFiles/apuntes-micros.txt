@@ -1,0 +1,132 @@
+EJERCICIO    PARA      COMPRENDER                                     EL
+DIRECCIONAMIENTO DIRECTO
+
+SE USA CUANDO EL DATO A SER PROCESADO RESIDE EN
+UNA LOCALIDAD DE MEMORIA      Y ESTE SE ACCEDE
+DIRECCIONANDO DICHA LOCALIDAD DE MEMORIA
+
+REQUIEREN 2 BYTES
+1 PARA OPERACIÓN (EJEM: 96 )
+1 PARA OPERANDO    (EJEM: 50)
+
+DIR    OPCOD-OP   ETIQUETA   MNOEMOTECNICO   OPERANDO   COMENTARIOS
+40     96 50                 LDAA            $50        CARGA
+                                                        ACUMULADOR
+                                                        A CON 2F EN
+                                                        FORMA
+                                                        LIBRE,
+                                                        SIMBOLICA O
+                                                        TEXTUAL
+50     C6 3A                 LDAB            #$3A
+
+
+
+96 ES OPCODE DE LDAA, 50 LOCALIDAD DE MEM
+C6 ES OPCODE DE LDAB, 3A VALOR EN HEXA
+
+      TAMAÑO DE LAS              TIPO               NOTACION
+      INSTRUCCIONES      DIRECCIONAMIENTO
+           1 BYTE            INHERENTE
+          2 BYTES              DIRECTO
+                             INMEDIATO                   #
+                              INDEXADO                 0 0, x
+                              RELATIVO              0 0, +-HEX
+
+
+
+
+EJERCICIO:
+
+SI EL CONTENIDO DE LA LOCALIDAD DE MEMORIA 55 ES 2F Y EL
+CONTENIDO DEL ACUMULADOR B ES 13, ¿Cuál ES EL CONTENIDO
+DEL ACUMULADOR B DESPUES DE LAS SIGUIENTES
+INSTRUCCIONES?
+     A) ADDB #$55
+
+55+13=68 ; EN HEXA
+
+     B) ADDB $55
+
+2F+13= 42 ; EN HEXA
+
+
+ESCRIBIR LAS INSTRUCCIONES NECESARIAS EN LENGUAJE ENSAMBLADOR
+PARA QUE LOS NUMEROS 15 Y 55 CONTENIDOS EN LAS LOCALIDADES DE
+MEMORIA 50 Y 55 RESPECTIVAMENTE SE SUMEN Y EL RESULTADO SE
+COLOQUE EN LA LOCALIDAD DE MEMORIA #52 SUPONER QUE LAS
+INSTRUCCIONES COMIENZAN EN LA DIRECCION EN LA DIRECCION DE
+MEMORIA NUMERO 10
+
+DIR MEM     CONT MEM
+
+50          15
+51          55
+52          6A
+
+
+
+
+DIR        COD OP   ETIQUETA   MNOEMOTECNICO   OPERANDO   COMENTARIOS
+10         96 50               LDAA            $50        CARGA A.A.
+12         06 51               LDAB            $51        CARGA A.B
+14         1B                  ABA                        SUMA A+B
+15         97 52               STAA            $52
+
+INMEDIATO
+
+SE  USA   CUANDO   EL  OPERANDO DE                              LAS
+INSTRUCCIONES CONTIENE EL DATO A                                SER
+PROCESADO, REQUIEREN DOS BYTES.
+DIRECCIONAMIENTO EXTENDIDO
+
+Se usa cuando el dato a procesar reside en una localidad
+de memoria mayor a FF. Su operación es similar al
+direccionamiento directo solo que la dirección de
+referencia ocupa más de un byte.
+
+Ejemplo:
+LDAA     $123F
+LDAA     #$123A incorrecto
+
+LDAA     $00,X
+LDAA     #$00,X incorrecto
+
+Ejemplo: consideremos los siguientes números:
+A   60 0110000
+B   90 1001000
+
+  a)   cuál es el mayor ?
+
+Considerando números no signados A<B
+Considerando números sigandos    A>A
+
+EJERCICIOS - SP
+
+Si el SP contiene 200
+
+Suponiendo que todos los bytes entre las localidades de
+memoria 0100 y 01FF contienen numeros positivos,
+desarrolle un programa para sumar dichos numeros y que
+el resultado se coloque en las localidades de memoria
+0200 y 02001 para el MSB y LSB respectivamente.
+
+Supongamos que tenemos un MPU con un registro indice X
+y dos acumuladores.
+programa:
+
+            CLRA             ;limpia registros
+            CLRB             ;limpia acum. B
+            LDX       #$0100 ;carga indice X con     0100
+            ADDA $00,x ; A+M=> A
+            BCS       MAYOR ;salta si C=1
+CONTINUA    INX
+            CPX       #$200        ;compara X con M, osea con #$200
+
+            BNE       SIGUE
+            STAB      $00,x
+            STAA      $01,x
+
+
+MAYOR       INCB
+            BRA       CONTINUA
+
