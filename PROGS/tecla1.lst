@@ -1,0 +1,156 @@
+
+TECLA1.ASM             Assembled with IASM   06/02/2004  18:43  PAGE 1
+
+
+
+ 00EB                   1           ORG  $00EB
+ 00EB [03] 7E01A1       2           JMP  FLASHB
+                        3  
+ 0100                   4           ORG $100
+ 0100                   5  PORTA    EQU $1000
+ 0100                   6  PORTB    EQU $1004
+ 0100                   7  MASKA    EQU $03
+ 0100                   8  TMSK2    EQU $1024
+ 0100                   9  TFLG2    EQU $1025
+ 0100                  10  PACTL    EQU $1026
+                       11  
+ 0100 [06] 7F1004      12  INICIO   CLR PORTB
+ 0103 [06] 7F01BE      13           CLR BANFLASH
+ 0106 [02] 8640        14           LDAA #$40
+ 0108 [04] B71024      15           STAA TMSK2
+ 010B [02] 8603        16           LDAA #$03
+ 010D [04] B71026      17           STAA  PACTL
+                       18  
+                       19           ;LDS #FINPRO+10
+ 0110 [06] BD0138      20  SECDEC   JSR RUTEC
+ 0113 [04] B601BD      21           LDAA BANTEC
+ 0116 [03] 27F8        22           BEQ SECDEC
+ 0118 [04] B601BC      23  PRUINC   LDAA REGTEC
+ 011B [02] 8101        24           CMPA #$01
+ 011D [03] 270A        25           BEQ INCREPB
+ 011F [02] 8102        26           CMPA #$02
+ 0121 [03] 270C        27           BEQ DECREPB
+ 0123 [02] 8103        28           CMPA #03
+ 0125 [03] 270E        29           BEQ  FLASH
+ 0127 [03] 20E7        30           BRA SECDEC
+ 0129 [06] 7C1004      31  INCREPB  INC PORTB
+ 012C [02] 0F          32           SEI
+ 012D [03] 20E1        33           BRA SECDEC
+ 012F [06] 7A1004      34  DECREPB  DEC PORTB
+ 0132 [02] 0F          35           SEI
+ 0133 [03] 20DB        36           BRA SECDEC
+ 0135 [02] 0E          37  FLASH    CLI
+ 0136 [03] 20D8        38           BRA SECDEC
+                       39  
+                       40  
+ 0138 [06] 7F01BD      41  RUTEC    CLR BANTEC
+ 013B [04] B61000      42           LDAA PORTA
+ 013E [02] 8403        43           ANDA #MASKA
+ 0140 [02] 8103        44           CMPA #MASKA
+ 0142 [03] 2730        45           BEQ SALTEC
+ 0144 [06] 8D54        46           BSR REBOTE
+ 0146 [04] B61000      47           LDAA PORTA
+ 0149 [02] 8403        48           ANDA #MASKA
+ 014B [02] 8103        49           CMPA #MASKA
+ 014D [03] 2725        50           BEQ SALTEC
+ 014F [06] 7F01BC      51           CLR REGTEC
+ 0152 [04] B701BD      52           STAA BANTEC
+ 0155 [02] 8102        53           CMPA #$02
+ 0157 [03] 260B        54           BNE RUTEC1
+ 0159 [06] 7C01BC      55           INC REGTEC
+ 015C [06] 7F01BD      56           CLR BANTEC
+ 015F [06] 7A01BD      57           DEC BANTEC
+ 0162 [03] 2010        58           BRA SALTEC
+
+
+TECLA1.ASM             Assembled with IASM   06/02/2004  18:43  PAGE 2
+
+
+
+ 0164 [02] 8101        59  RUTEC1   CMPA #$01
+ 0166 [03] 2618        60           BNE  RUTEC3
+                       61           ;BEQ RUTEC2
+                       62           ;CLR BANTEC
+                       63           ;BRA SALTEC
+ 0168 [06] 7C01BC      64  RUTEC2   INC REGTEC
+ 016B [06] 7C01BC      65           INC REGTEC
+ 016E [06] 7F01BD      66           CLR BANTEC
+ 0171 [06] 7A01BD      67           DEC BANTEC
+ 0174 [04] B61000      68  SALTEC   LDAA PORTA
+ 0177 [02] 8403        69           ANDA #MASKA
+ 0179 [02] 8103        70           CMPA #MASKA
+ 017B [03] 26F7        71           BNE SALTEC
+ 017D [06] 8D1B        72           BSR REBOTE
+ 017F [05] 39          73           RTS
+                       74  
+ 0180 [02] 8100        75  RUTEC3   CMPA #$00
+ 0182 [03] 2705        76           BEQ  RUTEC4
+ 0184 [06] 7F01BD      77           CLR  BANTEC
+ 0187 [03] 20EB        78           BRA  SALTEC
+ 0189 [06] 7C01BC      79  RUTEC4   INC  REGTEC
+ 018C [06] 7C01BC      80           INC  REGTEC
+ 018F [06] 7C01BC      81           INC  REGTEC
+ 0192 [06] 7F01BD      82           CLR  BANTEC
+ 0195 [06] 7A01BD      83           DEC  BANTEC
+ 0198 [03] 20DA        84           BRA  SALTEC
+                       85  
+ 019A [03] CE1000      86  REBOTE   LDX #$1000
+ 019D [03] 09          87  REB1     DEX
+ 019E [03] 26FD        88           BNE REB1
+ 01A0 [05] 39          89           RTS
+                       90  
+ 01A1 [04] B601BE      91  FLASHB   LDAA BANFLASH
+ 01A4 [03] 270A        92           BEQ  APAGAB
+ 01A6 [06] 7C01BE      93           INC  BANFLASH
+ 01A9 [02] 86FF        94           LDAA #$FF
+ 01AB [04] B71004      95           STAA PORTB
+ 01AE [03] 2006        96           BRA FINRTI
+ 01B0 [06] 7A01BE      97  APAGAB   DEC BANFLASH
+ 01B3 [06] 7F1004      98           CLR  PORTB
+ 01B6 [02] 8640        99  FINRTI   LDAA  #$40
+ 01B8 [04] B71025     100           STAA  TFLG2
+ 01BB [12] 3B         101           RTI
+                      102  
+                      103  
+ 01BC                 104  REGTEC   RMB 1
+ 01BD                 105  BANTEC   RMB 1
+ 01BE                 106  BANFLASH RMB 1
+ 01BF [02] 01         107  FINPRO   NOP
+                      108  
+                      109  
+
+ Symbol Table 
+
+APAGAB           01B0
+BANFLASH         01BE
+BANTEC           01BD
+DECREPB          012F
+
+
+TECLA1.ASM             Assembled with IASM   06/02/2004  18:43  PAGE 3
+
+
+
+FINPRO           01BF
+FINRTI           01B6
+FLASH            0135
+FLASHB           01A1
+INCREPB          0129
+INICIO           0100
+MASKA            0003
+PACTL            1026
+PORTA            1000
+PORTB            1004
+PRUINC           0118
+REB1             019D
+REBOTE           019A
+REGTEC           01BC
+RUTEC            0138
+RUTEC1           0164
+RUTEC2           0168
+RUTEC3           0180
+RUTEC4           0189
+SALTEC           0174
+SECDEC           0110
+TFLG2            1025
+TMSK2            1024

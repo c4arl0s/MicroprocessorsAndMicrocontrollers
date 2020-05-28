@@ -1,0 +1,47 @@
+
+BURBUJA.ASM            Assembled with IASM   03/16/2004  18:04  PAGE 1
+
+
+
+ 0000                   1             ORG      $0000
+ 0000                   2  TAMANO    EQU      $6000
+ 0000                   3  BUFAUX1   EQU      $6001
+ 0000                   4  ARRAY     EQU      $6002 ;16 BITS
+ 0000                   5  BANINT    EQU      $6004
+ 0000 [05] FE6002       6  INICIO    LDX      ARRAY
+ 0003 [06] 18FE6002     7             LDY      ARRAY
+ 0007 [04] 1808         8             INY
+ 0009 [04] F66000       9             LDAB     TAMANO
+ 000C [02] 5A          10             DECB
+ 000D [06] 7F6004      11             CLR      BANINT
+ 0010 [04] A600        12  ORDENA    LDAA     0,X
+ 0012 [05] 18E600      13             LDAB     0,Y
+ 0015 [05] 18A000      14             SUBA     0,Y
+ 0018 [03] 250D        15             BCS      AJUSTA
+ 001A [03] 08          16             INX
+ 001B [04] 1808        17             INY
+ 001D [02] 5A          18             DECB
+ 001E [03] 26F0        19             BNE      ORDENA
+ 0020 [04] B66004      20             LDAA     BANINT
+ 0023 [03] 26DB        21             BNE      INICIO
+ 0025 [03] 20FE        22             BRA      *
+ 0027 [04] A600        23  AJUSTA    LDAA      0,X
+ 0029 [04] B76001      24             STAA     BUFAUX1
+ 002C [05] 18A600      25             LDAA     0,Y
+ 002F [04] A700        26             STAA     0,X
+ 0031 [04] B66001      27             LDAA     BUFAUX1
+ 0034 [04] A700        28             STAA     0,X
+ 0036 [02] 86FF        29             LDAA     #$FF
+ 0038 [04] B76004      30             STAA     BANINT
+ 003B [03] 20D3        31             BRA      ORDENA
+                       32             BRA      ORDENA
+
+ Symbol Table 
+
+AJUSTA           0027
+ARRAY            6002
+BANINT           6004
+BUFAUX1          6001
+INICIO           0000
+ORDENA           0010
+TAMANO           6000

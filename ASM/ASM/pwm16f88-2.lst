@@ -1,0 +1,458 @@
+MPASM 03.60 Released                           PWM16F88-2.ASM   11-9-2006  18:08:32         PAGE  1
+
+
+LOC  OBJECT CODE     LINE SOURCE TEXT
+  VALUE
+
+                      00001 ;***************************************************************
+                      00002         ; PROGRAMA PARA HACER FUNCIONAR EL MODULADOR DE ANCHO DE PULSOS PWM
+                      00003         ; mediante el A/D ponemos un potenciometro en un canal y en funcion de este, cambia el ciclo de 
+                            trabajo del PWM
+                      00004         ; y enciende y apaga un led.
+                      00005         ;title  "PIC Sample code: PIC16F88 program"
+                      00006         ;subtitle       "CARLOS SANTIAGO CRUZ - TESIS - prueba del convertidor analógico digital"
+                      00007 
+                      00008 ;       codigo para el 16f88 a 4 MHz
+                      00009 ;***************************************************************
+Warning[215]: Processor superceded by command line.  Verify processor symbol.
+                      00010         list    p=16F88
+                      00011         #include        <p16F88.inc>
+                      00001         LIST
+                      00002 ; P16F88.INC  Standard Header File, Version 1.00    Microchip Technology, Inc.
+Message[301]: MESSAGE: (Processor-header file mismatch.  Verify selected processor.)
+                      00401         LIST
+                      00012         
+2007   2000           00013         __CONFIG   _CONFIG1 & _CP_OFF & _CCP1_RB0 & _DEBUG_OFF & _CPD_OFF & _LVP_OFF & _BODEN_OFF & _MCL
+                            R_ON & _PWRTE_ON & _WDT_OFF & _INTRC_IO
+                      00014         ERRORLEVEL -302
+                      00015 ;***************************************************************
+  00000020            00016 z1      equ     20h             ;REGISTROS COMODINES
+  00000021            00017 z2      equ     21h
+  00000022            00018 z3      equ     22h
+  00000023            00019 z4      equ     23h
+                      00020 
+                      00021 #DEFINE BANCO0  BCF     STATUS,5
+                      00022 #DEFINE BANCO1  BSF     STATUS,5
+                      00023 
+                      00024 ;***************************************************************
+                      00025 ; registros 
+                      00026 ;       ADRESH  1Eh             banco 0
+                      00027 ;       ADRESL  9Eh             banco 1
+                      00028 ;       ANSEL   9Bh             banco 1
+                      00029 ;       ADCON0  1Fh             banco 0
+                      00030 ;       ADCON1  9Fh             banco 1
+                      00031 ;****************************************************************
+0000                  00032                 ORG                     0x0000
+0000   2805           00033                 GOTO            INIT
+0001   0000           00034                 NOP
+0002   0000           00035                 NOP
+0003   0000           00036                 NOP
+0004   0000           00037                 NOP
+0005                  00038                 ORG                     0x0005
+                      00039 
+                      00040 ;############### #### INICIALIZANDO EL MICROCONTROLADOR ###########################
+                      00041 
+0005   0185           00042 INIT            CLRF            PORTA                   ; limpia puerto A
+0006   0186           00043                 CLRF            PORTB                   ; limpia puerto B
+                      00044 
+0007   1683           00045                 BANCO1
+0008   170F           00046                 BSF                     OSCCON,6                ;Pone el oscilador a 4 MHz con el oscila
+MPASM 03.60 Released                           PWM16F88-2.ASM   11-9-2006  18:08:32         PAGE  2
+
+
+LOC  OBJECT CODE     LINE SOURCE TEXT
+  VALUE
+
+                            dor interno RC; OSCCON controla varios aspectos de operacion del sistema de reloj; Banco 1
+0009   168F           00047                 BSF                     OSCCON,5                ;bit 6-4                110             
+                            4 MHZ
+                      00048                                                                         ;al reset inicia con 0's el regi
+                            stro.
+000A   1683           00049                 BANCO1
+000B   3007           00050                 MOVLW           H'07'                   ;carga el registro W con 07             0000 011
+                            1
+000C   009C           00051                 MOVWF           CMCON                   ;CMCON ->       C2OUT   C1OUT   C2INV   C1INV   
+                            CIS      CM2  CM1  CM0
+                      00052                                                                         ; ver los modos de operacion de 
+                            los comparadores
+                      00053                                                                         ; comparadores apagados
+                      00054                                                                         ;CLRF           TRISA           
+                                    ;Puerto A como salida           0 - salida; 1 - entrada
+000D   1683           00055                 BANCO1
+000E   0186           00056                 CLRF            TRISB                   ;Puerto B como salida           0 - salida; 1 - 
+                            entrada
+                      00057                 
+                      00058         
+                      00059 
+                      00060 ;##############CONFIGURANDO EL MODULO PWM E INICIALIZANDO CICLO DE TRABAJO A 0%  #######################
+                      00061 
+000F   1683           00062                 BANCO1
+0010   303F           00063                 MOVLW           H'3F'                   ;cargamos periodo, inicializando con
+0011   0092           00064                 MOVWF           PR2                             ;lo almacenamos en PR2
+                      00065                 
+0012   1283           00066                 BANCO0
+0013   303A           00067                 MOVLW           H'3A'                   ;cargamos los 8 bits mas significativos del cicl
+                            o de trabajo
+0014   0095           00068                 MOVWF           CCPR1L                  ;lo movemos al registro CCPR1L
+0015   1697           00069                 BSF                     CCP1CON,5               ;configuramos bit 1 del ciclo de trabajo
+                            , supon ‘1’
+0016   1617           00070                 BSF                     CCP1CON,4               ;configuramos el bit 0 del ciclo de trab
+                            ajo, supon ‘1’, cambiara en funcion de la conversion a/d
+                      00071                                                                         ;recordar que son diez bits 
+                      00072         
+0017   1683           00073                 BANCO1
+0018   3000           00074                 MOVLW           H'00'
+0019   0086           00075                 MOVWF           TRISB                   ;configuramos como salida el pin CCP1
+                      00076                 
+001A   1283           00077                 BANCO0
+001B   1012           00078                 BCF                     T2CON,T2CKPS0   ;Ponga el valor del preescalador TMR2 (banco 0, 
+                            11h)    
+001C   1092           00079                 BCF                     T2CON,T2CKPS1   ;Ponga el valor del preescalador TMR2 (banco 0, 
+                            11h)    
+001D   1512           00080                 BSF                     T2CON,TMR2ON            ;habilita timer2
+                      00081 
+001E   1283           00082                 BANCO0
+001F   1597           00083                 BSF                     CCP1CON,CCP1M3          ;configura modulo CCP1 para operación PW
+                            M
+0020   1517           00084                 BSF                     CCP1CON,CCP1M2          ;configura modulo CCP1 para operación PW
+                            M
+MPASM 03.60 Released                           PWM16F88-2.ASM   11-9-2006  18:08:32         PAGE  3
+
+
+LOC  OBJECT CODE     LINE SOURCE TEXT
+  VALUE
+
+                      00085 
+                      00086                 
+0021   300F           00087                 MOVLW           H'0F'
+0022   0086           00088                 MOVWF           PORTB                   ; inicializo con el puertoB encendido, algunos p
+                            ines
+0023   2823           00089 SALTA   GOTO            SALTA
+                      00090 ;#######################################################################
+                      00091 
+                      00092                 
+                      00093                 END
+MPASM 03.60 Released                           PWM16F88-2.ASM   11-9-2006  18:08:32         PAGE  4
+
+
+SYMBOL TABLE
+  LABEL                             VALUE 
+
+ADCON0                            0000001F
+ADCON1                            0000009F
+ADCS0                             00000006
+ADCS1                             00000007
+ADCS2                             00000006
+ADDEN                             00000003
+ADFM                              00000007
+ADIE                              00000006
+ADIF                              00000006
+ADON                              00000000
+ADRESH                            0000001E
+ADRESL                            0000009E
+ANSEL                             0000009B
+BANCO0                            BCF     STATUS,5
+BANCO1                            BSF     STATUS,5
+BF                                00000000
+BRGH                              00000002
+C                                 00000000
+C1INV                             00000004
+C1OUT                             00000006
+C2INV                             00000005
+C2OUT                             00000007
+CCP1CON                           00000017
+CCP1IE                            00000002
+CCP1IF                            00000002
+CCP1M0                            00000000
+CCP1M1                            00000001
+CCP1M2                            00000002
+CCP1M3                            00000003
+CCP1X                             00000005
+CCP1Y                             00000004
+CCPR1H                            00000016
+CCPR1L                            00000015
+CHS0                              00000003
+CHS1                              00000004
+CHS2                              00000005
+CIS                               00000003
+CKE                               00000006
+CKP                               00000004
+CM0                               00000000
+CM1                               00000001
+CM2                               00000002
+CMCON                             0000009C
+CMIE                              00000006
+CMIF                              00000006
+CREN                              00000004
+CSRC                              00000007
+CVR0                              00000000
+CVR1                              00000001
+CVR2                              00000002
+CVR3                              00000003
+CVRCON                            0000009D
+CVREN                             00000007
+MPASM 03.60 Released                           PWM16F88-2.ASM   11-9-2006  18:08:32         PAGE  5
+
+
+SYMBOL TABLE
+  LABEL                             VALUE 
+
+CVROE                             00000006
+CVRR                              00000005
+D                                 00000005
+DATA_ADDRESS                      00000005
+DC                                00000001
+D_A                               00000005
+EEADR                             0000010D
+EEADRH                            0000010F
+EECON1                            0000018C
+EECON2                            0000018D
+EEDATA                            0000010C
+EEDATH                            0000010E
+EEIE                              00000004
+EEIF                              00000004
+EEPGD                             00000007
+F                                 00000001
+FERR                              00000002
+FREE                              00000004
+FSR                               00000004
+GIE                               00000007
+GO                                00000002
+GO_DONE                           00000002
+I2C_DATA                          00000005
+I2C_READ                          00000002
+I2C_START                         00000003
+I2C_STOP                          00000004
+INDF                              00000000
+INIT                              00000005
+INTCON                            0000000B
+INTE                              00000004
+INTEDG                            00000006
+INTF                              00000001
+IOFS                              00000002
+IRCF0                             00000004
+IRCF1                             00000005
+IRCF2                             00000006
+IRP                               00000007
+NOT_A                             00000005
+NOT_ADDRESS                       00000005
+NOT_BO                            00000000
+NOT_BOR                           00000000
+NOT_DONE                          00000002
+NOT_PD                            00000003
+NOT_POR                           00000001
+NOT_RBPU                          00000007
+NOT_RC8                           00000006
+NOT_T1SYNC                        00000002
+NOT_TO                            00000004
+NOT_TX8                           00000006
+NOT_W                             00000002
+NOT_WRITE                         00000002
+OERR                              00000001
+OPTION_REG                        00000081
+MPASM 03.60 Released                           PWM16F88-2.ASM   11-9-2006  18:08:32         PAGE  6
+
+
+SYMBOL TABLE
+  LABEL                             VALUE 
+
+OSCCON                            0000008F
+OSCTUNE                           00000090
+OSFIE                             00000007
+OSFIF                             00000007
+OSTS                              00000003
+P                                 00000004
+PCL                               00000002
+PCLATH                            0000000A
+PCON                              0000008E
+PEIE                              00000006
+PIE1                              0000008C
+PIE2                              0000008D
+PIR1                              0000000C
+PIR2                              0000000D
+PORTA                             00000005
+PORTB                             00000006
+PR2                               00000092
+PS0                               00000000
+PS1                               00000001
+PS2                               00000002
+PSA                               00000003
+R                                 00000002
+RBIE                              00000003
+RBIF                              00000000
+RC8_9                             00000006
+RC9                               00000006
+RCD8                              00000000
+RCIE                              00000005
+RCIF                              00000005
+RCREG                             0000001A
+RCSTA                             00000018
+RD                                00000000
+READ_WRITE                        00000002
+RP0                               00000005
+RP1                               00000006
+RX9                               00000006
+RX9D                              00000000
+R_W                               00000002
+S                                 00000003
+SALTA                             00000023
+SCS0                              00000000
+SCS1                              00000001
+SMP                               00000007
+SPBRG                             00000099
+SPEN                              00000007
+SREN                              00000005
+SSPADD                            00000093
+SSPBUF                            00000013
+SSPCON                            00000014
+SSPEN                             00000005
+SSPIE                             00000003
+SSPIF                             00000003
+SSPM0                             00000000
+MPASM 03.60 Released                           PWM16F88-2.ASM   11-9-2006  18:08:32         PAGE  7
+
+
+SYMBOL TABLE
+  LABEL                             VALUE 
+
+SSPM1                             00000001
+SSPM2                             00000002
+SSPM3                             00000003
+SSPOV                             00000006
+SSPSTAT                           00000094
+STATUS                            00000003
+SWDTE                             00000000
+SWDTEN                            00000000
+SYNC                              00000004
+T0CS                              00000005
+T0IE                              00000005
+T0IF                              00000002
+T0SE                              00000004
+T1CKPS0                           00000004
+T1CKPS1                           00000005
+T1CON                             00000010
+T1INSYNC                          00000002
+T1OSCEN                           00000003
+T1RUN                             00000006
+T2CKPS0                           00000000
+T2CKPS1                           00000001
+T2CON                             00000012
+TMR0                              00000001
+TMR0IE                            00000005
+TMR0IF                            00000002
+TMR1CS                            00000001
+TMR1H                             0000000F
+TMR1IE                            00000000
+TMR1IF                            00000000
+TMR1L                             0000000E
+TMR1ON                            00000000
+TMR2                              00000011
+TMR2IE                            00000001
+TMR2IF                            00000001
+TMR2ON                            00000002
+TOUTPS0                           00000003
+TOUTPS1                           00000004
+TOUTPS2                           00000005
+TOUTPS3                           00000006
+TRISA                             00000085
+TRISB                             00000086
+TRMT                              00000001
+TUN0                              00000000
+TUN1                              00000001
+TUN2                              00000002
+TUN3                              00000003
+TUN4                              00000004
+TUN5                              00000005
+TX8_9                             00000006
+TX9                               00000006
+TX9D                              00000000
+TXD8                              00000000
+TXEN                              00000005
+MPASM 03.60 Released                           PWM16F88-2.ASM   11-9-2006  18:08:32         PAGE  8
+
+
+SYMBOL TABLE
+  LABEL                             VALUE 
+
+TXIE                              00000004
+TXIF                              00000004
+TXREG                             00000019
+TXSTA                             00000098
+UA                                00000001
+VCFG0                             00000004
+VCFG1                             00000005
+W                                 00000000
+WCOL                              00000007
+WDTCON                            00000105
+WDTPS0                            00000001
+WDTPS1                            00000002
+WDTPS2                            00000003
+WDTPS3                            00000004
+WR                                00000001
+WREN                              00000002
+WRERR                             00000003
+Z                                 00000002
+_BODEN_OFF                        00003FBF
+_BODEN_ON                         00003FFF
+_CCP1_RB0                         00003FFF
+_CCP1_RB3                         00002FFF
+_CONFIG1                          00002007
+_CONFIG2                          00002008
+_CPD_OFF                          00003FFF
+_CPD_ON                           00003EFF
+_CP_ALL                           00001FFF
+_CP_OFF                           00003FFF
+_DEBUG_OFF                        00003FFF
+_DEBUG_ON                         000037FF
+_EXTCLK                           00003FEF
+_EXTRC_CLKOUT                     00003FFF
+_EXTRC_IO                         00003FFE
+_FCMEN_OFF                        00003FFE
+_FCMEN_ON                         00003FFF
+_HS_OSC                           00003FEE
+_IESO_OFF                         00003FFD
+_IESO_ON                          00003FFF
+_INTRC_CLKOUT                     00003FFD
+_INTRC_IO                         00003FFC
+_LP_OSC                           00003FEC
+_LVP_OFF                          00003F7F
+_LVP_ON                           00003FFF
+_MCLR_OFF                         00003FDF
+_MCLR_ON                          00003FFF
+_PWRTE_OFF                        00003FFF
+_PWRTE_ON                         00003FF7
+_WDT_OFF                          00003FFB
+_WDT_ON                           00003FFF
+_WRT_ENABLE_1024                  00003BFF
+_WRT_ENABLE_512                   00003DFF
+_WRT_ENABLE_OFF                   00003FFF
+_XT_OSC                           00003FED
+MPASM 03.60 Released                           PWM16F88-2.ASM   11-9-2006  18:08:32         PAGE  9
+
+
+SYMBOL TABLE
+  LABEL                             VALUE 
+
+__16F84A                          00000001
+z1                                00000020
+z2                                00000021
+z3                                00000022
+z4                                00000023
+
+
+MEMORY USAGE MAP ('X' = Used,  '-' = Unused)
+
+0000 : XXXXXXXXXXXXXXXX XXXXXXXXXXXXXXXX XXXX------------ ----------------
+2000 : -------X-------- ---------------- ---------------- ----------------
+
+All other memory blocks unused.
+
+Program Memory Words Used:    36
+Program Memory Words Free:   988
+
+
+Errors   :     0
+Warnings :     1 reported,     0 suppressed
+Messages :     1 reported,     6 suppressed
+
+

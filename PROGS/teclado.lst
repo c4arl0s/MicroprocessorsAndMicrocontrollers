@@ -1,0 +1,102 @@
+
+TECLADO.ASM            Assembled with IASM   05/27/2004  18:21  PAGE 1
+
+
+
+ 0100                   1            ORG $100
+ 0100                   2  PORTA EQU $1000
+ 0100                   3  PORTB EQU $1004
+ 0100                   4  MASKA EQU $03
+ 0100 [06] 7F1004       5  INICIO    CLR PORTB
+ 0103 [03] 8E018B       6            LDS #FINPRO+10
+ 0106 [06] BD0125       7  SECDEC    JSR RUTEC ; SECUENCIA DE
+ 0109 [04] B6017A       8            LDAA BANTEC; DETECCION DE TECLA
+ 010C [03] 27F8         9            BEQ  SECDEC;BANTEC=0 ->NO HAY TECLA 
+                                                                       OPRIMIDA
+ 010E [04] B60179      10  PRBINC    LDAA REGTEC
+ 0111 [02] 8101        11            CMPA #01
+ 0113 [03] 2706        12            BEQ INCREPB
+ 0115 [02] 8102        13            CMPA #02
+ 0117 [03] 2707        14            BEQ DECREPB
+ 0119 [03] 20EB        15            BRA SECDEC
+ 011B [06] 7C1004      16  INCREPB   INC PORTB
+ 011E [03] 20E6        17            BRA SECDEC
+ 0120 [06] 7A1004      18  DECREPB   DEC PORTB
+ 0123 [03] 20E1        19            BRA SECDEC
+                       20  
+                       21  ;***************************************************
+                                                                        *******
+                       22  ;                         SUBRUTINA
+                       23  ;***************************************************
+                                                                        *******
+ 0125 [06] 7F017A      24  RUTEC     CLR  BANTEC
+ 0128 [04] B61000      25            LDAA PORTA
+ 012B [02] 8403        26            ANDA #MASKA
+ 012D [02] 8103        27            CMPA #MASKA
+ 012F [03] 2735        28            BEQ SALTEC; NO HUBO TECLA
+ 0131 [06] 8D3F        29            BSR REBOTE
+ 0133 [04] B61000      30            LDAA PORTA
+ 0136 [02] 8403        31            ANDA #MASKA
+ 0138 [02] 8103        32            CMPA #MASKA
+ 013A [03] 272A        33            BEQ SALTEC
+ 013C [06] 7F0179      34            CLR REGTEC
+ 013F [04] B6017A      35            LDAA BANTEC
+ 0142 [02] 8102        36            CMPA #$02
+ 0144 [03] 2633        37            BNE REGTEC
+ 0146 [06] 7C0179      38            INC REGTEC
+ 0149 [06] 7F017A      39            CLR BANTEC
+ 014C [06] 7A017A      40            DEC BANTEC ; BANTEC=FF
+ 014F [03] 2015        41            BRA SALTEC
+ 0151 [02] 8101        42  RUTRC1    CMPA #$01
+ 0153 [03] 2705        43            BEQ RUTEC2
+ 0155 [06] 7F017A      44            CLR BANTEC
+ 0158 [03] 200C        45            BRA SALTEC
+ 015A [06] 7C0179      46  RUTEC2    INC REGTEC
+ 015D [06] 7C0179      47            INC REGTEC
+ 0160 [06] 7F017A      48            CLR BANTEC
+ 0163 [06] 7A017A      49            DEC BANTEC
+ 0166 [04] B61000      50  SALTEC    LDAA PORTA
+ 0169 [02] 8403        51            ANDA #MASKA
+ 016B [02] 8103        52            CMPA #MASKA
+ 016D [03] 26F7        53            BNE SALTEC
+ 016F [06] 8D01        54            BSR REBOTE
+ 0171 [05] 39          55            RTS
+
+
+TECLADO.ASM            Assembled with IASM   05/27/2004  18:21  PAGE 2
+
+
+
+ 0172 [03] CE2C72      56  REBOTE    LDX #2C72
+ 0175 [03] 09          57  REBOTE1   DEX
+ 0176 [03] 26FD        58            BNE REBOTE1
+ 0178 [05] 39          59            RTS
+ 0179                  60  REGTEC    RMB 1
+ 017A                  61  BANTEC    RMB 1
+ 017B [02] 01          62  FINPRO    NOP
+                       63  
+                       64  
+                       65  
+                       66  
+                       67  
+                       68  
+
+ Symbol Table 
+
+BANTEC           017A
+DECREPB          0120
+FINPRO           017B
+INCREPB          011B
+INICIO           0100
+MASKA            0003
+PORTA            1000
+PORTB            1004
+PRBINC           010E
+REBOTE           0172
+REBOTE1          0175
+REGTEC           0179
+RUTEC            0125
+RUTEC2           015A
+RUTRC1           0151
+SALTEC           0166
+SECDEC           0106

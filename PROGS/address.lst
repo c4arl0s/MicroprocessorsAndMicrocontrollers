@@ -1,0 +1,20 @@
+
+address.asm            Assembled with IASM   05/07/2004  09:22  PAGE 1
+
+
+
+ E000                   1                    ORG      $E000        ;define 
+                                                                  start address
+ E000 [02] 4F           2                    CLRA                  ;clears ACCA
+ E001 [02] 5C           3                    INCB                  ;increment 
+                                                                           ACCB
+ E002 [04] 188F         4                    XGDY                  ;swap ACCD 
+                                                                        with IY
+ E004 [04] 1809         5                    DEY                   ;decrement 
+                                                                             IY
+ E006 [03] 20FE         6  CICLO             BRA      CICLO
+                        7  CICLO             BRA      CICLO
+
+ Symbol Table 
+
+CICLO            E006

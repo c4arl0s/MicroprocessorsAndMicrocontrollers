@@ -1,0 +1,41 @@
+
+P1P2.ASM               Assembled with IASM   04/13/2004  13:20  PAGE 1
+
+
+
+ 0100                   1             ORG $100  ; origen en dir $100
+ 0100                   2  PORTA      EQU $00   ; equivalencia portA =00
+ 0100                   3  PORTB      EQU $04   ; equivalencia portB =04
+ 0100                   4  DDRA       EQU $01   ; equivalencia data direction 
+                                                                      registrer
+ 0100 [03] CE1000       5  INICIO     LDX #$1000   ; carga registro X con 
+                                                         valor  direccion $1000
+ 0103 [02] 86FF         6             LDAA #$FF    ; carga ac}unudador A con 
+                                                                       valor FF
+ 0105 [04] A701         7             STAA DDRA,X  ; saca lo que hay en el 
+                                                      acumulador A en la salida
+ 0107 [04] F601F0       8             LDAB $01F0
+ 010A [02] C100         9             CMPB #$00
+ 010C [03] 270A        10             BEQ  APAGA
+ 010E [02] C101        11             CMPB #$01
+ 0110 [03] 270B        12             BEQ  PRENDE
+ 0112 [02] 86AA        13             LDAA #$AA    ; carga el acumulador A con 
+                                                                    el valor AA
+ 0114 [04] A704        14             STAA PORTB,X ; saca por el acumulador A 
+                                                                por el puerto B
+ 0116 [03] 20E8        15             BRA  INICIO
+ 0118 [07] 1D0400      16  APAGA      BCLR PORTB,X,$00
+ 011B [03] 20E3        17             BRA  INICIO
+ 011D [07] 1C0400      18  PRENDE     BSET PORTB,X,$00
+ 0120 [03] 20DE        19             BRA  INICIO
+                       20  
+                       21  
+
+ Symbol Table 
+
+APAGA            0118
+DDRA             0001
+INICIO           0100
+PORTA            0000
+PORTB            0004
+PRENDE           011D

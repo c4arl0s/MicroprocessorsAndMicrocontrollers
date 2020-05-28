@@ -1,0 +1,375 @@
+MPASM 03.60 Released                       VIRGINIA16F84A.ASM   3-12-2006  9:35:28         PAGE  1
+
+
+LOC  OBJECT CODE     LINE SOURCE TEXT
+  VALUE
+
+                      00001 ;------------------------------------------------------
+                      00002 ;PROGRAMA PORTB.ASM
+                      00003 ;Apagar y encender el puerto B cada segundo
+                      00004 ;-------------------------------------------------------
+                      00005         list p=16f84A                                   ;identificar el micro usado.
+                      00006         RADIX HEX
+                      00007         #include <p16F84A.inc>                  ;archivo con los registros definidos.
+                      00001         LIST
+                      00002 ; P16F84A.INC  Standard Header File, Version 2.00    Microchip Technology, Inc.
+                      00134         LIST
+                      00008                         
+0000                  00009         org             0x00                                    ;posición de memoria de comienzo del  re
+                            -
+                      00010                                                                         ;set ( 0000h ).
+0000   0183           00011         clrf    STATUS
+0001                  00012 reset                                                           ;etiqueta = posición de memoria.        
+0001   2805           00013         goto    inicio                                  ; salto a posición de memoria donde comien-
+                      00014                                                                         ;za el programa.
+                      00015  
+0005                  00016         org     0x05                                            ;posición de memoria donde comienza el
+                      00017                                                                         ;programa ( 0010h ).
+0005                  00018 inicio                                                          ;etiqueta = dirección  0010h.
+                      00019 
+                      00020 ;-------------------------------------------------------
+                      00021 ; configurar puerto B como salidas
+                      00022 ;-------------------------------------------------------
+0005   1683           00023         bsf         STATUS,5                            ;pongo a uno el bit 5 del registro 
+                      00024                                                                         ;STATUS para entrar en el banco1
+                            .
+0006   3000           00025         movlw   0x00                                    ;cargo w con el dato 00h.                       
+Message[302]: Register in operand not in bank 0.  Ensure that bank bits are correct.
+0007   0086           00026         movwf   TRISB                                   ;cargo el registro TRISB con el w para ...
+                      00027                                                                         ;... hacer el puerto B como sali
+                            da.
+0008   1283           00028         bcf     STATUS,5                                ;pongo a cero el bit 5 del registro
+                      00029                                                                         ;STATUS para entrar en el banco 
+                            0.
+                      00030 
+                      00031 
+                      00032 ;-------------------------------------------------------
+                      00033 ; configurar puerto A como salidas
+                      00034 ;-------------------------------------------------------
+0009   1283           00035         bcf         STATUS,RP0                          ;
+000A   0185           00036         clrf    PORTA                                   ;inicializando puertoA borrando salidas
+000B   1683           00037         bsf     STATUS,RP0                              ;seleccionando banco 1 
+000C   3000           00038         movlw   0x00                                    ;mover la literal 0x1F al registro W 
+Message[302]: Register in operand not in bank 0.  Ensure that bank bits are correct.
+000D   0085           00039         movwf   TRISA                                   ;programo todo el puerto A como salidas         
+                                                                            ;
+                      00040 ;-----------------------------------------------------------
+                      00041 
+                      00042 ;+++++++++++++++++++++++++++++++++++++++++++++++++++++++
+                      00043 ;PROGRAMA PRINCIPAL
+MPASM 03.60 Released                       VIRGINIA16F84A.ASM   3-12-2006  9:35:28         PAGE  2
+
+
+LOC  OBJECT CODE     LINE SOURCE TEXT
+  VALUE
+
+                      00044 ;+++++++++++++++++++++++++++++++++++++++++++++++++++++++
+000E                  00045 programa                                                        ;
+000E   3000           00046         movlw           b'00000000'                     ;
+000F   0085           00047         movwf           PORTA                           ;
+0010   3000           00048         movlw           b'00000000'                     ;
+0011   0086           00049         movwf           PORTB                           ;
+0012   2081           00050         call            unseg                           ;subrutina de retardo de 1 seg. 
+0013   2081           00051         call            unseg                           ;subrutina de retardo de 1 seg. 
+                      00052 
+0014   3001           00053         movlw           b'00000001'                     ;
+0015   0086           00054         movwf           PORTB                           ;
+0016   2081           00055         call            unseg                           ;subrutina de retardo de 1 seg. 
+0017   2081           00056         call            unseg                           ;subrutina de retardo de 1 seg. 
+                      00057 
+0018   3002           00058         movlw           b'00000010'                     ;
+0019   0086           00059         movwf           PORTB                           ;
+001A   2081           00060         call            unseg                           ;subrutina de retardo de 1 seg. 
+001B   2081           00061         call            unseg                           ;subrutina de retardo de 1 seg. 
+                      00062 
+001C   3004           00063         movlw           b'00000100'                     ;
+001D   0086           00064         movwf           PORTB                           ;
+001E   2081           00065         call            unseg                           ;subrutina de retardo de 1 seg. 
+001F   2081           00066         call            unseg                           ;subrutina de retardo de 1 seg. 
+                      00067 
+0020   3008           00068         movlw           b'00001000'                     ;
+0021   0086           00069         movwf           PORTB                           ;
+0022   2081           00070         call            unseg                           ;subrutina de retardo de 1 seg. 
+0023   2081           00071         call            unseg                           ;subrutina de retardo de 1 seg. 
+                      00072 
+0024   3008           00073         movlw           b'00001000'                     ;
+0025   0086           00074         movwf           PORTB                           ;
+0026   2081           00075         call            unseg                           ;subrutina de retardo de 1 seg. 
+0027   2081           00076         call            unseg                           ;subrutina de retardo de 1 seg. 
+                      00077 
+0028   3010           00078         movlw           b'00010000'                     ;
+0029   0086           00079         movwf           PORTB                           ;
+002A   2081           00080         call            unseg                           ;subrutina de retardo de 1 seg. 
+002B   2081           00081         call            unseg                           ;subrutina de retardo de 1 seg. 
+                      00082 
+002C   3020           00083         movlw           b'00100000'                     ;
+002D   0086           00084         movwf           PORTB                           ;
+002E   2081           00085         call            unseg                           ;subrutina de retardo de 1 seg. 
+002F   2081           00086         call            unseg                           ;subrutina de retardo de 1 seg. 
+                      00087 
+0030   30FF           00088         movlw           b'11111111'                     ;
+0031   0086           00089         movwf           PORTB                           ;
+0032   2081           00090         call            unseg                           ;subrutina de retardo de 1 seg. 
+0033   2081           00091         call            unseg                           ;subrutina de retardo de 1 seg. 
+                      00092 
+0034   30FE           00093         movlw           b'11111110'                     ;
+0035   0085           00094         movwf           PORTA                           ;
+0036   3000           00095         movlw           b'00000000'                     ;
+0037   0086           00096         movwf           PORTB                           ;
+MPASM 03.60 Released                       VIRGINIA16F84A.ASM   3-12-2006  9:35:28         PAGE  3
+
+
+LOC  OBJECT CODE     LINE SOURCE TEXT
+  VALUE
+
+0038   2081           00097         call            unseg                           ;subrutina de retardo de 1 seg. 
+0039   2081           00098         call            unseg                           ;subrutina de retardo de 1 seg. 
+                      00099 
+003A   3001           00100         movlw           b'00000001'                     ;
+003B   0086           00101         movwf           PORTB                           ;
+003C   2081           00102         call            unseg                           ;subrutina de retardo de 1 seg. 
+003D   2081           00103         call            unseg                           ;subrutina de retardo de 1 seg. 
+                      00104 
+003E   3002           00105         movlw           b'00000010'                     ;
+003F   0086           00106         movwf           PORTB                           ;
+0040   2081           00107         call            unseg                           ;subrutina de retardo de 1 seg. 
+0041   2081           00108         call            unseg                           ;subrutina de retardo de 1 seg. 
+                      00109 
+0042   3004           00110         movlw           b'00000100'                     ;
+0043   0086           00111         movwf           PORTB                           ;
+0044   2081           00112         call            unseg                           ;subrutina de retardo de 1 seg. 
+0045   2081           00113         call            unseg                           ;subrutina de retardo de 1 seg. 
+                      00114 
+0046   3008           00115         movlw           b'00001000'                     ;
+0047   0086           00116         movwf           PORTB                           ;
+0048   2081           00117         call            unseg                           ;subrutina de retardo de 1 seg. 
+0049   2081           00118         call            unseg                           ;subrutina de retardo de 1 seg. 
+                      00119 
+004A   3008           00120         movlw           b'00001000'                     ;
+004B   0086           00121         movwf           PORTB                           ;
+004C   2081           00122         call            unseg                           ;subrutina de retardo de 1 seg. 
+004D   2081           00123         call            unseg                           ;subrutina de retardo de 1 seg. 
+                      00124 
+004E   3010           00125         movlw           b'00010000'                     ;
+004F   0086           00126         movwf           PORTB                           ;
+0050   2081           00127         call            unseg                           ;subrutina de retardo de 1 seg. 
+0051   2081           00128         call            unseg                           ;subrutina de retardo de 1 seg. 
+                      00129 
+0052   3020           00130         movlw           b'00100000'                     ;
+0053   0086           00131         movwf           PORTB                           ;
+0054   2081           00132         call            unseg                           ;subrutina de retardo de 1 seg. 
+0055   2081           00133         call            unseg                           ;subrutina de retardo de 1 seg. 
+                      00134 
+0056   30FF           00135         movlw           b'11111111'                     ;
+0057   0086           00136         movwf           PORTB                           ;
+0058   2081           00137         call            unseg                           ;subrutina de retardo de 1 seg. 
+0059   2081           00138         call            unseg                           ;subrutina de retardo de 1 seg. 
+                      00139 
+                      00140 
+                      00141 ;=====================================================
+                      00142 
+005A   301D           00143         movlw           b'00011101'                     ;
+005B   0085           00144         movwf           PORTA                           ;
+005C   3000           00145         movlw           b'00000000'                     ;
+005D   0086           00146         movwf           PORTB                           ;
+005E   2081           00147         call            unseg                           ;subrutina de retardo de 1 seg. 
+005F   2081           00148         call            unseg                           ;subrutina de retardo de 1 seg. 
+                      00149 
+MPASM 03.60 Released                       VIRGINIA16F84A.ASM   3-12-2006  9:35:28         PAGE  4
+
+
+LOC  OBJECT CODE     LINE SOURCE TEXT
+  VALUE
+
+0060   3001           00150         movlw           b'00000001'                     ;
+0061   0086           00151         movwf           PORTB                           ;
+0062   2081           00152         call            unseg                           ;subrutina de retardo de 1 seg. 
+0063   2081           00153         call            unseg                           ;subrutina de retardo de 1 seg. 
+                      00154 
+0064   3002           00155         movlw           b'00000010'                     ;
+0065   0086           00156         movwf           PORTB                           ;
+0066   2081           00157         call            unseg                           ;subrutina de retardo de 1 seg. 
+0067   2081           00158         call            unseg                           ;subrutina de retardo de 1 seg. 
+                      00159 
+0068   3004           00160         movlw           b'00000100'                     ;
+0069   0086           00161         movwf           PORTB                           ;
+006A   2081           00162         call            unseg                           ;subrutina de retardo de 1 seg. 
+006B   2081           00163         call            unseg                           ;subrutina de retardo de 1 seg. 
+                      00164 
+006C   3008           00165         movlw           b'00001000'                     ;
+006D   0086           00166         movwf           PORTB                           ;
+006E   2081           00167         call            unseg                           ;subrutina de retardo de 1 seg. 
+006F   2081           00168         call            unseg                           ;subrutina de retardo de 1 seg. 
+                      00169 
+0070   3008           00170         movlw           b'00001000'                     ;
+0071   0086           00171         movwf           PORTB                           ;
+0072   2081           00172         call            unseg                           ;subrutina de retardo de 1 seg. 
+0073   2081           00173         call            unseg                           ;subrutina de retardo de 1 seg. 
+                      00174 
+0074   3010           00175         movlw           b'00010000'                     ;
+0075   0086           00176         movwf           PORTB                           ;
+0076   2081           00177         call            unseg                           ;subrutina de retardo de 1 seg. 
+0077   2081           00178         call            unseg                           ;subrutina de retardo de 1 seg. 
+                      00179 
+0078   3020           00180         movlw           b'00100000'                     ;
+0079   0086           00181         movwf           PORTB                           ;
+007A   2081           00182         call            unseg                           ;subrutina de retardo de 1 seg. 
+007B   2081           00183         call            unseg                           ;subrutina de retardo de 1 seg. 
+                      00184 
+007C   3040           00185         movlw           b'01000000'                     ;
+007D   0086           00186         movwf           PORTB                           ;
+007E   2081           00187         call            unseg                           ;subrutina de retardo de 1 seg. 
+007F   2081           00188         call            unseg                           ;subrutina de retardo de 1 seg. 
+                      00189 
+                      00190 
+0080   280E           00191         goto            programa                        ;salta al comienzo del programa.   
+                      00192 
+                      00193 
+                      00194 
+                      00195 
+                      00196 
+                      00197 
+                      00198 
+                      00199 
+                      00200 
+                      00201 
+                      00202 
+MPASM 03.60 Released                       VIRGINIA16F84A.ASM   3-12-2006  9:35:28         PAGE  5
+
+
+LOC  OBJECT CODE     LINE SOURCE TEXT
+  VALUE
+
+                      00203 ;/////////////////////////////////////////////////////////
+                      00204 ;RETARDOS
+                      00205 ;------------------------------------------------
+                      00206 ;RETARDOS
+                      00207 ;------------------------------------------------
+                      00208 ;ffh=255  goto=2 useg.    decfsz=1 useg.
+                      00209 ; [1us(decfsz) +2us(goto)]*255 veces= 765 useg
+                      00210 ;(765 x 765) + 255= 585480 useg.
+                      00211 ;(585480 x 2) + 1= 1170961 useg.
+                      00212 ;primero entra a un loop de 255 veces, despues entra a otro de 255, sale y 
+                      00213 ; entra a un loop de una sola vez,
+                      00214 ;completando el segundo.
+                      00215 ;////////////////////////////////////////////////////////
+                      00216 ; a continuación se preparan las direcciones donde se hará el conteo.
+                      00217 
+0081                  00218 unseg                                                   ;etiqueta = subrutina del retardo de 1 seg.     
+0081   30FF           00219                 movlw    0xff                           ;cargo w con el dato ffh.
+0082   008C           00220                 movwf    0x0c                           ;cargo la direccion con 0ch con el w.
+0083   008D           00221         movwf    0x0d                           ;cargo la direccion con 0dh con el w.
+0084   3001           00222                 movlw    0x01                           ; cargo w con el dato 01h. 
+0085   008E           00223                 movwf    0x0e                           ; cargo el registro 0eh con w.
+                      00224  
+0086                  00225 salto1                                                  ; etiqueta del bucle de repetición.             
+                                                                            
+0086   0B8C           00226                 decfsz   0x0c,1                 ; decremento el registro 0ch y salto si es
+                      00227                                                                 ; cero depositando el resultado en 0ch. 
+                                           
+0087   2886           00228         goto     salto1                 ; alto a la etiqueta salto1.
+0088   0B8D           00229                 decfsz   0x0d,1                 ; decremento el registro 0dh y salto si es
+                      00230                                                                 ; cero depositando el resultado en 0dh. 
+                                   
+0089   2886           00231         goto     salto1                 ; salto a salto1.
+008A   0B8E           00232                 decfsz   0x0e,1                 ; decremento el registro 0eh y salto si es
+                      00233                                                                 ; cero depositando el resultado en 0eh.
+008B   2886           00234         goto     salto1                 ; salto a salto1.
+008C   0008           00235                 return                                  ; regreso de subrutina.                         
+                      00236  
+                      00237                 
+                      00238         end                             ;fin del programa PORTB.        
+MPASM 03.60 Released                       VIRGINIA16F84A.ASM   3-12-2006  9:35:28         PAGE  6
+
+
+SYMBOL TABLE
+  LABEL                             VALUE 
+
+C                                 00000000
+DC                                00000001
+EEADR                             00000009
+EECON1                            00000088
+EECON2                            00000089
+EEDATA                            00000008
+EEIE                              00000006
+EEIF                              00000004
+F                                 00000001
+FSR                               00000004
+GIE                               00000007
+INDF                              00000000
+INTCON                            0000000B
+INTE                              00000004
+INTEDG                            00000006
+INTF                              00000001
+IRP                               00000007
+NOT_PD                            00000003
+NOT_RBPU                          00000007
+NOT_TO                            00000004
+OPTION_REG                        00000081
+PCL                               00000002
+PCLATH                            0000000A
+PORTA                             00000005
+PORTB                             00000006
+PS0                               00000000
+PS1                               00000001
+PS2                               00000002
+PSA                               00000003
+RBIE                              00000003
+RBIF                              00000000
+RD                                00000000
+RP0                               00000005
+RP1                               00000006
+STATUS                            00000003
+T0CS                              00000005
+T0IE                              00000005
+T0IF                              00000002
+T0SE                              00000004
+TMR0                              00000001
+TRISA                             00000085
+TRISB                             00000086
+W                                 00000000
+WR                                00000001
+WREN                              00000002
+WRERR                             00000003
+Z                                 00000002
+_CP_OFF                           00003FFF
+_CP_ON                            0000000F
+_HS_OSC                           00003FFE
+_LP_OSC                           00003FFC
+_PWRTE_OFF                        00003FFF
+_PWRTE_ON                         00003FF7
+MPASM 03.60 Released                       VIRGINIA16F84A.ASM   3-12-2006  9:35:28         PAGE  7
+
+
+SYMBOL TABLE
+  LABEL                             VALUE 
+
+_RC_OSC                           00003FFF
+_WDT_OFF                          00003FFB
+_WDT_ON                           00003FFF
+_XT_OSC                           00003FFD
+__16F84A                          00000001
+inicio                            00000005
+programa                          0000000E
+reset                             00000001
+salto1                            00000086
+unseg                             00000081
+
+
+MEMORY USAGE MAP ('X' = Used,  '-' = Unused)
+
+0000 : XX---XXXXXXXXXXX XXXXXXXXXXXXXXXX XXXXXXXXXXXXXXXX XXXXXXXXXXXXXXXX
+0040 : XXXXXXXXXXXXXXXX XXXXXXXXXXXXXXXX XXXXXXXXXXXXXXXX XXXXXXXXXXXXXXXX
+0080 : XXXXXXXXXXXXX--- ---------------- ---------------- ----------------
+
+All other memory blocks unused.
+
+Program Memory Words Used:   138
+Program Memory Words Free:   886
+
+
+Errors   :     0
+Warnings :     0 reported,     0 suppressed
+Messages :     2 reported,     0 suppressed
+
+

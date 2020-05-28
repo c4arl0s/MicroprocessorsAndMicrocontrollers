@@ -1,0 +1,22 @@
+
+PROBLEMA.ASM           Assembled with IASM   03/16/2004  13:22  PAGE 1
+
+
+
+ 0100                   1         ORG $100
+ 0100 [04] B60200       2  INICIO LDAA $200
+ 0103 [04] B70205       3         STAA $205
+ 0106 [02] 0C           4         CLC
+ 0107 [06] 790205       5  ROT    ROL $205
+ 010A [04] F60205       6         LDAB $205
+ 010D [02] C180         7         CMPB #$80
+ 010F [03] 27EF         8         BEQ INICIO
+ 0111 [02] 0C           9         CLC
+ 0112 [03] 20F3        10         BRA ROT
+                       11  
+                       12  
+
+ Symbol Table 
+
+INICIO           0100
+ROT              0107

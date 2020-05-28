@@ -1,0 +1,19 @@
+
+PROB2.ASM              Assembled with IASM   03/23/2004  12:55  PAGE 1
+
+
+
+ 0100                   1             ORG $100
+ 0100 [04] B60200       2             LDAA $200
+ 0103 [04] B70205       3             STAA $205
+                        4  
+ 0106 [06] 790205       5  ROT       ROL $205
+ 0109 [03] 20FB         6             BRA ROT
+                        7  
+                        8  
+                        9  
+                       10  
+
+ Symbol Table 
+
+ROT              0106

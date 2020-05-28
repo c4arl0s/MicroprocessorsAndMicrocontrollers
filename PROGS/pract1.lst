@@ -1,0 +1,17 @@
+
+PRACT1.ASM             Assembled with IASM   03/02/2004  13:19  PAGE 1
+
+
+
+ 0100                   1               ORG $100
+ 0100 [04] B60150       2  INICIO       LDAA $150
+ 0103 [04] F60151       3               LDAB $151
+ 0106 [02] 1B           4               ABA
+ 0107 [04] B70152       5               STAA $152
+ 010A [03] 20F4         6               BRA INICIO
+                        7  
+                        8  
+
+ Symbol Table 
+
+INICIO           0100

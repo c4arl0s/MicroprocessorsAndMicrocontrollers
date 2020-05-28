@@ -1,0 +1,135 @@
+MPASM 03.60 Released                                 TMR0.ASM   11-5-2006  5:05:10         PAGE  1
+
+
+LOC  OBJECT CODE     LINE SOURCE TEXT
+  VALUE
+
+                      00001 ;*******************************************
+                      00002 ;*        http://www.electron.es.vg        *
+                      00003 ;*******************************************
+                      00004 ;*         EJEMPLO 4: USO DEL TMR0         *
+                      00005 ;*******************************************
+                      00006 ;* Este programa crea una señal cuadrada a *
+                      00007 ;* la salida RB0, para ello utiliza el TMR0*
+                      00008 ;* y la interrupción por desbordamiento del*
+                      00009 ;* mismo. Se le asignará el prescaler con  *
+                      00010 ;* un factor de división de 1/2. De esta   *
+                      00011 ;* forma las interrupciones saltarán a     *
+                      00012 ;* intervalos fijos de tiempo. Invirtiendo *
+                      00013 ;* el estado de RB0 durante las            *
+                      00014 ;* interrupciones se conseguirá una onda   *
+                      00015 ;* cuadrada perfecta                       *
+                      00016 ;*******************************************
+                      00017                         list    p=16F84a
+                      00018 
+                      00019 
+  00000001            00020 OPTIONR EQU             01H     ;Registro para configuración del TMR0
+  00000003            00021 STATUS          EQU             03H
+  00000006            00022 TRISB           EQU             06H
+  00000006            00023 PORTB           EQU             06H
+  0000000B            00024 INTCON          EQU             0BH
+                      00025 
+  0000000C            00026 ACUM            EQU             0CH
+  0000000D            00027 STAT            EQU             0DH
+                      00028 
+  00000001            00029 F                       EQU             1
+  00000000            00030 w                       EQU             0
+                      00031 
+                      00032 #DEFINE BANCO0  BCF     STATUS,5
+                      00033 #DEFINE BANCO1  BSF     STATUS,5
+                      00034 
+                      00035 
+                      00036 
+0000                  00037                         ORG     00H
+0000   2801           00038                         GOTO            INICIO          ;ponemos este GOTO al principio para poder poner
+                      00039                                                                         ;el subprograma de las interrupc
+                            iones a partir de
+                      00040                                                                         ;la dirección 04h
+                      00041 
+                      00042 ;########################################################################
+0001   1683           00043 INICIO          BANCO1                                  ;Pasamos al banco 1
+0002   1006           00044                         BCF                     TRISB,0         ;RB0 como salida
+0003   1181           00045                         BCF                     OPTIONR,3       ;Asignamos el preescaler a TMR0
+0004   1001           00046                         BCF                     OPTIONR,0       ;\
+0005   1081           00047                         BCF                     OPTIONR,1       ; }Prescaler a 1/2
+0006   1101           00048                         BCF                     OPTIONR,2       ;/
+0007   1281           00049                         BCF                     OPTIONR,5       ;Entrada de TMR0 por ciclo de
+                      00050                                                                         ;instrucción interna (se pone a 
+                            contar)
+0008   1283           00051                         BANCO0                                  ;Volvemos al banco 0
+MPASM 03.60 Released                                 TMR0.ASM   11-5-2006  5:05:10         PAGE  2
+
+
+LOC  OBJECT CODE     LINE SOURCE TEXT
+  VALUE
+
+                      00052         
+                      00053                                                                         ;Configuración de las interrupci
+                            ones:
+                      00054                                                                         ;===============================
+                            =====
+                      00055 
+0009   178B           00056                         BSF                     INTCON,7                        ;Habilita las interrupci
+                            ones globalmente
+000A   168B           00057                         BSF                     INTCON,5                        ;Habilita la interrupció
+                            n por desbordamiento de TMR0
+                      00058 
+                      00059                                                                         ;===============================
+                            =====
+                      00060                                                                         ;ya están configuradas las inter
+                            rupciones, a
+                      00061                                                                         ;partir de ahora cuando cuando s
+                            e desborde TMR0
+                      00062                                                                         ;saltará la interrupción (a la d
+                            irección 04h de
+                      00063                                                                         ;programa)
+                      00064 
+000B   280B           00065 NADA            GOTO            NADA            ;En este ejemplo no se hace nada en el programa
+                      00066                                                                         ;principal, simplemente se esper
+                            a a que salte la
+                      00067                                                                         ;interrupción. La verdadera util
+                            idad de las
+                      00068                                                                         ;interrupciones es que se pueden
+                             hacer "cosas"
+                      00069                                                                         ;mientras sin preocuparse de las
+                             interrupciones
+                      00070 
+                      00071 
+                      00072                         END                                             ;FIN DE PROGRAMA
+MPASM 03.60 Released                                 TMR0.ASM   11-5-2006  5:05:10         PAGE  3
+
+
+SYMBOL TABLE
+  LABEL                             VALUE 
+
+ACUM                              0000000C
+BANCO0                            BCF     STATUS,5
+BANCO1                            BSF     STATUS,5
+F                                 00000001
+INICIO                            00000001
+INTCON                            0000000B
+NADA                              0000000B
+OPTIONR                           00000001
+PORTB                             00000006
+STAT                              0000000D
+STATUS                            00000003
+TRISB                             00000006
+__16F84A                          00000001
+w                                 00000000
+
+
+MEMORY USAGE MAP ('X' = Used,  '-' = Unused)
+
+0000 : XXXXXXXXXXXX---- ---------------- ---------------- ----------------
+
+All other memory blocks unused.
+
+Program Memory Words Used:    12
+Program Memory Words Free:  1012
+
+
+Errors   :     0
+Warnings :     0 reported,     0 suppressed
+Messages :     0 reported,     0 suppressed
+
+
