@@ -1,0 +1,28 @@
+#!/bin/bash
+# find .        Busca en el directorio actual.
+# -name "*"     Busca todos los archivos
+# -type         de tipo 
+# f             file
+# d             directory
+# |             pipe
+# sort -n -r    ordena con opcion -n -r
+# while         mientras lea todos los parametros de find
+
+VERDE="\033[47m\033[0;32m\a"
+ROJO="\033[47m\033[0;31m\a"
+ROJOCLARO="\033[47m\033[0;31m"
+ROSA="\033[47m\033[0;35m"
+ROSAFONDONEGRO="\033[40m\033[1;35m"
+CYAN="\033[40m\033[36m"
+AMARILLO="\033[47m\033[0;33m\a"
+BLANCO="\033[1;37m"
+
+# Assuming that file does not have white spaces
+
+find . -name "*.pdf" -type f | sort -n -r | while read pdfFileName    
+    do
+        echo "Creating image directory for this pdf File"
+    		mkdir ${pdfFileName}.images
+				pdftocairo -jpeg $pdfFileName ./${pdfFileName}.images
+				mv *.jpg ${pdfFileName}.images
+		done
